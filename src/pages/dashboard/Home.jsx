@@ -12,9 +12,13 @@ import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { motion } from "framer-motion";
 import videoSource from "../../assets/office-loop.mp4";
 import { CiCreditCard1 } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
+import { starting } from "../../constants/app.routes";
 
-<FaCcMastercard />
 const Home = () => {
+
+    const navigate = useNavigate();
+
     const [showWelcome, setShowWelcome] = useState(true);
     // eslint-disable-next-line no-unused-vars
     const [notifications, setNotifications] = useState(3);
@@ -67,7 +71,7 @@ const Home = () => {
             <div className="bg-red-600 py-8">
                 <div className="container mx-auto grid grid-cols-4 md:flex justify-around md:flex-wrap gap-4 px-4">
                     {[
-                        { label: "Starting", icon: MdRestartAlt },
+                        { label: "Starting", icon: MdRestartAlt, route: (starting) },
                         { label: "Cert", icon: TbCertificate },
                         { label: "Withdraw", icon: FaCcMastercard },
                         { label: "Deposit", icon: CiCreditCard1 },
@@ -79,6 +83,7 @@ const Home = () => {
                         <motion.div
                             key={idx}
                             whileHover={{ scale: 1.05 }}
+                            onClick={() => item.route && navigate(item.route)}
                             className="bg-white rounded-lg shadow-lg p-3 md:w-[120px] md:h-[80px] text-center flex flex-col items-center justify-center"
                         >
                             <item.icon className="text-2xl text-red-600 mb-1" />

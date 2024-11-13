@@ -20,7 +20,7 @@ const HomeLayout = () => {
             {/* Main Content Area */}
             <div className="flex flex-col w-full h-full">
                 {/* Top Navigation */}
-                <div className="flex items-center justify-between h-16 bg-white shadow px-4">
+                <div className="flex items-center justify-between h-16 bg-white shadow px-4 mx-4">
                     <button onClick={toggleSidebar} className="block md:hidden">
                         {/* Placeholder for a menu icon or button to toggle sidebar */}
                         <span>☰</span>
@@ -30,7 +30,7 @@ const HomeLayout = () => {
                         <img src={logo} alt="Logo" className="w-24 h-auto block md:hidden" />
 
                         {/* Title for larger screens, hidden on mobile */}
-                        <h1 className="text-xl font-semibold hidden md:block">Home</h1>
+                        <h1 className="text-xl font-semibold hidden md:block">Adsterra</h1>
                     </div>
                 </div>
 

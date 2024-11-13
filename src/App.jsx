@@ -4,7 +4,8 @@ import {
   home,
   withdraw,
   deposit,
-  homer
+  homer,
+  starting
 } from "./constants/app.routes";
 
 import LoginLayout from "./pages/authentication/LoginLayout";
@@ -15,6 +16,7 @@ import WithdrawLayout from "./pages/dashboard/WithdrawLayout";
 import Withdraw from "./pages/dashboard/Withdraw";
 import DepositLayout from "./pages/dashboard/DepositLayout";
 import Deposit from "./pages/dashboard/Deposit";
+import Starting from "./pages/dashboard/Starting";
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
         {/* Dashboard Layout */}
         <Route path={home} element={<HomeLayout />}>
           <Route index element={<Home />} />
+          <Route path={starting} element={<Starting />} />
           <Route path={withdraw} element={<WithdrawLayout />}>
             <Route index element={<Withdraw />} />
           </Route>

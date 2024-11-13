@@ -5,3 +5,4 @@ export const home = "/home";
 export const homer = "/homer";
 export const withdraw = "withdraw";
 export const deposit = "deposit";
+export const starting = "starting";
