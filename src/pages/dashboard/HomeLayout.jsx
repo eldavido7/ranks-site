@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import SideBarWeb from "./components/SideBarWeb";
 import SideBarMobile from "./components/SideBarMobile";
+import logo from "../../assets/logo-light.png";
 
 const HomeLayout = () => {
     const [showside, setShowside] = useState(false);
@@ -24,8 +25,15 @@ const HomeLayout = () => {
                         {/* Placeholder for a menu icon or button to toggle sidebar */}
                         <span>☰</span>
                     </button>
-                    <h1 className="text-xl font-semibold">Home</h1>
+                    <div className="flex items-center">
+                        {/* Logo for mobile view, hidden on larger screens */}
+                        <img src={logo} alt="Logo" className="w-24 h-auto block md:hidden" />
+
+                        {/* Title for larger screens, hidden on mobile */}
+                        <h1 className="text-xl font-semibold hidden md:block">Home</h1>
+                    </div>
                 </div>
+
 
                 {/* Main Outlet for Nested Routes */}
                 <div className="flex-1 overflow-y-auto md:p-4">

@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
 import { MdOutlineDashboard } from "react-icons/md";
-import { home, withdraw } from "../../../constants/app.routes";
+import { deposit, home, withdraw } from "../../../constants/app.routes";
 import { motion } from "framer-motion";
 import { slideIn, zoomIn } from "../../../motion";
 import PropTypes from "prop-types";
 import { RiCloseCircleFill } from "react-icons/ri";
+import logo from "../../../assets/logo-light.png";
 
 function SideBarMobile({ showside, toggle }) {
   return (
@@ -19,8 +20,8 @@ function SideBarMobile({ showside, toggle }) {
         whileInView={zoomIn(1, "min").animate}
         className="flex justify-between items-center"
       >
-        <div className="w-40 h-10 bg-gray-300 flex items-center justify-center text-lg font-bold text-gray-600">
-          Logo
+        <div className="w-40 h-10 flex items-center justify-center text-lg font-bold text-gray-600">
+          <img src={logo} alt="Logo" className="w-auto h-auto" />
         </div>
         <button onClick={toggle}>
           <RiCloseCircleFill className="text-xl text-red-500" />
@@ -43,9 +44,7 @@ function SideBarMobile({ showside, toggle }) {
             <p>Home</p>
           </NavLink>
         </motion.div>
-      </div>
 
-      <div className="mt-10 flex flex-col space-y-6 text-gray-600 flex-grow">
         <motion.div initial={slideIn("left", 0).initial} whileInView={slideIn("left", 2).animate}>
           <NavLink
             to={withdraw}
@@ -58,6 +57,21 @@ function SideBarMobile({ showside, toggle }) {
           >
             <MdOutlineDashboard className="text-2xl" />
             <p>Withdraw</p>
+          </NavLink>
+        </motion.div>
+
+        <motion.div initial={slideIn("left", 0).initial} whileInView={slideIn("left", 2).animate}>
+          <NavLink
+            to={deposit}
+            onClick={toggle}
+            className={({ isActive }) =>
+              isActive
+                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3"
+                : "flex items-center gap-x-4 w-full px-5 py-3"
+            }
+          >
+            <MdOutlineDashboard className="text-2xl" />
+            <p>Deposit</p>
           </NavLink>
         </motion.div>
       </div>

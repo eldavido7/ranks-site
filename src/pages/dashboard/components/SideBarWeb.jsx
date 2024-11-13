@@ -4,6 +4,7 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { deposit, home, withdraw } from "../../../constants/app.routes";
 import { motion } from "framer-motion";
 import { slideIn, zoomIn } from "../../../motion";
+import logo from "../../../assets/logo-light.png";
 
 function SideBarWeb() {
 
@@ -14,7 +15,7 @@ function SideBarWeb() {
         initial={zoomIn(1, "min").initial}
         whileInView={zoomIn(1, "min").animate}
       >
-        Logo
+        <img src={logo} alt="Logo" className="w-auto h-auto" />
       </motion.div>
 
       {/* Navigation Links */}
