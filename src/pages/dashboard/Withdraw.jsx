@@ -14,7 +14,7 @@ const Withdraw = () => {
         <motion.div
             initial={fadeIn("right", null).initial}
             whileInView={fadeIn("right", 1 * 2).animate}
-            className="max-w-lg mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg"
+            className="max-w-full mx-auto md:mt-8 md:p-6 p-2 bg-white rounded-lg"
         >
             {/* Back Button */}
             <button
@@ -56,7 +56,7 @@ const Withdraw = () => {
                     <div className="bg-red-600 text-white p-4 rounded-lg mb-6">
                         <p className="font-semibold text-sm">Total Balance</p>
                         <p className="text-3xl font-bold">USD 101.53</p>
-                        <p className="text-sm mt-2">You will receive your withdrawal within an hour</p>
+                        {/* <p className="text-sm mt-2">You will receive your withdrawal within an hour</p> */}
                     </div>
 
                     {/* Input Fields */}
