@@ -1,8 +1,16 @@
 import backgroundImage from "../../assets/login.jpg";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../motion";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+    const navigate = useNavigate();
+
+    const handleLogin = (event) => {
+        event.preventDefault();
+        navigate("/home");
+    };
+
     return (
         <div className="relative flex items-center justify-center min-h-screen">
             {/* Background Image Layer */}
@@ -23,7 +31,7 @@ const Login = () => {
                 <h1 className="text-2xl font-semibold text-center mb-4">Login</h1>
 
                 {/* Login Form */}
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleLogin}>
                     <div>
                         <label
                             htmlFor="username"
