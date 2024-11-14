@@ -3,6 +3,7 @@ import { BiUser } from "react-icons/bi";
 import { GiCrown } from "react-icons/gi";
 import { motion } from "framer-motion";
 import { slideIn } from "../../motion";
+import BottomNavMobile from "./components/BottomNavMobile";
 
 const slideVariants = {
     enter: (direction) => ({
@@ -115,7 +116,7 @@ const Starting = () => {
             </div>
 
             {/* Important Hint Section */}
-            <div className="w-full  mx-auto mt-4 bg-white rounded-lg shadow-lg p-8">
+            <div className="w-full md:mb-2 mb-20 mx-auto mt-4 bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-lg font-bold">Important Hint</h2>
                 <ul className="list-disc ml-4 mt-2 text-gray-600">
                     <li>Working hours: 10:00:00 - 23:00:00</li>
@@ -210,6 +211,7 @@ const Starting = () => {
                     </motion.div>
                 </div>
             )}
+            <BottomNavMobile className="md:hidden" />
         </div>
     );
 };

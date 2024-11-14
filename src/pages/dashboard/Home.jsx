@@ -1,3 +1,4 @@
+import { BsArrowRightShort } from "react-icons/bs";
 import { FiUsers } from "react-icons/fi";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 import { BsCalendar2Event } from "react-icons/bs";
@@ -14,6 +15,7 @@ import videoSource from "../../assets/office-loop.mp4";
 import { CiCreditCard1 } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { starting } from "../../constants/app.routes";
+import BottomNavMobile from "./components/BottomNavMobile";
 
 const Home = () => {
 
@@ -98,7 +100,7 @@ const Home = () => {
                 initial={{ x: 0 }}
                 animate={{ x: showWelcome ? 0 : -10 }}
                 transition={{ duration: 0.5 }}
-                className="fixed bottom-4 left-4 md:left-80 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center cursor-pointer z-10"
+                className="fixed bottom-16 left-4 md:left-80 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center cursor-pointer z-10 md:bottom-4" // Adjust the bottom position for mobile
                 onClick={toggleWelcome}
                 style={{
                     width: showWelcome ? 'auto' : '40px',
@@ -120,8 +122,17 @@ const Home = () => {
             </motion.div>
 
             {/* VIP Levels Section */}
-            <div className="container mx-auto mt-8 px-4">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">VIP Levels</h2>
+            <div className="container mx-auto mt-8 px-4 md:mb-2 mb-20">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold text-gray-800">VIP Levels</h2>
+                    <button
+                        onClick={() => navigate("/home/level")}
+                        className="font-semibold rounded-full border p-2 flex items-center">
+                        View More
+                        <BsArrowRightShort className="text-2xl text-red-600" />
+                    </button>
+                </div>
+
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
                         { level: "Beginner", icon: "🌟", amount: "100 USD", rate: "0.5%", tasks: 35 },
@@ -130,7 +141,7 @@ const Home = () => {
                         { level: "Gold (VIP 2)", icon: "🥇", amount: "8500 USD", rate: "1.6%", tasks: 50 },
                         { level: "Platinum (VIP 3)", icon: "💎", amount: "10500 USD", rate: "2.1%", tasks: 55 },
                         { level: "Emerald (VIP 4)", icon: "💠", amount: "13500 USD", rate: "2.5%", tasks: 60 },
-                        { level: "Diamond (VIP 5)", icon: "🔷", amount: "15500 USD", rate: "3.9%", tasks: 65 },
+                        { level: "Diamond (VIP 5)", icon: "🔷", amount: "3.9%", tasks: 65 },
                         { level: "Masters (VIP 6)", icon: "🏆", amount: "30000 USD", rate: "5.1%", tasks: 65 },
                     ].map((vip, idx) => (
                         <motion.div
@@ -157,7 +168,7 @@ const Home = () => {
                     ))}
                 </div>
             </div>
-
+            <BottomNavMobile className="md:hidden" />
         </div>
     );
 };
