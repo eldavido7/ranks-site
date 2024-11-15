@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { fadeIn, slideIn } from "../../motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import BottomNavMobile from "./components/BottomNavMobile";
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -150,6 +151,7 @@ const Profile = () => {
                     <BiLogOutCircle className="mr-2" /> Logout
                 </motion.button>
             </div>
+            <BottomNavMobile className="md:hidden" />
         </div>
     );
 };
