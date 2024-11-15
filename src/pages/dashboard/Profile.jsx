@@ -3,18 +3,27 @@ import { GiCrown } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { fadeIn, slideIn } from "../../motion";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Profile = () => {
-
     const navigate = useNavigate();
 
     const copyReferralCode = () => {
         navigator.clipboard.writeText("WPZYUC");
-        alert("Referral code copied!");
+        toast.success("Referral code copied!", {
+            position: "top-center",
+            autoClose: 2000, // Closes automatically after 2 seconds
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+        });
     };
 
     return (
         <div className="bg-white overflow-hidden">
+            <ToastContainer /> {/* Adjusted ToastContainer */}
             {/* Profile Card */}
             <motion.div
                 initial={slideIn("down", null).initial}
@@ -54,7 +63,6 @@ const Profile = () => {
                         <p className="font-bold">$183.64</p>
                     </div>
                 </div>
-
             </motion.div>
 
             {/* Profile Options */}
@@ -113,6 +121,7 @@ const Profile = () => {
                     <motion.div
                         initial={fadeIn("right", null).initial}
                         whileInView={fadeIn("right", 5 * 2).animate}
+                        onClick={() => navigate("/home/contact")}
                         className="flex items-center cursor-pointer justify-between p-4 border-b">
                         <div className="flex items-center space-x-4">
                             <BiUser className="text-red-600" />
@@ -136,6 +145,7 @@ const Profile = () => {
                 <motion.button
                     initial={fadeIn("right", null).initial}
                     whileInView={fadeIn("right", 7 * 2).animate}
+                    onClick={() => navigate("/")}
                     className="w-full bg-white text-red-600 border shadow font-semibold py-3 rounded-full flex items-center justify-center">
                     <BiLogOutCircle className="mr-2" /> Logout
                 </motion.button>

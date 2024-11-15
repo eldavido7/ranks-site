@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import videoSource from "../../assets/office-loop.mp4";
 import { CiCreditCard1 } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
-import { starting } from "../../constants/app.routes";
+import { about, certificate, deposit, events, faq, starting, terms, withdraw } from "../../constants/app.routes";
 import BottomNavMobile from "./components/BottomNavMobile";
 
 const Home = () => {
@@ -74,19 +74,19 @@ const Home = () => {
                 <div className="container mx-auto grid grid-cols-4 md:flex justify-around md:flex-wrap gap-4 px-4">
                     {[
                         { label: "Starting", icon: MdRestartAlt, route: (starting) },
-                        { label: "Cert", icon: TbCertificate },
-                        { label: "Withdraw", icon: FaCcMastercard },
-                        { label: "Deposit", icon: CiCreditCard1 },
-                        { label: "T & C", icon: BiBook },
-                        { label: "Events", icon: BsCalendar2Event },
-                        { label: "FAQ", icon: RiQuestionAnswerLine },
-                        { label: "About Us", icon: FiUsers },
+                        { label: "Cert", icon: TbCertificate, route: (certificate) },
+                        { label: "Withdraw", icon: FaCcMastercard, route: (withdraw) },
+                        { label: "Deposit", icon: CiCreditCard1, route: (deposit) },
+                        { label: "T & C", icon: BiBook, route: (terms) },
+                        { label: "Events", icon: BsCalendar2Event, route: (events) },
+                        { label: "FAQ", icon: RiQuestionAnswerLine, route: (faq) },
+                        { label: "About Us", icon: FiUsers, route: (about) },
                     ].map((item, idx) => (
                         <motion.div
                             key={idx}
                             whileHover={{ scale: 1.05 }}
                             onClick={() => item.route && navigate(item.route)}
-                            className="bg-white rounded-lg shadow-lg p-3 md:w-[120px] md:h-[80px] text-center flex flex-col items-center justify-center"
+                            className="bg-white cursor-pointer rounded-lg shadow-lg p-3 md:w-[120px] md:h-[80px] text-center flex flex-col items-center justify-center"
                         >
                             <item.icon className="text-2xl text-red-600 mb-1" />
                             <p className="text-xs font-semibold text-gray-700">{item.label}</p>
@@ -100,7 +100,7 @@ const Home = () => {
                 initial={{ x: 0 }}
                 animate={{ x: showWelcome ? 0 : -10 }}
                 transition={{ duration: 0.5 }}
-                className="fixed bottom-16 left-4 md:left-80 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center cursor-pointer z-10 md:bottom-4" // Adjust the bottom position for mobile
+                className="fixed bottom-24 left-4 md:left-80 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center cursor-pointer z-10 md:bottom-4" // Adjust the bottom position for mobile
                 onClick={toggleWelcome}
                 style={{
                     width: showWelcome ? 'auto' : '40px',
@@ -122,7 +122,7 @@ const Home = () => {
             </motion.div>
 
             {/* VIP Levels Section */}
-            <div className="container mx-auto mt-8 px-4 md:mb-2 mb-20">
+            <div className="container mx-auto mt-8 px-4 md:mb-2 mb-24">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-gray-800">VIP Levels</h2>
                     <button

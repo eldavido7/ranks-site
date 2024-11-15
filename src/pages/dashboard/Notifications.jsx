@@ -1,5 +1,6 @@
 import { GoArrowLeft } from "react-icons/go";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const Notification = () => {
     const [notifications, setNotifications] = useState([
@@ -38,7 +39,7 @@ const Notification = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="p-6">
             <div className="flex items-center mb-6">
                 <button onClick={() => window.history.back()} className="text-lg text-red-600">
                     <GoArrowLeft />
@@ -48,7 +49,12 @@ const Notification = () => {
 
             <p className="text-gray-700 mb-4">{notifications.length} Notification(s)</p>
 
-            <div className="space-y-4">
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.7 }}
+                className="space-y-4">
                 {notifications.map((notif) => (
                     <div
                         key={notif.id}
@@ -70,7 +76,7 @@ const Notification = () => {
                         )}
                     </div>
                 ))}
-            </div>
+            </motion.div>
         </div>
     );
 };

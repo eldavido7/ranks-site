@@ -1,7 +1,7 @@
-import { BiArrowBack } from "react-icons/bi";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { fadeIn, slideIn } from "../../motion";
+import { GoArrowLeft } from "react-icons/go";
 
 const Deposit = () => {
     const [activeTab, setActiveTab] = useState("deposit");
@@ -22,12 +22,12 @@ const Deposit = () => {
             className="mx-w-full mx-auto  md:p-6 p-2 bg-white rounded-lg "
         >
             {/* Back Button */}
-            <button
-                onClick={() => window.history.back()}
-                className="text-gray-500 hover:text-gray-700 mb-4 inline-flex items-center"
-            >
-                <BiArrowBack className="mr-2" /> Back
-            </button>
+            <div className="flex items-center mb-6">
+                <button onClick={() => window.history.back()} className="text-lg text-red-600">
+                    <GoArrowLeft />
+                </button>
+                <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
+            </div>
 
             {/* Page Title */}
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Deposit</h1>

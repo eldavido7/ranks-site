@@ -1,16 +1,16 @@
 import { BiBookOpen } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
 import { BiHome } from "react-icons/bi";
-import { home, starting } from "../../../constants/app.routes";
 import PropTypes from "prop-types";
-import logo from "../../../assets/logo-light.png";
+import logo from "../../../assets/icon_starting.png";
 
 function BottomNavMobile() {
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white shadow-inner flex justify-around py-3 md:hidden">
+    <div className="fixed bottom-0 left-0 w-full bg-white shadow-inner flex justify-around items-center py-2 md:hidden">
       {/* Home Link */}
       <NavLink
-        to={home}
+        to="/home"
+        end
         className={({ isActive }) =>
           isActive
             ? "text-primary font-bold flex flex-col items-center"
@@ -21,21 +21,24 @@ function BottomNavMobile() {
         <p className="text-xs">Home</p>
       </NavLink>
 
+      {/* Starting Link - Elevated Icon */}
       <NavLink
-        to={starting}
+        to="/home/starting"
         className={({ isActive }) =>
           isActive
-            ? "text-primary font-bold flex flex-col items-center"
-            : "flex flex-col items-center"
+            ? "text-primary font-bold flex flex-col items-center relative -top-5"
+            : "flex flex-col items-center relative -top-5"
         }
       >
-        <img src={logo} alt="Logo" className="w-10 h-5" />
-        <p className="text-xs">Starting</p>
+        <div className="rounded-full w-12 h-12 overflow-hidden shadow-lg">
+          <img src={logo} alt="Logo" className="w-full h-full object-cover" />
+        </div>
+        <p className="text-xs mt-1">Starting</p>
       </NavLink>
 
       {/* Records Link */}
       <NavLink
-        to="/rewards"
+        to="/home/records"
         className={({ isActive }) =>
           isActive
             ? "text-primary font-bold flex flex-col items-center"

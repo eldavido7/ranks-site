@@ -9,7 +9,14 @@ import {
   personal,
   level,
   payment,
-  notifications
+  notifications,
+  records,
+  contact,
+  terms,
+  about,
+  faq,
+  events,
+  certificate
 } from "./constants/app.routes";
 
 import LoginLayout from "./pages/authentication/LoginLayout";
@@ -26,10 +33,17 @@ import PersonalInfo from "./pages/dashboard/PersonalInfo";
 import Level from "./pages/dashboard/Level";
 import Payment from "./pages/dashboard/Payment";
 import Notification from "./pages/dashboard/Notifications";
+import Records from "./pages/dashboard/Records";
+import ContactUs from "./pages/dashboard/ContactUs";
+import Terms from "./pages/dashboard/Terms";
+import AboutUs from "./pages/dashboard/AboutUs";
+import FAQs from "./pages/dashboard/FAQs";
+import Events from "./pages/dashboard/Events";
+import Certificate from "./pages/dashboard/Certificate";
 
 function App() {
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         {/* Authentication Layout */}
         <Route path={homepage} element={<LoginLayout />}>
@@ -44,6 +58,13 @@ function App() {
           <Route path={level} element={<Level />} />
           <Route path={payment} element={<Payment />} />
           <Route path={notifications} element={<Notification />} />
+          <Route path={records} element={<Records />} />
+          <Route path={contact} element={<ContactUs />} />
+          <Route path={terms} element={<Terms />} />
+          <Route path={about} element={<AboutUs />} />
+          <Route path={faq} element={<FAQs />} />
+          <Route path={events} element={<Events />} />
+          <Route path={certificate} element={<Certificate />} />
 
           <Route path={withdraw} element={<WithdrawLayout />}>
             <Route index element={<Withdraw />} />
