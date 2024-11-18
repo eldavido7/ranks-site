@@ -24,12 +24,10 @@ const Events = () => {
 
     return (
         <div className="relative w-full md:max-w-7xl p-4 md:p-0 mx-auto my-8 overflow-hidden">
-            <div className="flex items-center mb-6">
-                <button onClick={() => window.history.back()} className="text-lg text-red-600">
-                    <GoArrowLeft />
-                </button>
+            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
+                <GoArrowLeft />
                 <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </div>
+            </button>
             {/* Navigation Buttons */}
             <div className="flex justify-between absolute top-1/2 transform -translate-y-1/2 -translate-x-3 w-full px-4 z-10">
                 <button onClick={handlePrev} className="text-white bg-black bg-opacity-50 px-3 py-1 rounded-full"><GoArrowLeft /></button>

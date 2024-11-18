@@ -1,5 +1,4 @@
 import { useState } from "react";
-import backgroundImage from "../../assets/login.jpg";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../motion";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +21,11 @@ const Login = () => {
         <div className="relative flex items-center justify-center min-h-screen">
             {/* Background Image Layer */}
             <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                    backgroundImage: `url(${backgroundImage})`,
-                    filter: "blur(4px)",
-                }}
+                className="absolute inset-0 bg-cover bg-center bg-gray-200"
+            // style={{
+            //     backgroundImage: `url(${backgroundImage})`,
+            //     filter: "blur(4px)",
+            // }}
             ></div>
 
             {/* Form Layer */}

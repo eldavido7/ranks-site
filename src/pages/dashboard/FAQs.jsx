@@ -6,12 +6,10 @@ import { GoArrowLeft } from "react-icons/go";
 const FAQs = () => {
     return (
         <div className="bg-gray-50 min-h-screen p-6 md:p-12 font-sans text-gray-700">
-            <div className="flex items-center mb-6">
-                <button onClick={() => window.history.back()} className="text-lg text-red-600">
-                    <GoArrowLeft />
-                </button>
+            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
+                <GoArrowLeft />
                 <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </div>
+            </button>
             <h1 className="text-4xl font-bold text-center mb-10 text-red-600">FAQ</h1>
 
             {/* I. Start Optimization Task */}

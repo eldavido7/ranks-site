@@ -1,8 +1,13 @@
+import { BiCalendarEvent } from "react-icons/bi";
+import { RiLuggageDepositLine } from "react-icons/ri";
+import { BiMoneyWithdraw } from "react-icons/bi";
+import { BiNotification } from "react-icons/bi";
+import { GiEgyptianProfile } from "react-icons/gi";
 import { RiRestartLine } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
 import { MdOutlineDashboard } from "react-icons/md";
-import { home, homepage, records, starting } from "../../../constants/app.routes";
+import { deposit, events, home, homepage, notifications, profile, records, starting, withdraw } from "../../../constants/app.routes";
 import { motion } from "framer-motion";
 import { slideIn, zoomIn } from "../../../motion";
 import logo from "../../../assets/logo-light.png";
@@ -10,7 +15,7 @@ import { BiBookOpen } from "react-icons/bi";
 
 function SideBarWeb() {
   return (
-    <div className="w-[368px] bg-white px-4 py-10 hidden md:flex flex-col justify-between h-screen shadow-md overflow-y-auto">
+    <div className="w-[368px] bg-red-200 px-4 py-6 hidden md:flex flex-col justify-between h-screen shadow-md overflow-y-auto">
       {/* Logo */}
       <motion.div
         initial={zoomIn(1, "min").initial}
@@ -20,15 +25,15 @@ function SideBarWeb() {
       </motion.div>
 
       {/* Navigation Links */}
-      <div className="mt-10 flex flex-col space-y-6 text-gray-600 flex-grow">
+      <div className="mt-2 flex flex-col space-y-3 text-gray-600 flex-grow">
         <motion.div initial={slideIn("left", 0).initial} whileInView={slideIn("left", 2).animate}>
           <NavLink
             to={home}
             end
             className={({ isActive }) =>
               isActive
-                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3"
-                : "flex items-center gap-x-4 w-full px-5 py-3"
+                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+                : "flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
             }
           >
             <MdOutlineDashboard className="text-2xl" />
@@ -41,8 +46,8 @@ function SideBarWeb() {
             to={starting}
             className={({ isActive }) =>
               isActive
-                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3"
-                : "flex items-center gap-x-4 w-full px-5 py-3"
+                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+                : "flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
             }
           >
             <RiRestartLine className="text-2xl" />
@@ -55,12 +60,82 @@ function SideBarWeb() {
             to={records}
             className={({ isActive }) =>
               isActive
-                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3"
-                : "flex items-center gap-x-4 w-full px-5 py-3"
+                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+                : "flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
             }
           >
             <BiBookOpen className="text-2xl" />
             <p>Records</p>
+          </NavLink>
+        </motion.div>
+
+        <motion.div initial={slideIn("left", 0).initial} whileInView={slideIn("left", 2).animate}>
+          <NavLink
+            to={profile}
+            className={({ isActive }) =>
+              isActive
+                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+                : "flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+            }
+          >
+            <GiEgyptianProfile className="text-2xl" />
+            <p>Profile</p>
+          </NavLink>
+        </motion.div>
+
+        <motion.div initial={slideIn("left", 0).initial} whileInView={slideIn("left", 2).animate}>
+          <NavLink
+            to={notifications}
+            className={({ isActive }) =>
+              isActive
+                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+                : "flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+            }
+          >
+            <BiNotification className="text-2xl" />
+            <p>Notifications</p>
+          </NavLink>
+        </motion.div>
+
+        <motion.div initial={slideIn("left", 0).initial} whileInView={slideIn("left", 2).animate}>
+          <NavLink
+            to={withdraw}
+            className={({ isActive }) =>
+              isActive
+                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+                : "flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+            }
+          >
+            <BiMoneyWithdraw className="text-2xl" />
+            <p>Withdraw</p>
+          </NavLink>
+        </motion.div>
+
+        <motion.div initial={slideIn("left", 0).initial} whileInView={slideIn("left", 2).animate}>
+          <NavLink
+            to={deposit}
+            className={({ isActive }) =>
+              isActive
+                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+                : "flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+            }
+          >
+            <RiLuggageDepositLine className="text-2xl" />
+            <p>Deposit</p>
+          </NavLink>
+        </motion.div>
+
+        <motion.div initial={slideIn("left", 0).initial} whileInView={slideIn("left", 2).animate}>
+          <NavLink
+            to={events}
+            className={({ isActive }) =>
+              isActive
+                ? "text-primary font-bold flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+                : "flex items-center gap-x-4 w-full px-5 py-3 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition"
+            }
+          >
+            <BiCalendarEvent className="text-2xl" />
+            <p>Events</p>
           </NavLink>
         </motion.div>
       </div>

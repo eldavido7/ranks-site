@@ -32,7 +32,7 @@ const Home = () => {
     return (
         <div className="min-h-screen bg-white flex flex-col relative">
             {/* Video Section */}
-            <div className="relative w-full h-96 mt-2 overflow-hidden">
+            <div className="relative w-full h-96 md:mt-0 mt-2 overflow-hidden">
                 <video
                     className="w-full h-full object-cover"
                     autoPlay
@@ -103,8 +103,9 @@ const Home = () => {
                 className="fixed bottom-24 left-4 md:left-80 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center cursor-pointer z-10 md:bottom-4" // Adjust the bottom position for mobile
                 onClick={toggleWelcome}
                 style={{
-                    width: showWelcome ? 'auto' : '40px',
+                    width: showWelcome ? 'auto' : '10px',
                     padding: showWelcome ? '12px' : '8px',
+                    height: showWelcome ? 'auto' : '70px',
                 }}
             >
                 {showWelcome ? (
@@ -152,7 +153,7 @@ const Home = () => {
                             {/* Icon and Price positioned at the top for mobile */}
                             <div className="flex justify-between w-full items-center mb-2">
                                 <span className="text-2xl">{vip.icon}</span>
-                                <span className="text-gray-500 text-sm">{vip.amount}</span>
+                                <span className="text-white rounded-lg p-2 border bg-red-600 text-sm">{vip.amount}</span>
                             </div>
 
                             {/* Centered Title */}

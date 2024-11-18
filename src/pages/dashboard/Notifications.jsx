@@ -40,12 +40,10 @@ const Notification = () => {
 
     return (
         <div className="p-6">
-            <div className="flex items-center mb-6">
-                <button onClick={() => window.history.back()} className="text-lg text-red-600">
-                    <GoArrowLeft />
-                </button>
+            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
+                <GoArrowLeft />
                 <h2 className="text-xl font-bold text-gray-800 ml-4">Notifications</h2>
-            </div>
+            </button>
 
             <p className="text-gray-700 mb-4">{notifications.length} Notification(s)</p>
 

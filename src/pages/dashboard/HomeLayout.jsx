@@ -1,7 +1,7 @@
+import { BiUserCircle } from "react-icons/bi";
 import { Outlet } from "react-router-dom";
 import SideBarWeb from "./components/SideBarWeb";
 import logo from "../../assets/logo-light.png";
-import { BiUser } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { profile } from "../../constants/app.routes";
 
@@ -16,7 +16,7 @@ const HomeLayout = () => {
             {/* Main Content Area */}
             <div className="flex flex-col w-full h-full">
                 {/* Top Navigation */}
-                <div className="flex items-center justify-between h-16 bg-white shadow px-4 md:mx-4">
+                <div className="flex items-center justify-between h-16 bg-white shadow px-4 md:mx-4 md:hidden">
                     <div className="flex items-center justify-between w-full">
                         {/* Logo for mobile view, hidden on larger screens */}
                         <div className="flex items-center">
@@ -29,9 +29,9 @@ const HomeLayout = () => {
                         {/* User Icon on the Right */}
                         <button
                             onClick={() => navigate(profile)}
-                            className="text-gray-600 hover:text-gray-800"
+                            className="text-gray-600 flex hover:text-gray-800"
                         >
-                            <BiUser className="text-3xl" />
+                            <span className="text-lg">Tester</span> <BiUserCircle className="text-3xl ml-2" />
                         </button>
                     </div>
                 </div>

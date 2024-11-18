@@ -4,13 +4,11 @@ import { GoArrowLeft } from "react-icons/go";
 
 const ContactUs = () => {
     return (
-        <div className="flex flex-col items-center justify-center mt-20 text-gray-800">
-            <div className="flex items-center w-full p-4">
-                <button onClick={() => window.history.back()} className="text-lg text-red-600">
-                    <GoArrowLeft />
-                </button>
+        <div className="flex flex-col items-center justify-center mt-10 text-gray-800">
+            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
+                <GoArrowLeft />
                 <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </div>
+            </button>
             {/* Logo and Heading */}
             <div className="text-center mb-10">
                 <div className="flex flex-col items-center">

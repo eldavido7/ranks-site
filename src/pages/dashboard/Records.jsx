@@ -57,12 +57,10 @@ const Records = () => {
 
     return (
         <div className="p-4 md:max-w-7xl mx-auto md:mb-2 mb-24">
-            <div className="flex items-center mb-6">
-                <button onClick={() => window.history.back()} className="text-lg text-red-600">
-                    <GoArrowLeft />
-                </button>
+            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
+                <GoArrowLeft />
                 <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </div>
+            </button>
             {/* Tabs */}
             <motion.div
                 initial={fadeIn("right", null).initial}

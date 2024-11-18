@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiUser } from "react-icons/bi";
 import { GiCrown } from "react-icons/gi";
 import { motion } from "framer-motion";
@@ -24,6 +24,8 @@ const Starting = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [direction, setDirection] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedStar, setSelectedStar] = useState(0);
+    const [comments, setComments] = useState("");
 
     const images = [
         'https://adsterra-ranks.site//assets/img/01-min.jpg',
@@ -42,6 +44,15 @@ const Starting = () => {
     };
 
     const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            handleNextSlide();
+        }, 3000); // Autoplay every 3 seconds
+
+        return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentSlide]);
 
     return (
         <div className="min-h-screen flex flex-col items-center">
@@ -65,7 +76,7 @@ const Starting = () => {
                     { label: "On Hold", amount: "-3226.34 USD", description: "Will be added to your balance" },
                     { label: "Salary", amount: "0 USD", description: "Today's Salary" }].map((item, idx) => (
                         <div key={idx} className="p-4 bg-gray-50 rounded-lg shadow-md">
-                            <p className="font-bold text-gray-700">{item.label}</p>
+                            <p className="font-bold text-lg text-gray-700">{item.label}</p>
                             <p className="text-sm text-gray-500">{item.description}</p>
                             <p className="text-red-500 font-bold text-lg mt-2">{item.amount}</p>
                         </div>
@@ -74,7 +85,7 @@ const Starting = () => {
             </div>
 
             {/* Start Optimization Carousel */}
-            <div className="w-full  mx-auto mt-8 bg-white rounded-lg shadow-lg p-4">
+            <div className="w-full h-auto mx-auto mt-8 bg-white rounded-lg shadow-lg p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold">Start Optimization</h2>
                     <p className="text-red-500 text-xl font-semibold">29/80</p>
@@ -105,14 +116,12 @@ const Starting = () => {
                         ❯
                     </button>
                 </div>
-                <motion.button
-                    initial={slideIn("left", null).initial}
-                    whileInView={slideIn("left", 1 * 2).animate}
+                <button
                     onClick={toggleModal}
                     className="mt-4 bg-red-500 text-white font-semibold py-2 px-4 rounded-lg w-full text-center"
                 >
                     Starting
-                </motion.button>
+                </button>
             </div>
 
             {/* Important Hint Section */}
@@ -173,9 +182,28 @@ const Starting = () => {
                                 <p className="text-sm sm:text-lg font-semibold">Product 807</p>
                                 <p className="text-sm sm:text-lg text-red-500 font-bold mt-1 sm:mt-2">USD 4350</p>
                                 <p className="text-gray-500 text-xs sm:text-sm mt-1">Score Ranking</p>
-                                <div className="flex justify-end mt-1 text-gray-400 text-sm sm:text-xl">
-                                    <span>☆ ☆ ☆ ☆ ☆</span>
+
+                                {/* Stars Section */}
+                                <div className="flex justify-end mt-1 text-gray-400 text-sm sm:text-xl space-x-1">
+                                    {Array.from({ length: 5 }).map((_, index) => (
+                                        <span
+                                            key={index}
+                                            onClick={() => setSelectedStar(index + 1)}
+                                            className={`cursor-pointer ${index < selectedStar ? "text-yellow-400" : "text-gray-400"
+                                                }`}
+                                        >
+                                            ☆
+                                        </span>
+                                    ))}
                                 </div>
+
+                                {/* Comments Section */}
+                                <textarea
+                                    placeholder="Leave your comments here..."
+                                    className="w-full mt-3 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+                                    value={comments}
+                                    onChange={(e) => setComments(e.target.value)}
+                                ></textarea>
                             </div>
                         </div>
 

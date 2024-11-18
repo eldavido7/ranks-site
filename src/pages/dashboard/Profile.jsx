@@ -1,3 +1,4 @@
+import { BiUserCircle } from "react-icons/bi";
 import { BiUser, BiCopy, BiChevronRight, BiCreditCard, BiLogOutCircle } from "react-icons/bi";
 import { GiCrown } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
@@ -29,39 +30,45 @@ const Profile = () => {
             <motion.div
                 initial={slideIn("down", null).initial}
                 whileInView={slideIn("down", 1 * 2).animate}
-                className="bg-red-600 rounded-2xl mx-6 my-4 p-6 text-white">
+                className="bg-red-600 rounded-2xl md:mx-4 md:my-6 mx-2 p-8 text-white">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center">
-                        <BiUser className="md:text-5xl text-3xl mr-4" />
+                        <BiUserCircle className="md:text-6xl text-4xl md:mr-6 mr-2" />
                         <div>
-                            <p className="text-lg font-bold">Tester</p>
-                            <p className="text-sm">
-                                Referral code: <span className="font-bold">WPZYUC</span>
-                                <BiCopy onClick={copyReferralCode} className="inline ml-2 cursor-pointer" />
-                            </p>
+                            <p className="text-xl font-bold">Tester</p>
+                            <div className="text-md">
+                                Referral code:
+                                <div className="flex flex-wrap items-center mt-1">
+                                    <span className="font-bold">WPZYUC</span>
+                                    <BiCopy
+                                        onClick={copyReferralCode}
+                                        className="ml-2 cursor-pointer"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="text-center">
-                        <GiCrown className="text-4xl ml-4" />
-                        <p className="font-bold text-xs mt-1">Crown (VIP8)</p>
+                        <GiCrown className="text-5xl ml-6" />
+                        <p className="font-bold text-sm mt-2 md:mr-0 mr-8">Crown (VIP8)</p>
                     </div>
                 </div>
-                <div className="border-t border-yellow-400 mt-4 pt-2 grid grid-cols-2 gap-4 sm:flex sm:justify-between text-sm">
+                <div className="border-t border-yellow-400 mt-6 pt-4 grid grid-cols-2 gap-6 sm:flex sm:justify-between text-md">
                     <div className="text-center">
                         <p>Credit Score:</p>
-                        <p className="font-bold">100%</p>
+                        <p className="font-bold text-lg">100%</p>
                     </div>
                     <div className="text-center">
                         <p>Wallet Balance:</p>
-                        <p className="font-bold">$1123.66</p>
+                        <p className="font-bold text-lg">$1123.66</p>
                     </div>
                     <div className="text-center">
                         <p>On Hold Amount:</p>
-                        <p className="text-yellow-400 font-bold">-3226.34 USD</p>
+                        <p className="text-yellow-400 font-bold text-lg">-3226.34 USD</p>
                     </div>
                     <div className="text-center">
                         <p>Commission:</p>
-                        <p className="font-bold">$183.64</p>
+                        <p className="font-bold text-lg">$183.64</p>
                     </div>
                 </div>
             </motion.div>
