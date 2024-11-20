@@ -74,7 +74,7 @@ const Profile = () => {
             </motion.div>
 
             {/* Profile Options */}
-            <div className="space-y-4 md:mx-6 mx-2 md:mb-4 mb-28">
+            <div className="space-y-4 md:mx-6 mx-2 md:mb-4 mb-52">
                 {/* Financial Section */}
                 <div className="bg-white rounded-lg shadow">
                     <motion.div
