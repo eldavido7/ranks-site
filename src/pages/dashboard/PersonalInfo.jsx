@@ -89,7 +89,7 @@ const PersonalInfo = () => {
             </div>
 
             {/* Buttons Section */}
-            <div className="md:space-x-4 md:space-y-0 md:flex grid space-y-4">
+            <div className="md:space-x-4 md:space-y-0 md:flex md:mb-2 mb-52 grid space-y-4">
                 <button className="w-full bg-red-600 text-white font-semibold py-3 rounded-lg hover:bg-red-500">
                     Update
                 </button>

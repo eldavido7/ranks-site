@@ -38,7 +38,7 @@ const Deposit = () => {
         <motion.div
             initial={fadeIn("right", null).initial}
             whileInView={fadeIn("right", 1 * 2).animate}
-            className="mx-w-full mx-auto md:p-6 p-2 bg-white rounded-lg"
+            className="mx-w-full mx-auto md:p-6 p-2 md:mb-2 mb-52 bg-white rounded-lg"
         >
             {/* Back Button */}
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">

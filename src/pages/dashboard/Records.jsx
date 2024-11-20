@@ -94,7 +94,7 @@ const Records = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.5 }}
-                className="space-y-4 md:space-y-6">
+                className="space-y-4 md:space-y-6 md:mb-2 mb-52">
                 {filteredRecords.map((record, idx) => (
                     <div
                         key={idx}

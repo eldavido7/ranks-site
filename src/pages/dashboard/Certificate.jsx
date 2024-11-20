@@ -3,7 +3,7 @@ import certImage from "../../assets/cert.jpg";
 
 const Certificate = () => {
     return (
-        <div className="w-full h-screen flex flex-col">
+        <div className="w-full md:2 mb-52 h-screen flex flex-col">
             {/* Back Button */}
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
                 <button

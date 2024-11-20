@@ -89,7 +89,7 @@ const AboutUs = () => {
                 initial={fadeIn("up", null).initial}
                 whileInView={fadeIn("up", 3 * 2).animate}
                 viewport={{ once: false, amount: 0.2 }}
-                className="mb-10 p-6 bg-white rounded-lg shadow-md"
+                className="mb-52 p-6 bg-white rounded-lg shadow-md"
             >
                 <div className="flex items-center mb-4">
                     <FaHandshake className="text-blue-500 text-3xl mr-3" />

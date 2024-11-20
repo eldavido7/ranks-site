@@ -39,7 +39,7 @@ const Notification = () => {
     };
 
     return (
-        <div className="p-2">
+        <div className="p-2 md:mb-2 mb-52">
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
                 <button
                     onClick={() => window.history.back()}

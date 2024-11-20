@@ -73,7 +73,7 @@ const Payment = () => {
                 </div>
             </div>
 
-            <button className="w-full bg-red-600 text-white font-semibold py-3 rounded-lg mt-6">
+            <button className="w-full bg-red-600 md:mb-2 mb-52 text-white font-semibold py-3 rounded-lg mt-6">
                 Confirm
             </button>
         </div>

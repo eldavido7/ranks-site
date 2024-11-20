@@ -14,7 +14,7 @@ const Withdraw = () => {
         <motion.div
             initial={fadeIn("right", null).initial}
             whileInView={fadeIn("right", 1 * 2).animate}
-            className="max-w-full mx-auto md:mt-8 md:p-6 p-2 bg-white rounded-lg"
+            className="max-w-full mx-auto md:mt-8 md:mb-2 mb-52 md:p-6 p-2 bg-white rounded-lg"
         >
             {/* Back Button */}
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">

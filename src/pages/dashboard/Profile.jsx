@@ -154,7 +154,7 @@ const Profile = () => {
                     initial={fadeIn("right", null).initial}
                     whileInView={fadeIn("right", 7 * 2).animate}
                     onClick={() => navigate("/")}
-                    className="w-full bg-white text-red-600 md:mb-2 mb-20 border shadow font-semibold py-3 rounded-full flex items-center justify-center">
+                    className="w-full bg-white text-red-600 md:mb-2 mb-52 border shadow font-semibold py-3 rounded-full flex items-center justify-center">
                     <BiLogOutCircle className="mr-2" /> Logout
                 </motion.button>
             </div>

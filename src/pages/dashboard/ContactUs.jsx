@@ -4,7 +4,7 @@ import { GoArrowLeft } from "react-icons/go";
 
 const ContactUs = () => {
     return (
-        <div className="flex flex-col items-center justify-center mt-10 text-gray-800">
+        <div className="flex flex-col items-center justify-center mt-10 md:2 mb-52 text-gray-800">
             {/* Back Button */}
             <div className="w-full">
                 <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">

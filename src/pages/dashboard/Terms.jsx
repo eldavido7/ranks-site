@@ -147,7 +147,7 @@ const Terms = () => {
                 initial={fadeIn("up", null).initial}
                 whileInView={fadeIn("up", 4 * 2).animate}
                 viewport={{ once: false, amount: 0.2 }}
-                className="mb-6 p-4 bg-white rounded-lg shadow-md"
+                className="md:mb-6 mb-52 p-4 bg-white rounded-lg shadow-md"
             >
                 <div className="flex items-center mb-3">
                     <FaTasks className="text-yellow-500 text-2xl mr-3" />
