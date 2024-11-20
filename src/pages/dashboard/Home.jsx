@@ -13,8 +13,8 @@ import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { motion } from "framer-motion";
 import videoSource from "../../assets/office-loop.mp4";
 import { CiCreditCard1 } from "react-icons/ci";
-import { useNavigate } from "react-router-dom";
-import { about, certificate, deposit, events, faq, starting, terms, withdraw } from "../../constants/app.routes";
+import { Link, useNavigate } from "react-router-dom";
+import { about, certificate, deposit, events, faq, notifications, starting, terms, withdraw } from "../../constants/app.routes";
 import BottomNavMobile from "./components/BottomNavMobile";
 
 const Home = () => {
@@ -23,7 +23,7 @@ const Home = () => {
 
     const [showWelcome, setShowWelcome] = useState(true);
     // eslint-disable-next-line no-unused-vars
-    const [notifications, setNotifications] = useState(3);
+    const [Notifications, setNotifications] = useState(3);
 
     const toggleWelcome = () => {
         setShowWelcome(!showWelcome);
@@ -53,16 +53,18 @@ const Home = () => {
                 style={{ width: "90%", maxWidth: "90%", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}
                 transition={{ duration: 0.5 }}
             >
-                <div className="relative flex items-center">
-                    <IoMdNotificationsOutline
-                        className={`text-lg mr-1 ${notifications > 0 ? "shake" : ""}`}
-                    />
-                    {notifications > 0 && (
-                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
-                            {notifications}
-                        </span>
-                    )}
-                </div>
+                <Link to={notifications}>
+                    <div className="relative flex items-center">
+                        <IoMdNotificationsOutline
+                            className={`text-lg mr-1 ${Notifications > 0 ? "shake" : ""}`}
+                        />
+                        {Notifications > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
+                                {Notifications}
+                            </span>
+                        )}
+                    </div>
+                </Link>
                 <marquee direction="">
                     Welcome to Adsterra! We collaborate with you to drive better exposure and
                     create proven value with Adsterra platform strategy and product solutions.
@@ -123,7 +125,7 @@ const Home = () => {
             </motion.div>
 
             {/* VIP Levels Section */}
-            <div className="container mx-auto mt-8 px-4 md:mb-2 mb-24">
+            <div className="container mx-auto mt-8 px-2 md:mb-2 mb-24">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-gray-800">VIP Levels</h2>
                     <button
@@ -142,22 +144,23 @@ const Home = () => {
                         { level: "Gold (VIP 2)", icon: "🥇", amount: "8500 USD", rate: "1.6%", tasks: 50 },
                         { level: "Platinum (VIP 3)", icon: "💎", amount: "10500 USD", rate: "2.1%", tasks: 55 },
                         { level: "Emerald (VIP 4)", icon: "💠", amount: "13500 USD", rate: "2.5%", tasks: 60 },
-                        { level: "Diamond (VIP 5)", icon: "🔷", amount: "3.9%", tasks: 65 },
+                        { level: "Diamond (VIP 5)", icon: "🔷", amount: "20000 USD", tasks: 65 },
                         { level: "Masters (VIP 6)", icon: "🏆", amount: "30000 USD", rate: "5.1%", tasks: 65 },
                     ].map((vip, idx) => (
                         <motion.div
                             key={idx}
                             whileHover={{ scale: 1.05 }}
-                            className="bg-white p-5 rounded-lg shadow-lg flex flex-col justify-center items-center h-44 md:h-40 relative"
+                            onClick={() => navigate("/home/level")}
+                            className="bg-white p-5 rounded-lg cursor-pointer shadow-lg flex flex-col justify-center items-center h-auto md:h-40 relative"
                         >
                             {/* Icon and Price positioned at the top for mobile */}
                             <div className="flex justify-between w-full items-center mb-2">
                                 <span className="text-2xl">{vip.icon}</span>
-                                <span className="text-white rounded-lg p-2 border bg-red-600 text-sm">{vip.amount}</span>
+                                <span className="text-white rounded-lg p-2 border text-center bg-red-600 w-[88px] h-10 text-sm">{vip.amount}</span>
                             </div>
 
                             {/* Centered Title */}
-                            <h3 className="font-semibold text-gray-800 text-lg text-center mb-4">
+                            <h3 className="font-semibold text-gray-800 md:text-lg text-[15px] text-center mb-4">
                                 {vip.level}
                             </h3>
 

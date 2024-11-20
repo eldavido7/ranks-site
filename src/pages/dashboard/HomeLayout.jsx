@@ -1,9 +1,9 @@
-import { BiUserCircle } from "react-icons/bi";
 import { Outlet } from "react-router-dom";
 import SideBarWeb from "./components/SideBarWeb";
 import logo from "../../assets/logo-light.png";
 import { useNavigate } from "react-router-dom";
-import { profile } from "../../constants/app.routes";
+import { home } from "../../constants/app.routes";
+import profilep from "../../assets/profile-pic.jpg"
 
 const HomeLayout = () => {
 
@@ -20,19 +20,24 @@ const HomeLayout = () => {
                     <div className="flex items-center justify-between w-full">
                         {/* Logo for mobile view, hidden on larger screens */}
                         <div className="flex items-center">
-                            <img src={logo} alt="Logo" className="w-24 h-auto block md:hidden" />
+
+                            <img src={logo} onClick={() => navigate(home)} alt="Logo" className="w-24 h-auto block md:hidden" />
 
                             {/* Title for larger screens, hidden on mobile */}
-                            <h1 className="text-xl font-semibold hidden md:block ml-4">Adsterra</h1>
+                            {/* <h1 className="text-xl font-semibold hidden md:block ml-4">Adsterra</h1> */}
                         </div>
 
                         {/* User Icon on the Right */}
-                        <button
-                            onClick={() => navigate(profile)}
-                            className="text-gray-600 flex hover:text-gray-800"
-                        >
-                            <span className="text-lg">Tester</span> <BiUserCircle className="text-3xl ml-2" />
-                        </button>
+                        <div className="flex items-center space-x-2 text-gray-500">
+                            <a href={"/home/profile"} className="flex">
+                                <span className="text-lg font-medium">Tester</span>
+                                <img
+                                    src={profilep}
+                                    alt="Profile"
+                                    className="w-6 h-6 ml-2 rounded-full object-cover"
+                                />
+                            </a>
+                        </div>
                     </div>
                 </div>
 

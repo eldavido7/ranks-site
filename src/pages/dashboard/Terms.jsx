@@ -5,11 +5,17 @@ import { GoArrowLeft } from "react-icons/go";
 
 const Terms = () => {
     return (
-        <div className="bg-gray-50 min-h-screen p-6 md:p-12 font-sans text-gray-700">
-            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
-                <GoArrowLeft />
-                <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </button>
+        <div className="bg-gray-50 min-h-screen p-2 md:p-12 font-sans text-gray-700">
+            <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
+                <button
+                    onClick={() => window.history.back()}
+                    className="flex items-center text-lg text-red-600"
+                >
+                    <GoArrowLeft />
+                    <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
+                </button>
+            </div>
+
             <h1 className="text-3xl font-bold text-center mb-8 text-red-600">Contract Rules</h1>
 
             {/* 1. Account Reset */}
@@ -135,6 +141,23 @@ const Terms = () => {
                     <h2 className="text-xl font-semibold text-gray-800">8. Task Completion</h2>
                 </div>
                 <p className="ml-8">Each time improvement task must be completed within 8 hours. Failure to do so without requesting an extension may result in a lower credit score.</p>
+            </motion.section>
+
+            <motion.section
+                initial={fadeIn("up", null).initial}
+                whileInView={fadeIn("up", 4 * 2).animate}
+                viewport={{ once: false, amount: 0.2 }}
+                className="mb-6 p-4 bg-white rounded-lg shadow-md"
+            >
+                <div className="flex items-center mb-3">
+                    <FaTasks className="text-yellow-500 text-2xl mr-3" />
+                    <h2 className="text-xl font-semibold text-gray-800">9. Requirements</h2>
+                </div>
+                <ul className="ml-12 list-disc list-inside">
+                    <li>The minimum amount to initiate the 2nd data set is 100 USDT (Beginner Level).</li>
+                    <li>Each member is eligible for the reset bonus based on the corresponding initial deposit for the 2nd or 3rd data set. (Only on day 2 data set)</li>
+                    <li>The reset bonus will be credited to the member&apos;s account balance alongside the initial deposit amount.</li>
+                </ul>
             </motion.section>
         </div>
     );

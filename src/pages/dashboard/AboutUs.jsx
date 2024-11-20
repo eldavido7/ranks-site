@@ -5,12 +5,17 @@ import { GoArrowLeft } from "react-icons/go";
 
 const AboutUs = () => {
     return (
-        <div className="bg-gray-50 min-h-screen p-6 md:p-12 font-sans text-gray-700">
+        <div className="bg-gray-50 min-h-screen p-2 md:p-12 font-sans text-gray-700">
 
-            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
-                <GoArrowLeft />
-                <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </button>
+            <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
+                <button
+                    onClick={() => window.history.back()}
+                    className="flex items-center text-lg text-red-600"
+                >
+                    <GoArrowLeft />
+                    <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
+                </button>
+            </div>
             <h1 className="text-4xl font-bold text-center mb-10 text-red-600">About Us</h1>
 
             {/* Our Story Section */}
@@ -58,27 +63,6 @@ const AboutUs = () => {
                 </p>
             </motion.section>
 
-            {/* Recognition Section */}
-            <motion.section
-                initial={fadeIn("up", null).initial}
-                whileInView={fadeIn("up", 3 * 2).animate}
-                viewport={{ once: false, amount: 0.2 }}
-                className="mb-10 p-6 bg-white rounded-lg shadow-md"
-            >
-                <div className="flex items-center mb-4">
-                    <FaHandshake className="text-blue-500 text-3xl mr-3" />
-                    <h2 className="text-2xl font-semibold text-gray-800">Industry Recognition</h2>
-                </div>
-                <p className="ml-8 mb-4">
-                    Today, Adsterra is a well-known brand with a strong reputation and has been recognized by numerous bloggers and affiliates as one of the
-                    top adtech platforms. Our blend of innovative technology and human intelligence makes us a trusted partner in the industry.
-                </p>
-                <p className="ml-8">
-                    We believe that our dedication to excellence and support for both advertisers and publishers is what sets us apart and drives our
-                    success.
-                </p>
-            </motion.section>
-
             {/* Our Mission Section */}
             <motion.section
                 initial={fadeIn("up", null).initial}
@@ -97,6 +81,27 @@ const AboutUs = () => {
                 <p className="ml-8">
                     By setting high traffic and service quality standards, we contribute to the development of the adtech market. Through our innovative
                     products, we aim to foster growth, share knowledge, and collaborate with the community to build a brighter future for all.
+                </p>
+            </motion.section>
+
+            {/* Recognition Section */}
+            <motion.section
+                initial={fadeIn("up", null).initial}
+                whileInView={fadeIn("up", 3 * 2).animate}
+                viewport={{ once: false, amount: 0.2 }}
+                className="mb-10 p-6 bg-white rounded-lg shadow-md"
+            >
+                <div className="flex items-center mb-4">
+                    <FaHandshake className="text-blue-500 text-3xl mr-3" />
+                    <h2 className="text-2xl font-semibold text-gray-800">Industry Recognition</h2>
+                </div>
+                <p className="ml-8 mb-4">
+                    Today, Adsterra is a well-known brand with a strong reputation and has been recognized by numerous bloggers and affiliates as one of the
+                    top adtech platforms. Our blend of innovative technology and human intelligence makes us a trusted partner in the industry.
+                </p>
+                <p className="ml-8">
+                    We believe that our dedication to excellence and support for both advertisers and publishers is what sets us apart and drives our
+                    success.
                 </p>
             </motion.section>
         </div>

@@ -17,10 +17,15 @@ const Withdraw = () => {
             className="max-w-full mx-auto md:mt-8 md:p-6 p-2 bg-white rounded-lg"
         >
             {/* Back Button */}
-            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
-                <GoArrowLeft />
-                <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </button>
+            <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
+                <button
+                    onClick={() => window.history.back()}
+                    className="flex items-center text-lg text-red-600"
+                >
+                    <GoArrowLeft />
+                    <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
+                </button>
+            </div>
 
             {/* Page Title */}
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Withdraw</h1>

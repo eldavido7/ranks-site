@@ -55,9 +55,9 @@ const Starting = () => {
     }, [currentSlide]);
 
     return (
-        <div className="min-h-screen flex flex-col items-center">
+        <div className="flex flex-col items-center">
             {/* Greeting and Wallet Information Section */}
-            <div className="w-full  mx-auto mt-4 bg-white rounded-lg shadow-lg p-4">
+            <div className="w-full mx-auto mt-4 bg-white rounded-lg shadow-lg p-4">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center">
                         <BiUser className="text-3xl text-red-500 mr-2" />
@@ -157,7 +157,7 @@ const Starting = () => {
                         {/* Product Images and Details */}
                         <div className="flex items-start sm:space-x-6 mb-4">
                             {/* Product Images */}
-                            <div className="flex space-x-2 sm:space-x-4 overflow-x-auto w-1/2 sm:w-auto">
+                            <div className="flex space-x-2 sm:space-x-4 overflow-x-auto w-auto sm:w-auto">
                                 <img
                                     src="https://adsterra-ranks.site//assets/img/01-min.jpg"
                                     alt="Product 1"
@@ -181,7 +181,7 @@ const Starting = () => {
                                 <p className="text-sm sm:text-lg font-semibold">Product 897</p>
                                 <p className="text-sm sm:text-lg font-semibold">Product 807</p>
                                 <p className="text-sm sm:text-lg text-red-500 font-bold mt-1 sm:mt-2">USD 4350</p>
-                                <p className="text-gray-500 text-xs sm:text-sm mt-1">Score Ranking</p>
+                                <p className="text-gray-500 text-xs sm:text-sm mt-1">Star Rating</p>
 
                                 {/* Stars Section */}
                                 <div className="flex justify-end mt-1 text-gray-400 text-sm sm:text-xl space-x-1">

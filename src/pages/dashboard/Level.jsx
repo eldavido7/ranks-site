@@ -69,11 +69,17 @@ const levelsData = [
 
 const Level = () => {
     return (
-        <div className="min-h-screen bg-white p-4 md:p-8">
-            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
-                <GoArrowLeft />
-                <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </button>
+        <div className="min-h-screen bg-white p-2 md:p-8">
+            <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
+                <button
+                    onClick={() => window.history.back()}
+                    className="flex items-center text-lg text-red-600"
+                >
+                    <GoArrowLeft />
+                    <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
+                </button>
+            </div>
+
             <h2 className="text-2xl font-bold text-center mb-6 text-gray-700">VIP Levels</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:mb-1 mb-20">
                 {levelsData.map((level, idx) => (

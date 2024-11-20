@@ -56,11 +56,17 @@ const Records = () => {
     const filteredRecords = activeTab === "All" ? recordsData : recordsData.filter(record => record.status === activeTab);
 
     return (
-        <div className="p-4 md:max-w-7xl mx-auto md:mb-2 mb-24">
-            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
-                <GoArrowLeft />
-                <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </button>
+        <div className="md:p-4 p-2 md:max-w-7xl mx-auto md:mb-2 mb-24">
+            <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
+                <button
+                    onClick={() => window.history.back()}
+                    className="flex items-center text-lg text-red-600"
+                >
+                    <GoArrowLeft />
+                    <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
+                </button>
+            </div>
+
             {/* Tabs */}
             <motion.div
                 initial={fadeIn("right", null).initial}

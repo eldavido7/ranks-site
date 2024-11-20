@@ -39,11 +39,16 @@ const Notification = () => {
     };
 
     return (
-        <div className="p-6">
-            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
-                <GoArrowLeft />
-                <h2 className="text-xl font-bold text-gray-800 ml-4">Notifications</h2>
-            </button>
+        <div className="p-2">
+            <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
+                <button
+                    onClick={() => window.history.back()}
+                    className="flex items-center text-lg text-red-600"
+                >
+                    <GoArrowLeft />
+                    <h2 className="text-xl font-bold text-gray-800 ml-4">Notifications</h2>
+                </button>
+            </div>
 
             <p className="text-gray-700 mb-4">{notifications.length} Notification(s)</p>
 

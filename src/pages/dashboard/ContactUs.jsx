@@ -1,14 +1,23 @@
 import { FaHeadset, FaWhatsapp, FaTelegramPlane, FaCommentDots } from "react-icons/fa";
-import logo from "../../assets/logo-light.png"
+import logo from "../../assets/logo-light.png";
 import { GoArrowLeft } from "react-icons/go";
 
 const ContactUs = () => {
     return (
         <div className="flex flex-col items-center justify-center mt-10 text-gray-800">
-            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
-                <GoArrowLeft />
-                <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
-            </button>
+            {/* Back Button */}
+            <div className="w-full">
+                <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
+                    <button
+                        onClick={() => window.history.back()}
+                        className="flex items-center text-lg text-red-600"
+                    >
+                        <GoArrowLeft />
+                        <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
+                    </button>
+                </div>
+            </div>
+
             {/* Logo and Heading */}
             <div className="text-center mb-10">
                 <div className="flex flex-col items-center">
@@ -16,7 +25,9 @@ const ContactUs = () => {
                     <FaHeadset className="text-6xl text-gray-300 mb-4" />
                 </div>
                 <h1 className="text-2xl font-bold text-gray-700">Welcome to Customer Service</h1>
-                <p className="text-gray-600 mt-2">Were here to help you 24/7 with any inquiries or issues.</p>
+                <p className="text-gray-600 mt-2">
+                    We&apos;re here to provide you with all your services, needs, and inquiries or issues 24/7.
+                </p>
             </div>
 
             {/* Chat Options */}

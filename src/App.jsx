@@ -16,7 +16,9 @@ import {
   about,
   faq,
   events,
-  certificate
+  certificate,
+  signup,
+  contact1
 } from "./constants/app.routes";
 
 import LoginLayout from "./pages/authentication/LoginLayout";
@@ -40,14 +42,17 @@ import AboutUs from "./pages/dashboard/AboutUs";
 import FAQs from "./pages/dashboard/FAQs";
 import Events from "./pages/dashboard/Events";
 import Certificate from "./pages/dashboard/Certificate";
+import SignUp from "./pages/authentication/SignUp";
 
 function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
+        <Route path={contact1} element={<ContactUs />} />
         {/* Authentication Layout */}
         <Route path={homepage} element={<LoginLayout />}>
           <Route index element={<Login />} />
+          <Route path={signup} element={<SignUp />} />
         </Route>
         {/* Dashboard Layout */}
         <Route path={home} element={<HomeLayout />}>

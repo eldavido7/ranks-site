@@ -12,15 +12,53 @@ const PersonalInfo = () => {
     const toggleLoginPasswordModal = () => setIsLoginPasswordModalOpen(!isLoginPasswordModalOpen);
     const toggleWithdrawPasswordModal = () => setIsWithdrawPasswordModalOpen(!isWithdrawPasswordModalOpen);
 
+    const [imagePreview, setImagePreview] = useState(null);
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result); // Set the base64 string for preview
+            };
+            reader.readAsDataURL(file); // Convert the file to a base64 string
+        }
+    };
+
     return (
-        <div className="bg-gray-50 p-6">
-            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
-                <GoArrowLeft />
-                <h2 className="text-xl font-bold text-gray-800 ml-4">Personal Info</h2>
-            </button>
+        <div className="bg-gray-50 md:p-6 p-2">
+            <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
+                <button
+                    onClick={() => window.history.back()}
+                    className="flex items-center text-lg text-red-600"
+                >
+                    <GoArrowLeft />
+                    <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
+                </button>
+            </div>
 
             {/* Personal Information Form */}
             <div className="bg-white rounded-lg shadow p-4 space-y-4 mb-6">
+                <div>
+                    <label className="text-gray-600 font-semibold">Profile Picture</label>
+                    <div className="flex items-center space-x-4 mt-2">
+                        {/* Image Preview */}
+                        {imagePreview && (
+                            <img
+                                src={imagePreview}
+                                alt="Profile Preview"
+                                className="w-16 h-16 rounded-full object-cover border"
+                            />
+                        )}
+                        {/* File Input */}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e)}
+                            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+                        />
+                    </div>
+                </div>
                 <div>
                     <label className="text-gray-600 font-semibold">User Name</label>
                     <input

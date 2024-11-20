@@ -24,13 +24,13 @@ const Profile = () => {
     };
 
     return (
-        <div className="bg-white overflow-hidden">
+        <div className="bg-white md:overflow-hidden">
             <ToastContainer /> {/* Adjusted ToastContainer */}
             {/* Profile Card */}
             <motion.div
                 initial={slideIn("down", null).initial}
                 whileInView={slideIn("down", 1 * 2).animate}
-                className="bg-red-600 rounded-2xl md:mx-4 md:my-6 mx-2 p-8 text-white">
+                className="bg-red-600 rounded-2xl md:mx-4 md:my-6 mx-2 md:p-8 p-2 mt-2 text-white">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center">
                         <BiUserCircle className="md:text-6xl text-4xl md:mr-6 mr-2" />
@@ -53,7 +53,7 @@ const Profile = () => {
                         <p className="font-bold text-sm mt-2 md:mr-0 mr-8">Crown (VIP8)</p>
                     </div>
                 </div>
-                <div className="border-t border-yellow-400 mt-6 pt-4 grid grid-cols-2 gap-6 sm:flex sm:justify-between text-md">
+                <div className="border-t border-yellow-400 mt-2 md:mt-6 pt-4 grid grid-cols-2 gap-2 md:gap-6 sm:flex sm:justify-between text-md">
                     <div className="text-center">
                         <p>Credit Score:</p>
                         <p className="font-bold text-lg">100%</p>
@@ -74,7 +74,7 @@ const Profile = () => {
             </motion.div>
 
             {/* Profile Options */}
-            <div className="space-y-4 mx-6 mb-4">
+            <div className="space-y-4 md:mx-6 mx-2 mb-4">
                 {/* Financial Section */}
                 <div className="bg-white rounded-lg shadow">
                     <motion.div
@@ -154,7 +154,7 @@ const Profile = () => {
                     initial={fadeIn("right", null).initial}
                     whileInView={fadeIn("right", 7 * 2).animate}
                     onClick={() => navigate("/")}
-                    className="w-full bg-white text-red-600 border shadow font-semibold py-3 rounded-full flex items-center justify-center">
+                    className="w-full bg-white text-red-600 md:mb-2 mb-20 border shadow font-semibold py-3 rounded-full flex items-center justify-center">
                     <BiLogOutCircle className="mr-2" /> Logout
                 </motion.button>
             </div>

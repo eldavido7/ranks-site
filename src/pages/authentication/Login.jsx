@@ -69,6 +69,15 @@ const Login = () => {
                         />
                     </div>
 
+                    <div className="text-left">
+                        <p className="text-gray-600 text-sm">
+                            Forgot username/password??{" "}
+                            <a href="/contact" className="text-red-600 font-medium">
+                                Reset
+                            </a>
+                        </p>
+                    </div>
+
                     <button
                         type="submit"
                         className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-400 transition duration-200"
@@ -81,7 +90,7 @@ const Login = () => {
                 <div className="mt-6 text-center">
                     <p className="text-gray-600 text-sm">
                         Don&apos;t have an account?{" "}
-                        <a href="/create-account" className="text-red-600 font-medium">
+                        <a href="/signup" className="text-red-600 font-medium">
                             Create now!
                         </a>
                     </p>

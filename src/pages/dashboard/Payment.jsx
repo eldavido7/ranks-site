@@ -9,15 +9,19 @@ const Payment = () => {
     const [exchange, setExchange] = useState("");
 
     return (
-        <div className="bg-gray-50 p-6">
-            <button onClick={() => window.history.back()} className="flex items-center mb-6 text-lg text-red-600">
-                <GoArrowLeft />
-                <h2 className="text-xl font-bold text-gray-800 ml-4">Payment Methods</h2>
-            </button>
-
-            <p className="text-green-600 mb-4">Dear user, for your security please do not enter your bank details.</p>
+        <div className="bg-gray-50 p-2 md:p-6">
+            <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
+                <button
+                    onClick={() => window.history.back()}
+                    className="flex items-center text-lg text-red-600"
+                >
+                    <GoArrowLeft />
+                    <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
+                </button>
+            </div>
 
             <div className="bg-white rounded-lg shadow p-6 space-y-4">
+                <p className="text-green-600 mb-4">Dear user, for your security please do not enter your bank details.</p>
                 <div>
                     <label className="text-gray-600 font-semibold">Name</label>
                     <input
