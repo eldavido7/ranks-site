@@ -156,7 +156,7 @@ const Home = () => {
                             {/* Icon and Price positioned at the top for mobile */}
                             <div className="flex justify-between w-full items-center mb-2">
                                 <span className="text-2xl">{vip.icon}</span>
-                                <span className="text-white rounded-lg p-2 border text-center bg-red-600 w-[88px] h-8 text-xs">{vip.amount}</span>
+                                <span className="text-white rounded-lg p-2 border text-center bg-red-600 w-[60px] h-8 text-xs">{vip.amount}</span>
                             </div>
 
                             {/* Centered Title */}
