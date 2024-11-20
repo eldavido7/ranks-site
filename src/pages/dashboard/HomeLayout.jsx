@@ -9,13 +9,10 @@ const HomeLayout = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="flex flex-col bg-gray-50 h-screen">
-            {/* Sidebar for Web */}
+        <div className="flex bg-gray-50 h-screen">
             <SideBarWeb />
-            {/* Main Content Area */}
-            <div className="flex flex-col flex-1 h-screen">
-                {/* Top Navigation */}
-                <div className="flex items-center justify-between h-16 bg-white shadow px-4 md:mx-4">
+            <div className="flex flex-col w-full h-full">
+                <div className="nav-bar flex items-center justify-between h-16 bg-white shadow px-4 md:mx-4">
                     <div className="flex items-center">
                         <img
                             src={logo}
@@ -35,9 +32,7 @@ const HomeLayout = () => {
                         </a>
                     </div>
                 </div>
-
-                {/* Main Outlet for Nested Routes */}
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto -webkit-overflow-scrolling: touch md:p-4">
                     <Outlet />
                 </div>
             </div>

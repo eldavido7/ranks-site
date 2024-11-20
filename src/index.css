@@ -3,6 +3,30 @@
 @tailwind utilities;
 
 @layer base {
+  .flex-1 {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Enables momentum scrolling on iOS */
+  }
+
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white; /* Ensure it stays visible */
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Prevent scroll conflicts */
+  }
+
+  #root {
+    height: 100%; /* Match the layout height */
+    overflow: hidden;
+  }
+
   .custom-checkbox {
     appearance: none;
     width: 20px;
