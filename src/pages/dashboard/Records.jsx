@@ -65,6 +65,7 @@ const Records = () => {
                     <GoArrowLeft />
                     <h2 className="text-xl font-bold text-gray-800 ml-4">Back</h2>
                 </button>
+
             </div>
 
             {/* Tabs */}
