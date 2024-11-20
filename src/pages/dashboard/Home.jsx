@@ -125,7 +125,7 @@ const Home = () => {
             </motion.div>
 
             {/* VIP Levels Section */}
-            <div className="container mx-auto mt-8 px-2 md:mb-2 mb-24">
+            <div className="container mx-auto mt-8 px-2 md:mb-2 mb-40">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-gray-800">VIP Levels</h2>
                     <button

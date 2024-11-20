@@ -32,7 +32,7 @@ const HomeLayout = () => {
                         </a>
                     </div>
                 </div>
-                <div className="flex-1 overflow-y-auto -webkit-overflow-scrolling: touch md:p-4">
+                <div className="flex-1 overflow-y-auto -webkit-overflow-scrolling: touch md:p-4 ">
                     <Outlet />
                 </div>
             </div>
