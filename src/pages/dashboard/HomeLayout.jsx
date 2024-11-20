@@ -10,21 +10,17 @@ const HomeLayout = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="flex bg-gray-50 h-screen overflow-hidden">
-            {/* Sidebar for Web and Mobile */}
+        <div className="flex bg-gray-50 h-screen">
+            {/* Sidebar for Web */}
             <SideBarWeb />
             {/* Main Content Area */}
             <div className="flex flex-col w-full h-full">
                 {/* Top Navigation */}
-                <div className="flex items-center justify-between h-16 bg-white shadow px-4 md:mx-4 md:hidden">
+                <div className="flex items-center justify-between overflow-hidden h-16 bg-white shadow px-4 md:mx-4 md:hidden">
                     <div className="flex items-center justify-between w-full">
-                        {/* Logo for mobile view, hidden on larger screens */}
+                        {/* Logo for mobile view */}
                         <div className="flex items-center">
-
                             <img src={logo} onClick={() => navigate(home)} alt="Logo" className="w-24 h-auto block md:hidden" />
-
-                            {/* Title for larger screens, hidden on mobile */}
-                            {/* <h1 className="text-xl font-semibold hidden md:block ml-4">Adsterra</h1> */}
                         </div>
 
                         {/* User Icon on the Right */}

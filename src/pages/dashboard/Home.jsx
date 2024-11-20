@@ -138,14 +138,14 @@ const Home = () => {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
-                        { level: "Beginner", icon: "🌟", amount: "100 USD", rate: "0.5%", tasks: 35 },
-                        { level: "Bronze", icon: "🥉", amount: "500 USD", rate: "1.2%", tasks: 40 },
-                        { level: "Silver (VIP 1)", icon: "🥈", amount: "1500 USD", rate: "1.3%", tasks: 45 },
-                        { level: "Gold (VIP 2)", icon: "🥇", amount: "8500 USD", rate: "1.6%", tasks: 50 },
-                        { level: "Platinum (VIP 3)", icon: "💎", amount: "10500 USD", rate: "2.1%", tasks: 55 },
-                        { level: "Emerald (VIP 4)", icon: "💠", amount: "13500 USD", rate: "2.5%", tasks: 60 },
-                        { level: "Diamond (VIP 5)", icon: "🔷", amount: "20000 USD", tasks: 65 },
-                        { level: "Masters (VIP 6)", icon: "🏆", amount: "30000 USD", rate: "5.1%", tasks: 65 },
+                        { level: "Beginner", icon: "🌟", amount: "$100", rate: "0.5%", tasks: 35 },
+                        { level: "Bronze", icon: "🥉", amount: "$500", rate: "1.2%", tasks: 40 },
+                        { level: "Silver (VIP 1)", icon: "🥈", amount: "$1500", rate: "1.3%", tasks: 45 },
+                        { level: "Gold (VIP 2)", icon: "🥇", amount: "$8500", rate: "1.6%", tasks: 50 },
+                        { level: "Platinum (VIP 3)", icon: "💎", amount: "$10500", rate: "2.1%", tasks: 55 },
+                        { level: "Emerald (VIP 4)", icon: "💠", amount: "$13500", rate: "2.5%", tasks: 60 },
+                        { level: "Diamond (VIP 5)", icon: "🔷", amount: "$20000", tasks: 65 },
+                        { level: "Masters (VIP 6)", icon: "🏆", amount: "$30000", rate: "5.1%", tasks: 65 },
                     ].map((vip, idx) => (
                         <motion.div
                             key={idx}
@@ -156,7 +156,7 @@ const Home = () => {
                             {/* Icon and Price positioned at the top for mobile */}
                             <div className="flex justify-between w-full items-center mb-2">
                                 <span className="text-2xl">{vip.icon}</span>
-                                <span className="text-white rounded-lg p-2 border text-center bg-red-600 w-[88px] h-10 text-sm">{vip.amount}</span>
+                                <span className="text-white rounded-lg p-2 border text-center bg-red-600 w-[88px] h-8 text-xs">{vip.amount}</span>
                             </div>
 
                             {/* Centered Title */}
