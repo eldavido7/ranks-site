@@ -1,34 +1,79 @@
-import axios from "axios";
+import axiosInstance from "../axiosConfig"; // Import the Axios instance
 import {
-    loginAPI, meAPI, refreshToken as refreshTokenAPI, registerAPI
-} from "../../constants/api.routes";
+    loginAPI,
+    meAPI,
+    refreshToken as refreshTokenAPI,
+    registerAPI,
+} from "../../constants/api.routes"; // Use defined API routes
 import {
-    loginSuccess, loginFailure, setUserProfile, logout, registerSuccess, registerFailure
+    loginSuccess,
+    loginFailure,
+    setUserProfile,
+    logout,
+    registerSuccess,
+    registerFailure,
 } from "../slice/auth.slice";
-import store from "../store"; // Import the store to access dispatch
+import { toast } from "sonner"; // Import Sonner for toast notifications
+import { jwtDecode } from "jwt-decode"; // Import jwt-decode to parse JWTs
+import store from "../store"; // Import Redux store to dispatch actions
 
 const authService = {
+    /**
+     * Validates the access token.
+     */
+    validateToken: (token) => {
+        try {
+            if (!token) return false;
+
+            const decoded = jwtDecode(token);
+            const currentTime = Date.now() / 1000; // Current time in seconds
+
+            // Check if the token has expired
+            return decoded.exp && decoded.exp > currentTime;
+        } catch (error) {
+            console.error("Invalid token:", error);
+            return false;
+        }
+    },
+
+    /**
+     * Registers a new user.
+     */
     register: async (registrationData) => {
         try {
-            const response = await axios.post(registerAPI, registrationData);
-
-            // Dispatch success action
+            const response = await axiosInstance.post(registerAPI, registrationData);
             store.dispatch(registerSuccess());
             console.log(response);
-
             return { success: true, message: "Registration successful." };
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
+            let errorMessage = "Registration failed. Please try again.";
+            const errorData = error.response?.data;
+
+            // Handle nested or multiple error messages
+            if (errorData?.message) {
+                if (typeof errorData.message === "string") {
+                    errorMessage = errorData.message;
+                } else if (typeof errorData.message === "object") {
+                    const messages = Object.values(errorData.message).flat();
+                    errorMessage = messages[0] || errorMessage;
+                }
+            } else if (errorData?.errors) {
+                const errorMessages = Object.values(errorData.errors).flat();
+                errorMessage = errorMessages[0] || errorMessage;
+            }
+
             store.dispatch(registerFailure(errorMessage));
+            toast.error(errorMessage); // Show error message via toast
             return { success: false, message: errorMessage };
         }
     },
+
     /**
      * Logs in the user and updates the store with token and user profile.
      */
     login: async (credentials) => {
         try {
-            const response = await axios.post(loginAPI, {
+            const response = await axiosInstance.post(loginAPI, {
                 username_or_email: credentials.username,
                 password: credentials.password,
             });
@@ -45,8 +90,20 @@ const authService = {
 
             return { success: true, data: user };
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
+            let errorMessage = "Login failed. Please try again.";
+            const errorData = error.response?.data;
+
+            if (errorData?.message) {
+                if (typeof errorData.message === "string") {
+                    errorMessage = errorData.message;
+                } else if (typeof errorData.message === "object") {
+                    const messages = Object.values(errorData.message).flat();
+                    errorMessage = messages[0] || errorMessage;
+                }
+            }
+
             store.dispatch(loginFailure(errorMessage));
+            toast.error(errorMessage); // Show error message via toast
             return { success: false, message: errorMessage };
         }
     },
@@ -56,29 +113,27 @@ const authService = {
      */
     fetchProfile: async () => {
         try {
-            const token = localStorage.getItem("accessToken");
-
-            if (!token) throw new Error("No valid token found.");
-
-            const response = await axios.get(meAPI, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
+            const response = await axiosInstance.get(meAPI);
             const profile = response.data.data;
             store.dispatch(setUserProfile(profile));
-
+            console.log(profile);
             return { success: true, data: profile };
         } catch (error) {
-            // Check for 401 and handle token expiration
-            if (error.response?.status === 401) {
-                const refreshResult = await authService.handleTokenExpiration();
-                if (refreshResult.success) {
-                    return await authService.fetchProfile(); // Retry fetching profile
-                }
-            }
             console.error("Failed to fetch user profile:", error);
-            return { success: false, message: error.message || "Failed to fetch profile." };
+            toast.error("Failed to fetch user profile."); // Show error via toast
+            return { success: false, message: error.response?.data?.message || "Failed to fetch profile." };
         }
+    },
+
+    /**
+     * Logs the user out by clearing tokens and state.
+     */
+    logout: () => {
+        // Explicit logout by the user
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        store.dispatch(logout());
+        toast.success("Logged out successfully."); // Notify user of successful logout
     },
 
     /**
@@ -87,36 +142,26 @@ const authService = {
     refreshAccessToken: async () => {
         try {
             const refreshToken = localStorage.getItem("refreshToken");
-
             if (!refreshToken) throw new Error("No refresh token found.");
 
-            const response = await axios.post(refreshTokenAPI, {
-                refresh: refreshToken,
-            });
-
+            const response = await axiosInstance.post(refreshTokenAPI, { refresh: refreshToken });
             const newAccessToken = response.data.access_token;
 
-            // Update access token in localStorage
+            // Save the new access token
             localStorage.setItem("accessToken", newAccessToken);
-
-            store.dispatch(loginSuccess({ accessToken: newAccessToken }));
+            store.dispatch(loginSuccess({ token: newAccessToken }));
 
             return { success: true, token: newAccessToken };
         } catch (error) {
-            console.error("Failed to refresh access token:", error);
-            store.dispatch(logout()); // Clear user state on failure
-            return { success: false, message: error.message || "Failed to refresh token." };
-        }
-    },
+            console.error("Failed to refresh access token:", error.response?.data?.message || error.message);
 
-    /**
-     * Logs the user out by clearing tokens and state.
-     */
-    logout: () => {
-        // Clear localStorage and Redux state
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        store.dispatch(logout());
+            // Only notify the user of session expiration
+            if (error.response?.status === 401) {
+                toast.error("Session expired. Please log in again.");
+            }
+
+            return { success: false, message: error.response?.data?.message || "Failed to refresh token." };
+        }
     },
 
     /**
@@ -124,11 +169,10 @@ const authService = {
      */
     handleTokenExpiration: async () => {
         try {
-            const result = await authService.refreshAccessToken();
-            return result; // Return the result of refreshing the token
+            return await authService.refreshAccessToken();
         } catch (error) {
             console.error("Error handling token expiration:", error);
-            authService.logout(); // Log out the user on failure
+            toast.error("Unable to refresh session. Please log in again.");
             return { success: false, message: "Session expired. Please log in again." };
         }
     },

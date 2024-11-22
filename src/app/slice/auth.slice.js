@@ -8,6 +8,7 @@ const initialState = {
     wallet: null,
     error: null,
     registrationSuccess: false,
+    sessionExpired: false, // Track session expiration
 };
 
 const authSlice = createSlice({
@@ -19,6 +20,7 @@ const authSlice = createSlice({
             state.token = action.payload.token;
             state.refreshToken = action.payload.refreshToken;
             state.error = null;
+            state.sessionExpired = false; // Reset session expiration
         },
         setUserProfile(state, action) {
             state.user = action.payload.userData;
@@ -39,6 +41,7 @@ const authSlice = createSlice({
             state.user = null;
             state.wallet = null;
             state.error = null;
+            state.sessionExpired = false; // Reset session expiration
 
             localStorage.removeItem("userToken");
             localStorage.removeItem("refreshToken");
@@ -56,6 +59,12 @@ const authSlice = createSlice({
             state.registrationSuccess = false;
             state.error = action.payload;
         },
+        sessionExpired(state, action) {
+            state.sessionExpired = action.payload;
+        },
+        clearError(state) {
+            state.error = null;
+        },
     },
 });
 
@@ -67,6 +76,8 @@ export const {
     tokenRefreshed,
     registerSuccess,
     registerFailure,
+    sessionExpired,
+    clearError,
 } = authSlice.actions;
 
 export default authSlice.reducer;

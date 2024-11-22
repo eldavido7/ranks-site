@@ -4,9 +4,11 @@ import { fadeIn } from "../../motion";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner"; // Import sonner for toasts
 import authService from "../../app/service/auth.service";
 import AppInit from "../../app/state.helper";
 import Loader from "../dashboard/components/loader";
+import { Toaster } from "sonner";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -15,41 +17,48 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [showPopup, setShowPopup] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
 
     const handleLogin = async (event) => {
         event.preventDefault();
         setLoading(true);
-        setError("");
 
         const credentials = {
             username: username,
             password,
         };
 
-        const response = await authService.login(credentials);
+        try {
+            const response = await authService.login(credentials);
 
-        if (response.success) {
-            const initSuccess = await AppInit({ dispatch, isAuthenticated: true });
+            if (response.success) {
+                const initSuccess = await AppInit({ dispatch, isAuthenticated: true });
 
-            if (initSuccess) {
-                setShowPopup(true);
-                setTimeout(() => {
-                    setShowPopup(false);
-                    navigate("/home"); // Replace with your dashboard route
-                }, 2000);
+                if (initSuccess) {
+                    setShowPopup(true);
+                    setTimeout(() => {
+                        setShowPopup(false);
+                        navigate("/home"); // Replace with your dashboard route
+                    }, 2000);
+                } else {
+                    toast.error("Failed to initialize the application. Please try again.");
+                }
             } else {
-                setError("Failed to initialize the application. Please try again.");
+                throw new Error(response.message || "Login failed. Please check your credentials.");
             }
-        } else {
-            setError(response.message);
+        } catch (error) {
+            // Handle both backend-provided errors and general errors
+            const errorMessage =
+                error.response?.data?.message || error.message || "An unexpected error occurred.";
+            toast.error(errorMessage); // Show the error in a toast
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     return (
         <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
+            <Toaster position="top-right" /> {/* Add this at the top level */}
+
             {/* Background Layer */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-gray-200"
@@ -64,9 +73,6 @@ const Login = () => {
             >
                 {/* Title */}
                 <h1 className="text-2xl font-semibold text-center mb-4">Login</h1>
-
-                {/* Error Message */}
-                {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
                 {/* Login Form */}
                 <form className="space-y-6" onSubmit={handleLogin}>

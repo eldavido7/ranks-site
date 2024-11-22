@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import AppInit from "../app/state.helper";
+import authService from "../app/service/auth.service"; // Ensure authService is imported
 import { home, login } from "../constants/app.routes";
+import { toast } from "sonner";
 
 const Loader = () => {
     const navigate = useNavigate();
@@ -10,13 +12,23 @@ const Loader = () => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            const token = localStorage.getItem("userToken");
-            const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-            await delay(2000); // Optional delay for smoother user experience
+            const token = localStorage.getItem("accessToken");
 
             if (token) {
-                await AppInit({ dispatch, isAuthenticated: true });
-                navigate(home);
+                try {
+                    const refreshResponse = await authService.refreshAccessToken();
+                    if (refreshResponse.success) {
+                        await AppInit({ dispatch, isAuthenticated: true });
+                        navigate(home);
+                    } else {
+                        toast.error("Session expired. Please log in.");
+                        navigate(login);
+                    }
+                } catch (error) {
+                    console.error("Error during authentication:", error);
+                    toast.error("An error occurred. Please log in again.");
+                    navigate(login);
+                }
             } else {
                 navigate(login);
             }

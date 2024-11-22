@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Toaster, toast } from "sonner"; // Import Sonner toast
 import logo from "../../assets/logo-light.png";
 import authService from "../../app/service/auth.service";
 
@@ -18,7 +19,6 @@ const SignUp = () => {
         termsAccepted: false,
     });
 
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -35,18 +35,25 @@ const SignUp = () => {
 
         // Check for terms acceptance
         if (!formData.termsAccepted) {
-            alert("Please accept the terms and conditions to continue.");
+            toast.error("Please accept the terms and conditions to continue.");
             return;
         }
 
         // Check for password match
         if (formData.password !== formData.confirmPassword) {
-            setError("Passwords do not match.");
+            toast.error("Passwords do not match.");
             return;
         }
 
+        // Ensure all fields are filled
+        for (const [key, value] of Object.entries(formData)) {
+            if (key !== "termsAccepted" && !value) {
+                toast.error(`The ${key.replace("_", " ")} field is required.`);
+                return;
+            }
+        }
+
         setLoading(true);
-        setError("");
 
         const payload = {
             username: formData.username,
@@ -62,14 +69,16 @@ const SignUp = () => {
 
         try {
             const response = await authService.register(payload);
+
             if (response.success) {
-                alert("Registration successful!");
-                navigate("/"); // Redirect to login page
+                toast.success("Registration successful!");
+                setTimeout(() => navigate("/"), 2000); // Redirect to login page
             } else {
-                setError(response.message);
+                toast.error(response.message); // Show error message from backend
             }
         } catch (err) {
-            setError("An unexpected error occurred. Please try again.", err);
+            console.error(err);
+            toast.error("An unexpected error occurred. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -77,6 +86,7 @@ const SignUp = () => {
 
     return (
         <div className="flex items-center justify-center bg-gray-100 min-h-screen">
+            <Toaster position="top-right" /> {/* Add the toast container */}
             <div className="bg-white p-8 rounded-lg shadow-lg md:my-5 w-full max-w-7xl overflow-y-auto max-h-screen">
                 <img
                     src={logo}
@@ -84,8 +94,6 @@ const SignUp = () => {
                     className="mx-auto mb-4 w-24"
                 />
                 <h2 className="text-2xl font-semibold text-center mb-6">Register Now</h2>
-
-                {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
@@ -95,6 +103,7 @@ const SignUp = () => {
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
+                            autoComplete="username"
                             className="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-red-600"
                             placeholder="Enter your username"
                             required
@@ -107,6 +116,7 @@ const SignUp = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
+                            autoComplete="email"
                             className="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-red-600"
                             placeholder="Enter your email"
                             required
@@ -115,10 +125,11 @@ const SignUp = () => {
                     <div>
                         <label className="block text-gray-700 font-medium">Phone Number</label>
                         <input
-                            type="text"
+                            type="tel"
                             name="phone_number"
                             value={formData.phone_number}
                             onChange={handleChange}
+                            autoComplete="tel"
                             className="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-red-600"
                             placeholder="Enter your phone number"
                             required
@@ -131,8 +142,10 @@ const SignUp = () => {
                             name="first_name"
                             value={formData.first_name}
                             onChange={handleChange}
+                            autoComplete="given-name"
                             className="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-red-600"
                             placeholder="Enter your first name"
+                            required
                         />
                     </div>
                     <div>
@@ -142,8 +155,10 @@ const SignUp = () => {
                             name="last_name"
                             value={formData.last_name}
                             onChange={handleChange}
+                            autoComplete="family-name"
                             className="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-red-600"
                             placeholder="Enter your last name"
+                            required
                         />
                     </div>
                     <div className="flex items-center space-x-4">
@@ -156,6 +171,7 @@ const SignUp = () => {
                                     value="M"
                                     onChange={handleChange}
                                     checked={formData.gender === "M"}
+                                    required
                                 />
                                 <span>Male</span>
                             </label>
@@ -168,6 +184,7 @@ const SignUp = () => {
                                     value="F"
                                     onChange={handleChange}
                                     checked={formData.gender === "F"}
+                                    required
                                 />
                                 <span>Female</span>
                             </label>
@@ -180,6 +197,7 @@ const SignUp = () => {
                             name="transactional_password"
                             value={formData.transactional_password}
                             onChange={handleChange}
+                            autoComplete="new-password"
                             className="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-red-600"
                             placeholder="Enter a transaction password"
                             required
@@ -192,6 +210,7 @@ const SignUp = () => {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
+                            autoComplete="new-password"
                             className="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-red-600"
                             placeholder="Enter your password"
                             required
@@ -204,6 +223,7 @@ const SignUp = () => {
                             name="confirmPassword"
                             value={formData.confirmPassword}
                             onChange={handleChange}
+                            autoComplete="new-password"
                             className="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-red-600"
                             placeholder="Confirm your password"
                             required
@@ -216,8 +236,10 @@ const SignUp = () => {
                             name="invitation_code"
                             value={formData.invitation_code}
                             onChange={handleChange}
+                            autoComplete="off"
                             className="w-full border rounded-lg p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-red-600"
                             placeholder="Enter invitation code"
+                            required
                         />
                     </div>
                     <div className="flex items-center space-x-2">
@@ -227,6 +249,7 @@ const SignUp = () => {
                             checked={formData.termsAccepted}
                             onChange={handleChange}
                             className="custom-checkbox"
+                            required
                         />
                         <label className="text-gray-700">
                             I agree with the{" "}

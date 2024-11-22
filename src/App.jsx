@@ -51,14 +51,15 @@ function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
-        {/* Public Routes */}
-        <Route path={contact1} element={<ContactUs />} />
+        {/* Loader Route */}
         <Route path={homepage} element={<Loader />} />
 
+        {/* Public Routes */}
         <Route path={login} element={<LoginLayout />}>
           <Route index element={<Login />} />
           <Route path={signup} element={<SignUp />} />
         </Route>
+        <Route path={contact1} element={<ContactUs />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
