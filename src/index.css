@@ -3,6 +3,56 @@
 @tailwind utilities;
 
 @layer base {
+
+  .circle {
+  display: inline-block;
+  background-color: red;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+}
+
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+#ball-1 {
+  animation-name: bounce;
+  animation-delay: 0.1s;
+  animation-duration: 1.2s;
+  animation-iteration-count: infinite;
+}
+#ball-2 {
+  animation-name: bounce;
+  animation-delay: 0.2s;
+  animation-duration: 1.2s;
+  animation-iteration-count: infinite;
+}
+#ball-3 {
+  animation-name: bounce;
+  animation-delay: 0.3s;
+  animation-duration: 1.2s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(10px);
+  }
+  80% {
+    transform: translateY(0);
+  }
+}
+
   .flex-1 {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch; /* Enables momentum scrolling on iOS */

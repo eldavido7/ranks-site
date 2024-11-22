@@ -3,29 +3,57 @@ import { motion } from "framer-motion";
 import { fadeIn } from "../../motion";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import authService from "../../app/service/auth.service";
+import AppInit from "../../app/state.helper";
+import Loader from "../dashboard/components/loader";
 
 const Login = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const [showPopup, setShowPopup] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleLogin = (event) => {
+    const handleLogin = async (event) => {
         event.preventDefault();
-        setShowPopup(true);
-        setTimeout(() => {
-            setShowPopup(false);
-            navigate("/home");
-        }, 2000);
+        setLoading(true);
+        setError("");
+
+        const credentials = {
+            username: username,
+            password,
+        };
+
+        const response = await authService.login(credentials);
+
+        if (response.success) {
+            const initSuccess = await AppInit({ dispatch, isAuthenticated: true });
+
+            if (initSuccess) {
+                setShowPopup(true);
+                setTimeout(() => {
+                    setShowPopup(false);
+                    navigate("/home"); // Replace with your dashboard route
+                }, 2000);
+            } else {
+                setError("Failed to initialize the application. Please try again.");
+            }
+        } else {
+            setError(response.message);
+        }
+
+        setLoading(false);
     };
 
     return (
-        <div className="relative flex items-center justify-center min-h-screen">
-            {/* Background Image Layer */}
+        <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
+            {/* Background Layer */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-gray-200"
-            // style={{
-            //     backgroundImage: `url(${backgroundImage})`,
-            //     filter: "blur(4px)",
-            // }}
+                style={{ filter: "blur(4px)" }}
             ></div>
 
             {/* Form Layer */}
@@ -34,8 +62,11 @@ const Login = () => {
                 whileInView={fadeIn("up", 1 * 2).animate}
                 className="relative z-10 bg-white rounded-lg shadow-lg p-8 w-full max-w-md"
             >
-                {/* Logo */}
+                {/* Title */}
                 <h1 className="text-2xl font-semibold text-center mb-4">Login</h1>
+
+                {/* Error Message */}
+                {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
                 {/* Login Form */}
                 <form className="space-y-6" onSubmit={handleLogin}>
@@ -49,6 +80,8 @@ const Login = () => {
                         <input
                             type="text"
                             id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             placeholder="Username/Phone"
                             className="mt-1 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
@@ -64,6 +97,8 @@ const Login = () => {
                         <input
                             type="password"
                             id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="Password"
                             className="mt-1 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
@@ -80,17 +115,18 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-400 transition duration-200"
+                        className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-400 transition duration-200 flex justify-center items-center"
+                        disabled={loading}
                     >
-                        Login
+                        {loading ? <Loader /> : "Login"}
                     </button>
                 </form>
 
-                {/* Create Account Link */}
+                {/* Forgot Password and Sign-Up */}
                 <div className="mt-6 text-center">
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-gray-600 text-sm mt-2">
                         Don&apos;t have an account?{" "}
-                        <a href="/signup" className="text-red-600 font-medium">
+                        <a href="/login/signup" className="text-red-600 font-medium">
                             Create now!
                         </a>
                     </p>

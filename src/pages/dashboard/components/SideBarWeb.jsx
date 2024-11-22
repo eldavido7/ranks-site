@@ -7,13 +7,27 @@ import { RiRestartLine } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
 import { MdOutlineDashboard } from "react-icons/md";
-import { deposit, events, home, homepage, notifications, profile, records, starting, withdraw } from "../../../constants/app.routes";
+import { deposit, events, home, login, notifications, profile, records, starting, withdraw } from "../../../constants/app.routes";
 import { motion } from "framer-motion";
 import { slideIn, zoomIn } from "../../../motion";
 import logo from "../../../assets/logo-light.png";
 import { BiBookOpen } from "react-icons/bi";
+import { useDispatch } from "react-redux"; // Import dispatch
+import authService from "../../../app/service/auth.service"; // Import authService
+import { logout } from "../../../app/slice/auth.slice"; // Import logout action
+import { useNavigate } from "react-router-dom";
 
 function SideBarWeb() {
+
+  const dispatch = useDispatch(); // Initialize dispatch
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    authService.logout(); // Clear tokens and state
+    dispatch(logout()); // Dispatch the logout action
+    navigate(login);
+  };
+
   return (
     <div className="w-[368px] bg-red-200 px-4 py-6 hidden md:flex flex-col justify-between h-screen shadow-md overflow-y-auto">
       {/* Logo */}
@@ -141,16 +155,15 @@ function SideBarWeb() {
       </div>
 
       {/* Logout Button */}
-      <NavLink to={homepage}>
-        <motion.button
-          initial={slideIn("up", null).initial}
-          whileInView={slideIn("up", 2).animate}
-          className="text-red-500 flex items-center gap-x-4 mt-10"
-        >
-          <CiLogout className="text-2xl" />
-          <p>Logout</p>
-        </motion.button>
-      </NavLink>
+      <motion.button
+        initial={slideIn("up", null).initial}
+        whileInView={slideIn("up", 2).animate}
+        className="text-red-500 flex items-center gap-x-4 mt-10"
+        onClick={handleLogout} // Add the logout handler here
+      >
+        <CiLogout className="text-2xl" />
+        <p>Logout</p>
+      </motion.button>
     </div>
   );
 }

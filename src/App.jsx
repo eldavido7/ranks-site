@@ -18,7 +18,8 @@ import {
   events,
   certificate,
   signup,
-  contact1
+  contact1,
+  login,
 } from "./constants/app.routes";
 
 import LoginLayout from "./pages/authentication/LoginLayout";
@@ -43,39 +44,46 @@ import FAQs from "./pages/dashboard/FAQs";
 import Events from "./pages/dashboard/Events";
 import Certificate from "./pages/dashboard/Certificate";
 import SignUp from "./pages/authentication/SignUp";
+import ProtectedRoute from "./pages/ProtectedRoute"; // Import the ProtectedRoute
+import Loader from "./pages/Loader";
 
 function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
+        {/* Public Routes */}
         <Route path={contact1} element={<ContactUs />} />
-        {/* Authentication Layout */}
-        <Route path={homepage} element={<LoginLayout />}>
+        <Route path={homepage} element={<Loader />} />
+
+        <Route path={login} element={<LoginLayout />}>
           <Route index element={<Login />} />
           <Route path={signup} element={<SignUp />} />
         </Route>
-        {/* Dashboard Layout */}
-        <Route path={home} element={<HomeLayout />}>
-          <Route index element={<Home />} />
-          <Route path={starting} element={<Starting />} />
-          <Route path={profile} element={<Profile />} />
-          <Route path={personal} element={<PersonalInfo />} />
-          <Route path={level} element={<Level />} />
-          <Route path={payment} element={<Payment />} />
-          <Route path={notifications} element={<Notification />} />
-          <Route path={records} element={<Records />} />
-          <Route path={contact} element={<ContactUs />} />
-          <Route path={terms} element={<Terms />} />
-          <Route path={about} element={<AboutUs />} />
-          <Route path={faq} element={<FAQs />} />
-          <Route path={events} element={<Events />} />
-          <Route path={certificate} element={<Certificate />} />
 
-          <Route path={withdraw} element={<WithdrawLayout />}>
-            <Route index element={<Withdraw />} />
-          </Route>
-          <Route path={deposit} element={<DepositLayout />}>
-            <Route index element={<Deposit />} />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path={home} element={<HomeLayout />}>
+            <Route index element={<Home />} />
+            <Route path={starting} element={<Starting />} />
+            <Route path={profile} element={<Profile />} />
+            <Route path={personal} element={<PersonalInfo />} />
+            <Route path={level} element={<Level />} />
+            <Route path={payment} element={<Payment />} />
+            <Route path={notifications} element={<Notification />} />
+            <Route path={records} element={<Records />} />
+            <Route path={contact} element={<ContactUs />} />
+            <Route path={terms} element={<Terms />} />
+            <Route path={about} element={<AboutUs />} />
+            <Route path={faq} element={<FAQs />} />
+            <Route path={events} element={<Events />} />
+            <Route path={certificate} element={<Certificate />} />
+
+            <Route path={withdraw} element={<WithdrawLayout />}>
+              <Route index element={<Withdraw />} />
+            </Route>
+            <Route path={deposit} element={<DepositLayout />}>
+              <Route index element={<Deposit />} />
+            </Route>
           </Route>
         </Route>
       </Routes>
