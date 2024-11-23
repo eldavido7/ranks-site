@@ -18,34 +18,39 @@ const Login = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    
     const handleLogin = async (event) => {
         event.preventDefault();
-
-        // Validate input fields
-        if (!username.trim() && !password.trim()) {
-            toast.error("Both Username and Password are required.");
-            return;
-        } else if (!username.trim()) {
-            toast.error("Username is required.");
-            return;
-        } else if (!password.trim()) {
-            toast.error("Password is required.");
+    
+        const errors = [];
+    
+        // Collect errors
+        if (!username.trim()) {
+            errors.push("Username is required.");
+        }
+        if (!password.trim()) {
+            errors.push("Password is required.");
+        }
+    
+        // If there are any errors, display them and stop further execution
+        if (errors.length > 0) {
+            errors.forEach((error) => toast.error(error)); // Show each error as a separate toast
             return;
         }
-
+    
         setLoading(true);
-
+    
         const credentials = {
             username: username,
             password,
         };
-
+    
         try {
             const response = await authService.login(credentials);
-
+    
             if (response.success) {
                 const initSuccess = await AppInit({ dispatch, isAuthenticated: true });
-
+    
                 if (initSuccess) {
                     setShowPopup(true);
                     setTimeout(() => {
@@ -67,6 +72,7 @@ const Login = () => {
             setLoading(false);
         }
     };
+    
 
     return (
         <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
