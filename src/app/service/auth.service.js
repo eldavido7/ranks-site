@@ -1,4 +1,4 @@
-import {axiosInstance,refreshAxiosInstance} from "../axiosConfig"; // Import the Axios instance
+import axiosInstance, { refreshAxiosInstance } from "../axiosConfig"; // Import the Axios instance
 import {
     loginAPI,
     meAPI,
