@@ -33,9 +33,26 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Check for terms acceptance
-        if (!formData.termsAccepted) {
-            toast.error("Please accept the terms and conditions to continue.");
+        // Check if required fields are filled
+        const requiredFields = [
+            "username",
+            "email",
+            "phone_number",
+            "password",
+            "transactional_password",
+            "invitation_code",
+        ];
+
+        for (const field of requiredFields) {
+            if (!formData[field]?.trim()) {
+                toast.error(`The ${field.replace("_", " ")} field is required.`);
+                return;
+            }
+        }
+
+        // Validate transactional_password length
+        if (formData.transactional_password.length !== 4) {
+            toast.error("The transactional password must be exactly 4 characters long.");
             return;
         }
 
@@ -45,12 +62,10 @@ const SignUp = () => {
             return;
         }
 
-        // Ensure all fields are filled
-        for (const [key, value] of Object.entries(formData)) {
-            if (key !== "termsAccepted" && !value) {
-                toast.error(`The ${key.replace("_", " ")} field is required.`);
-                return;
-            }
+        // Check for terms acceptance
+        if (!formData.termsAccepted) {
+            toast.error("Please accept the terms and conditions to continue.");
+            return;
         }
 
         setLoading(true);

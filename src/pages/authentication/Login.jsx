@@ -20,6 +20,19 @@ const Login = () => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
+
+        // Validate input fields
+        if (!username.trim() && !password.trim()) {
+            toast.error("Both Username and Password are required.");
+            return;
+        } else if (!username.trim()) {
+            toast.error("Username is required.");
+            return;
+        } else if (!password.trim()) {
+            toast.error("Password is required.");
+            return;
+        }
+
         setLoading(true);
 
         const credentials = {
