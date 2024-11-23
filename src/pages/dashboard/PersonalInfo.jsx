@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { GoArrowLeft } from "react-icons/go";
-import { toast, Toaster } from "sonner"; // Import Sonner for toasts
+import { toast } from "sonner"; // Import Sonner for toasts
 import "react-toastify/dist/ReactToastify.css";
 import { updateProfile, changePassword } from "../../app/service/profile.service";
 import authService from "../../app/service/auth.service";
@@ -27,7 +27,7 @@ const PersonalInfo = () => {
 
     // Password fields
     const [passwordData, setPasswordData] = useState({
-        old_password: "",
+        current_password: "",
         new_password: "",
         confirm_new_password: "",
     });
@@ -145,6 +145,12 @@ const PersonalInfo = () => {
             return;
         }
 
+        // Ensure current and new passwords are not the same
+        if (passwordData.current_password === passwordData.new_password) {
+            toast.error("New password cannot be the same as the current password.");
+            return;
+        }
+
         // Prepare data for API
         const payload = {
             current_password: passwordData.current_password,
@@ -155,21 +161,28 @@ const PersonalInfo = () => {
             // Dispatch change password action
             const result = await dispatch(changePassword(payload));
             if (result.success) {
-                toast.success(result.message);
+                toast.success(result.message || "Password updated successfully.");
                 toggleLoginPasswordModal(); // Close modal
-                setPasswordData({ current_password: "", new_password: "", confirm_new_password: "" }); // Reset fields
+                setPasswordData({
+                    current_password: "",
+                    new_password: "",
+                    confirm_new_password: "",
+                }); // Reset fields
             } else {
-                toast.error(result.message);
+                // Frontend error handling for current_password issue
+                toast.error("Current password is wrong.");
             }
         } catch (error) {
             console.error("Error changing password:", error);
-            toast.error("An unexpected error occurred.");
+
+            // Frontend fallback for backend error
+            toast.error("Current password is wrong."); // Show a consistent frontend error message
         }
     };
 
     return (
         <div className="bg-gray-50 md:p-6 p-2">
-            <Toaster position="top-right" />
+            {/* <Toaster position="top-right" /> */}
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
                 <button
                     onClick={() => window.history.back()}

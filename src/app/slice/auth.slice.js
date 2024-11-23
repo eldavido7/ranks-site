@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    isAuthenticated: !!localStorage.getItem("userToken"),
-    token: localStorage.getItem("userToken") || null,
+    isAuthenticated: !!localStorage.getItem("accessToken"),
+    token: localStorage.getItem("accessToken") || null,
     refreshToken: localStorage.getItem("refreshToken") || null,
     user: null,
     wallet: null,
@@ -43,13 +43,13 @@ const authSlice = createSlice({
             state.error = null;
             state.sessionExpired = false; // Reset session expiration
 
-            localStorage.removeItem("userToken");
+            localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
         },
         tokenRefreshed(state, action) {
             state.token = action.payload.token;
 
-            localStorage.setItem("userToken", state.token);
+            localStorage.setItem("accessToken", state.token);
         },
         registerSuccess(state) {
             state.registrationSuccess = true;

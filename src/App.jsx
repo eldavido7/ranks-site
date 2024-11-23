@@ -46,6 +46,7 @@ import Certificate from "./pages/dashboard/Certificate";
 import SignUp from "./pages/authentication/SignUp";
 import ProtectedRoute from "./pages/ProtectedRoute"; // Import the ProtectedRoute
 import Loader from "./pages/Loader";
+import { Toaster } from "sonner";
 
 function App() {
   return (
@@ -88,6 +89,13 @@ function App() {
           </Route>
         </Route>
       </Routes>
+      <Toaster
+        position={"top-right"}
+        richColors
+        duration={5000}
+        className="z-[9999999999999999999]"
+        closeButton
+      />
     </Router>
   );
 }

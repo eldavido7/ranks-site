@@ -8,7 +8,7 @@ import { toast } from "sonner"; // Import sonner for toasts
 import authService from "../../app/service/auth.service";
 import AppInit from "../../app/state.helper";
 import Loader from "../dashboard/components/loader";
-import { Toaster } from "sonner";
+// import { Toaster } from "sonner";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -57,7 +57,7 @@ const Login = () => {
 
     return (
         <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
-            <Toaster position="top-right" /> {/* Add this at the top level */}
+            {/* <Toaster position="top-right" /> Add this at the top level */}
 
             {/* Background Layer */}
             <div

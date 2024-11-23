@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { fadeIn, slideIn } from "../../motion";
 import { GoArrowLeft } from "react-icons/go";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { fetchDeposits, submitDeposit } from "../../app/service/deposit.service";
 
 const Deposit = () => {
@@ -92,7 +92,7 @@ const Deposit = () => {
             whileInView={fadeIn("right", 1 * 2).animate}
             className="mx-w-full mx-auto md:p-6 p-2 md:mb-2 mb-52 bg-white rounded-lg"
         >
-            <Toaster position="top-right" />
+            {/* <Toaster position="top-right" /> */}
             {/* Back Button */}
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
                 <button

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Toaster, toast } from "sonner"; // Import Sonner toast
+import { toast } from "sonner"; // Import Sonner toast
 import logo from "../../assets/logo-light.png";
 import authService from "../../app/service/auth.service";
 
@@ -86,7 +86,7 @@ const SignUp = () => {
 
     return (
         <div className="flex items-center justify-center bg-gray-100 min-h-screen">
-            <Toaster position="top-right" /> {/* Add the toast container */}
+            {/* <Toaster position="top-right" /> Add the toast container */}
             <div className="bg-white p-8 rounded-lg shadow-lg md:my-5 w-full max-w-7xl overflow-y-auto max-h-screen">
                 <img
                     src={logo}
