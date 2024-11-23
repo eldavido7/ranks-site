@@ -128,12 +128,13 @@ const authService = {
     /**
      * Logs the user out by clearing tokens and state.
      */
-    logout: () => {
+    logout: (show_toast=true) => {
         // Explicit logout by the user
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         store.dispatch(logout());
-        toast.success("Logged out successfully."); // Notify user of successful logout
+        
+        show_toast && toast.success("Logged out successfully."); // Notify user of successful logout
     },
 
     /**
@@ -146,7 +147,7 @@ const authService = {
 
             // Use the refreshAxiosInstance to send the refresh request
             const response = await refreshAxiosInstance.post(refreshTokenAPI, { refresh: refreshToken });
-            const newAccessToken = response.data.access_token;
+            const newAccessToken = response.data.data.access;
 
             // Save the new access token
             localStorage.setItem("accessToken", newAccessToken);
@@ -159,7 +160,7 @@ const authService = {
             // Consolidate toast error for session expiration
             if (error.response?.status === 401 || error.message === "No refresh token found.") {
                 toast.error("Session expired. Please log in again.");
-                logout()
+                authService.logout(false)
             }
 
             return { success: false, message: error.response?.data?.message || "Failed to refresh token." };

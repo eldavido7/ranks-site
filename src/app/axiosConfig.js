@@ -2,6 +2,23 @@ import axios from "axios";
 import { BASEURL } from "../constants/api.routes";
 import authService from "./service/auth.service";
 import { toast } from "sonner";
+import store from "./store"; // Assuming you use Redux for state management
+import { logout } from "../app/slice/auth.slice"; 
+// import { logout } from "../../../app/slice/auth.slice"; 
+
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+// Notify all subscribers of the new token
+const onTokenRefreshed = (token) => {
+    refreshSubscribers.forEach((callback) => callback(token));
+    refreshSubscribers = [];
+};
+
+// Add a new subscriber for the token refresh
+const addRefreshSubscriber = (callback) => {
+    refreshSubscribers.push(callback);
+};
 
 // Create Axios instance
 const axiosInstance = axios.create({
@@ -26,46 +43,52 @@ axiosInstance.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        // If unauthorized and the request has not already been retried
         if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
+            originalRequest._retry = true; // Mark the request as retried
 
-            try {
-                // Attempt to refresh the token
-                const refreshResponse = await authService.refreshAccessToken();
-                if (refreshResponse.success) {
-                    // Set the new token on the original request
-                    originalRequest.headers.Authorization = `Bearer ${refreshResponse.token}`;
-                    return axiosInstance(originalRequest);
-                } else {
-                    // Refresh failed, notify user and redirect to login
-                    console.error("Token refresh failed:", refreshResponse.message);
-                    toast.error("Session expired. Please log in again.");
-                    authService.logout()
-                    window.location.href = "/login"; // Redirect to the login page
+            if (!isRefreshing) {
+                isRefreshing = true;
+                try {
+                    const refreshResponse = await authService.refreshAccessToken();
+                    isRefreshing = false;
+
+                    if (refreshResponse.success) {
+                        const newAccessToken = refreshResponse.token;
+
+                        // Notify all subscribers with the new token
+                        onTokenRefreshed(newAccessToken);
+
+                        // Retry the original request with the new token
+                        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                        return axiosInstance(originalRequest);
+                    }
+                } catch (refreshError) {
+                    isRefreshing = false;
+                    console.error("Token refresh failed:", refreshError);
+                    // Session expired, trigger logout and notify user
+                    store.dispatch(logout());
+                    return Promise.reject(refreshError);
                 }
-            } catch (refreshError) {
-                console.error("Error during token refresh:", refreshError);
-                toast.error("Unable to refresh session. Please log in again.");
-                authService.logout()
-                window.location.href = "/login"; // Redirect to the login page
             }
-        } else if (error.response?.status === 401) {
-            console.error("401 Unauthorized:", error.response.data?.message || "Unauthorized access.");
-            toast.error(error.response.data?.message || "Unauthorized access. Please log in.");
-            authService.logout()
-            window.location.href = "/login"; // Redirect to the login page
+
+            // Wait for the token refresh to complete
+            return new Promise((resolve) => {
+                addRefreshSubscriber((token) => {
+                    originalRequest.headers.Authorization = `Bearer ${token}`;
+                    resolve(axiosInstance(originalRequest));
+                });
+            });
         }
 
+        // Other error types, reject the promise
         return Promise.reject(error);
     }
 );
 
+
 export const refreshAxiosInstance = axios.create({
     baseURL: BASEURL,
-    headers: {
-        // Ensure no Authorization header is sent with the refresh request
-        Authorization: null,
-    },
 });
 
 export default axiosInstance;
