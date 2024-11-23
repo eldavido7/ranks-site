@@ -70,7 +70,6 @@ const Login = () => {
 
     return (
         <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
-            {/* <Toaster position="top-right" /> Add this at the top level */}
 
             {/* Background Layer */}
             <div

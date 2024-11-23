@@ -11,7 +11,7 @@ import { GiCrown } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { fadeIn, slideIn } from "../../motion";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "sonner";
 import "react-toastify/dist/ReactToastify.css";
 import BottomNavMobile from "./components/BottomNavMobile";
 import authService from "../../app/service/auth.service"; // Import authService for fetching profile data
@@ -64,7 +64,6 @@ const Profile = () => {
 
     return (
         <div className="bg-white md:overflow-hidden">
-            <ToastContainer />
             {/* Profile Card */}
             <motion.div
                 initial={slideIn("down", null).initial}
@@ -112,13 +111,13 @@ const Profile = () => {
                     <div className="text-center">
                         <p>Commission:</p>
                         <p className="font-bold text-lg">
-                            ${profile?.wallet?.commission || "0.00"}
+                            {profile?.wallet?.commission || "0.00"}
                         </p>
                     </div>
                     <div className="text-center">
-                        <p>Last Connection:</p>
+                        <p>Credit Score:</p>
                         <p className="font-bold text-lg">
-                            {new Date(profile?.last_connection).toLocaleString() || "N/A"}
+                            ${profile?.credit_score || "N/A"}
                         </p>
                     </div>
                 </div>

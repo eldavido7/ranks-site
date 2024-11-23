@@ -3,6 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import authService from "../app/service/auth.service";
 import { homepage } from "../constants/app.routes";
+import Loader from "./dashboard/components/loader"
 
 const ProtectedRoute = () => {
     const [isValid, setIsValid] = useState(null); // Track token validation status
@@ -26,7 +27,7 @@ const ProtectedRoute = () => {
 
     if (isValid === null) {
         // Show a loader while checking authentication
-        return <div>Loading...</div>;
+        return <div><Loader /></div>;
     }
 
     if (!isValid) {
