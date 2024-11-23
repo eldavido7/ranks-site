@@ -20,6 +20,7 @@ import {
   signup,
   contact1,
   login,
+  termsandconds,
 } from "./constants/app.routes";
 
 import LoginLayout from "./pages/authentication/LoginLayout";
@@ -47,6 +48,7 @@ import SignUp from "./pages/authentication/SignUp";
 import ProtectedRoute from "./pages/ProtectedRoute"; // Import the ProtectedRoute
 import Loader from "./pages/Loader";
 import { Toaster } from "sonner";
+import TermsandCond from "./pages/dashboard/Termsandcond";
 
 function App() {
   return (
@@ -61,6 +63,7 @@ function App() {
           <Route path={signup} element={<SignUp />} />
         </Route>
         <Route path={contact1} element={<ContactUs />} />
+        <Route path={termsandconds} element={<TermsandCond />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>

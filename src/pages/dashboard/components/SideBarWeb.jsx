@@ -158,7 +158,7 @@ function SideBarWeb() {
       <motion.button
         initial={slideIn("up", null).initial}
         whileInView={slideIn("up", 2).animate}
-        className="text-red-500 flex items-center gap-x-4 mt-10"
+        className="flex items-center gap-x-3 py-2 px-4 text-red-500 hover:bg-red-100 rounded-md"
         onClick={handleLogout} // Add the logout handler here
       >
         <CiLogout className="text-2xl" />

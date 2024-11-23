@@ -22,9 +22,12 @@ const packsSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
         },
+        setPacks(state, action) {
+            state.packs = action.payload;
+        },
     },
 });
 
-export const { fetchPacksStart, fetchPacksSuccess, fetchPacksFailure } = packsSlice.actions;
+export const { fetchPacksStart, fetchPacksSuccess, fetchPacksFailure, setPacks } = packsSlice.actions;
 
 export default packsSlice.reducer;

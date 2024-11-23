@@ -18,6 +18,7 @@ import { about, certificate, deposit, events, faq, notifications, starting, term
 import BottomNavMobile from "./components/BottomNavMobile";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchActivePacks } from "../../app/service/packs.service"; // Import the service
+import { setPacks } from "../../app/slice/packs.slice";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -30,10 +31,22 @@ const Home = () => {
     // Fetch packs data from Redux state
     const { packs, isLoading, error } = useSelector((state) => state.packs);
 
+    // Adjust the packs mapping logic
+    const packItems = packs?.data || []; // Access the data array safely
+
     useEffect(() => {
-        // Fetch the packs on component mount
-        dispatch(fetchActivePacks());
-    }, [dispatch]);
+        const fetchPacks = async () => {
+            if (!packs || !packs.data || packs.data.length === 0) {
+                try {
+                    const packData = await dispatch(fetchActivePacks()).unwrap(); // Fetch data
+                    dispatch(setPacks(packData)); // Update state
+                } catch (error) {
+                    console.error("Error fetching packs:", error);
+                }
+            }
+        };
+        fetchPacks();
+    }, [dispatch, packs]);
 
     const toggleWelcome = () => {
         setShowWelcome(!showWelcome);
@@ -151,8 +164,8 @@ const Home = () => {
                         <p>Loading packs...</p>
                     ) : error ? (
                         <p className="text-red-600">{error}</p>
-                    ) : Array.isArray(packs) && packs.length > 0 ? (
-                        packs.map((pack, idx) => (
+                    ) : packItems.length > 0 ? (
+                        packItems.map((pack, idx) => (
                             <motion.div
                                 key={idx}
                                 whileHover={{ scale: 1.05 }}
@@ -160,8 +173,13 @@ const Home = () => {
                                 className="bg-white p-5 rounded-lg cursor-pointer shadow-lg flex flex-col justify-center items-center h-auto md:h-40 relative"
                             >
                                 <div className="flex justify-between w-full items-center mb-2">
-                                    <span className="text-2xl">{pack.icon || "📦"}</span>
-                                    <span className="text-white rounded-lg p-2 border text-center bg-red-600 w-[60px] h-8 text-xs">
+                                    {/* Use <img> to render the image */}
+                                    <img
+                                        src={pack.icon}
+                                        alt={pack.name}
+                                        className="w-10 h-10 object-contain" // Adjust size as needed
+                                    />
+                                    <span className="text-white rounded-lg px-3 py-1 border text-center bg-red-600 w-[70px] text-xs flex items-center justify-center">
                                         ${pack.usd_value}
                                     </span>
                                 </div>
