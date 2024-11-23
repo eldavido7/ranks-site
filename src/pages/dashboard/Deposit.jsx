@@ -5,6 +5,8 @@ import { fadeIn, slideIn } from "../../motion";
 import { GoArrowLeft } from "react-icons/go";
 import { toast } from "sonner";
 import { fetchDeposits, submitDeposit } from "../../app/service/deposit.service";
+import { BiCopy } from "react-icons/bi";
+import Loader from "./components/loader";
 
 const Deposit = () => {
     const dispatch = useDispatch();
@@ -34,11 +36,18 @@ const Deposit = () => {
 
     // Fetch Deposits if State is Empty
     useEffect(() => {
-        if (deposits.length === 0) {
-            dispatch(fetchDeposits());
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch,]);
+        const fetchDepositsIfEmpty = async () => {
+            if (!deposits || deposits.length === 0) {
+                try {
+                    await dispatch(fetchDeposits());
+                } catch (error) {
+                    console.error("Error fetching deposits:", error);
+                }
+            }
+        };
+
+        fetchDepositsIfEmpty();
+    }, [dispatch, deposits]);
 
     // Submit Deposit
     const handleConfirmDeposit = async () => {
@@ -86,6 +95,18 @@ const Deposit = () => {
         }
     };
 
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text);
+        toast.success("Address copied to clipboard!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+        });
+    };
+
     return (
         <motion.div
             initial={fadeIn("right", null).initial}
@@ -117,18 +138,24 @@ const Deposit = () => {
                         <p>
                             <span className="font-bold">ETH address:</span>{" "}
                             0x2835a3a46a193946b395d877a29dc3bc51bd49{" "}
-                            <button className="text-sm text-blue-300 underline">Copy</button>
+                            <button
+                                onClick={() => copyToClipboard("0x2835a3a46a193946b395d877a29dc3bc51bd49")}>
+                                <BiCopy className="ml-2 cursor-pointer"></BiCopy>
+                            </button>
                         </p>
                         <p>
                             <span className="font-bold">TRC20 address:</span>{" "}
                             TTXWm4XjoRXem2Ce1KeevUcBrzK2Whpv61{" "}
-                            <button className="text-sm text-blue-300 underline">Copy</button>
+                            <button
+                                onClick={() => copyToClipboard("TTXWm4XjoRXem2Ce1KeevUcBrzK2Whpv61")}>
+                                <BiCopy className="ml-2 cursor-pointer"></BiCopy>
+                            </button>
                         </p>
                     </div>
 
                     {/* Deposit Amount */}
                     <div className="border p-4 rounded-lg text-center text-lg font-bold mb-4">
-                        Deposit: {amount || "100 USD"}
+                        Deposit: {amount || "N/A USD"}
                     </div>
 
                     {/* Upload Deposit Receipt */}
@@ -153,9 +180,9 @@ const Deposit = () => {
                     <button
                         onClick={handleConfirmDeposit}
                         disabled={isSubmitting}
-                        className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition duration-200"
+                        className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition duration-200 flex justify-center items-center"
                     >
-                        {isSubmitting ? "Submitting..." : "Confirm Deposit"}
+                        {isSubmitting ? <Loader /> : "Confirm Deposit"}
                     </button>
                 </motion.div>
             ) : (

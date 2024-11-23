@@ -19,6 +19,8 @@ import BottomNavMobile from "./components/BottomNavMobile";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchActivePacks } from "../../app/service/packs.service"; // Import the service
 import { setPacks } from "../../app/slice/packs.slice";
+import Loader from "./components/Load";
+import { toast } from "sonner";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -52,7 +54,9 @@ const Home = () => {
         setShowWelcome(!showWelcome);
     };
 
-    return (
+    return isLoading ? (
+        <Loader />
+    ) : (
         <div className="min-h-screen bg-white flex flex-col relative">
             {/* Video Section */}
             <div className="relative w-full h-96 md:mt-0 mt-2 overflow-hidden">
@@ -95,7 +99,7 @@ const Home = () => {
             </motion.div>
 
             {/* Links Section with Red Background */}
-            <div className="bg-red-600 py-8">
+            <div className="bg-red-600 py-12">
                 <div className="container mx-auto grid grid-cols-4 md:flex justify-around md:flex-wrap gap-4 px-4">
                     {[
                         { label: "Starting", icon: MdRestartAlt, route: (starting) },
@@ -163,7 +167,7 @@ const Home = () => {
                     {isLoading ? (
                         <p>Loading packs...</p>
                     ) : error ? (
-                        <p className="text-red-600">{error}</p>
+                        toast.error
                     ) : packItems.length > 0 ? (
                         packItems.map((pack, idx) => (
                             <motion.div

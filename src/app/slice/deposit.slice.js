@@ -31,7 +31,11 @@ const depositSlice = createSlice({
         },
         submitDepositSuccess(state, action) {
             state.isSubmitting = false;
-            state.successMessage = action.payload; // Success message
+            state.successMessage = action.payload.message || "Deposit submitted successfully.";
+            // Add the new deposit to the list
+            if (action.payload.data) {
+                state.deposits.unshift(action.payload.data); // Add new deposit to the top
+            }
         },
         submitDepositFailure(state, action) {
             state.isSubmitting = false;

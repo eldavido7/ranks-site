@@ -12,6 +12,21 @@ const profileSlice = createSlice({
     name: "profile",
     initialState,
     reducers: {
+        // Profile fetch reducers
+        fetchProfileStart(state) {
+            state.isLoading = true;
+            state.error = null;
+            state.success = null;
+        },
+        fetchProfileSuccess(state, action) {
+            state.isLoading = false;
+            state.user = action.payload;
+        },
+        fetchProfileFailure(state, action) {
+            state.isLoading = false;
+            state.error = action.payload;
+        },
+
         // Profile update reducers
         updateProfileStart(state) {
             state.isLoading = true;
@@ -20,12 +35,12 @@ const profileSlice = createSlice({
         },
         updateProfileSuccess(state, action) {
             state.isLoading = false;
-            state.user = action.payload; // Update user profile
+            state.user = action.payload;
             state.success = "Profile updated successfully.";
         },
         updateProfileFailure(state, action) {
             state.isLoading = false;
-            state.error = action.payload; // Set error message
+            state.error = action.payload;
         },
 
         // Password change reducers
@@ -40,10 +55,8 @@ const profileSlice = createSlice({
         },
         changePasswordFailure(state, action) {
             state.isPasswordLoading = false;
-            state.error = action.payload; // Set error message
+            state.error = action.payload;
         },
-
-        // Utility action to clear state
         clearProfileState(state) {
             state.error = null;
             state.success = null;
@@ -52,6 +65,9 @@ const profileSlice = createSlice({
 });
 
 export const {
+    fetchProfileStart,
+    fetchProfileSuccess,
+    fetchProfileFailure,
     updateProfileStart,
     updateProfileSuccess,
     updateProfileFailure,

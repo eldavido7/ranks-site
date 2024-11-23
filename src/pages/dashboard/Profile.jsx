@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
     BiUserCircle,
     BiUser,
@@ -12,41 +12,51 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { fadeIn, slideIn } from "../../motion";
 import { toast } from "sonner";
-import "react-toastify/dist/ReactToastify.css";
 import BottomNavMobile from "./components/BottomNavMobile";
-import authService from "../../app/service/auth.service"; // Import authService for fetching profile data
+import authService from "../../app/service/auth.service";
 import { logout } from "../../app/slice/auth.slice";
 import { login } from "../../constants/app.routes";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "./components/Load";
+import { fetchProfileStart, fetchProfileSuccess, fetchProfileFailure } from "../../app/slice/profile.slice";
+
 
 const Profile = () => {
-    const [profile, setProfile] = useState(null);
+
     const navigate = useNavigate();
-    const dispatch = useDispatch(); // Initialize dispatch
+    const dispatch = useDispatch();
+
+    const profile = useSelector((state) => state.profile.user);
+    const isLoading = useSelector((state) => state.profile.isLoading);
 
     useEffect(() => {
         const fetchProfile = async () => {
-            try {
-                const response = await authService.fetchProfile();
-                if (response.success) {
-                    setProfile(response.data);
-                } else {
-                    toast.error(response.message || "Failed to load profile.");
+            if (!profile) {
+                dispatch(fetchProfileStart());
+                try {
+                    const response = await authService.fetchProfile();
+                    if (response.success) {
+                        dispatch(fetchProfileSuccess(response.data));
+                    } else {
+                        dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
+                        toast.error(response.message || "Failed to load profile.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                    dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
+                    toast.error("An error occurred while fetching your profile.");
                 }
-            } catch (error) {
-                console.error("Error fetching profile:", error);
-                toast.error("An error occurred while fetching your profile.");
             }
         };
 
         fetchProfile();
-    }, []);
+    }, [dispatch, profile]);
 
     const copyReferralCode = () => {
         if (profile?.referral_code) {
             navigator.clipboard.writeText(profile.referral_code);
             toast.success("Referral code copied!", {
-                position: "top-center",
+                position: "top-right",
                 autoClose: 2000,
                 hideProgressBar: true,
                 closeOnClick: true,
@@ -57,10 +67,14 @@ const Profile = () => {
     };
 
     const handleLogout = () => {
-        authService.logout(); // Clear tokens and state
-        dispatch(logout()); // Dispatch the logout action
+        authService.logout();
+        dispatch(logout());
         navigate(login);
     };
+
+    if (isLoading) {
+        return <Loader />;
+    }
 
     return (
         <div className="bg-white md:overflow-hidden">
@@ -95,7 +109,9 @@ const Profile = () => {
                         <p className="font-bold text-sm mt-2 md:mr-0 mr-8">Crown (VIP8)</p>
                     </div>
                 </div>
-                <div className="border-t border-yellow-400 mt-2 md:mt-6 pt-4 grid grid-cols-2 gap-2 md:gap-6 sm:flex sm:justify-between text-md">
+
+                {/* desktop */}
+                <div className="border-t border-yellow-400 mt-2 md:mt-6 gap-2 md:gap-6 sm:flex sm:justify-between text-md hidden md:flex">
                     <div className="text-center">
                         <p>Wallet Balance:</p>
                         <p className="font-bold text-lg">
@@ -117,10 +133,58 @@ const Profile = () => {
                     <div className="text-center">
                         <p>Credit Score:</p>
                         <p className="font-bold text-lg">
-                            ${profile?.credit_score || "N/A"}
+                            ${profile?.wallet?.credit_score || "N/A"}
+                        </p>
+                    </div>
+                    <div className="text-center">
+                        <p>Salary:</p>
+                        <p className="font-bold text-lg">
+                            ${profile?.wallet?.salary || "N/A"}
                         </p>
                     </div>
                 </div>
+
+                {/* mobile */}
+                <div className="border-t md:hidden border-yellow-400 mt-2 md:mt-6 pt-4 grid gap-2 text-md">
+                    {/* First Row */}
+                    <div className="grid grid-cols-2 gap-2">
+                        <div className="text-center">
+                            <p>Wallet Balance:</p>
+                            <p className="font-bold text-lg">
+                                ${profile?.wallet?.balance || "0.00"}
+                            </p>
+                        </div>
+                        <div className="text-center">
+                            <p>On Hold Amount:</p>
+                            <p className="text-yellow-400 font-bold text-lg">
+                                ${profile?.wallet?.on_hold || "0.00"}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Second Row */}
+                    <div className="grid grid-cols-3 gap-2">
+                        <div className="text-center">
+                            <p>Commission:</p>
+                            <p className="font-bold text-lg">
+                                ${profile?.wallet?.commission || "0.00"}
+                            </p>
+                        </div>
+                        <div className="text-center">
+                            <p>Credit Score:</p>
+                            <p className="font-bold text-lg">
+                                ${profile?.wallet?.credit_score || "N/A"}
+                            </p>
+                        </div>
+                        <div className="text-center">
+                            <p>Salary:</p>
+                            <p className="font-bold text-lg">
+                                ${profile?.wallet?.salary || "N/A"}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </motion.div>
 
             {/* Profile Options */}

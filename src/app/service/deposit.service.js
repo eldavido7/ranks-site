@@ -37,12 +37,12 @@ export const submitDeposit = (formData) => async (dispatch) => {
                 "Content-Type": "multipart/form-data",
             },
         });
-        dispatch(submitDepositSuccess(response.data));
-        return { success: true, message: "Deposit submitted successfully." };
+        const newDeposit = response.data?.data; // Extract the new deposit
+        dispatch(submitDepositSuccess({ data: newDeposit, message: response.data?.message }));
+        return { success: true, data: newDeposit };
     } catch (error) {
         const errorMessage = error.response?.data || "An unexpected error occurred.";
         dispatch(submitDepositFailure(errorMessage));
         return { success: false, message: errorMessage };
     }
 };
-
