@@ -14,7 +14,7 @@ const ProtectedRoute = () => {
             if (!token || !isAuthenticated) {
                 // console.log("i am here")
                 // console.log(token,isAuthenticated,authService.validateToken(token))
-                authService.logout(); // Logout the user
+                authService.logout(false); // Logout the user
                 setIsValid(false); // Mark token as invalid
             } else {
                 setIsValid(true); // Mark token as valid

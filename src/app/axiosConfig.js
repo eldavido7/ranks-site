@@ -2,6 +2,9 @@ import axios from "axios";
 import { BASEURL } from "../constants/api.routes";
 import authService from "./service/auth.service";
 import { toast } from "sonner";
+import store from "./store"; // Assuming you use Redux for state management
+import { logout } from "../app/slice/auth.slice"; 
+// import { logout } from "../../../app/slice/auth.slice"; 
 
 let isRefreshing = false;
 let refreshSubscribers = [];
@@ -40,30 +43,36 @@ axiosInstance.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        // If unauthorized and the request has not already been retried
         if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true; // Mark the request as retried
+
             if (!isRefreshing) {
                 isRefreshing = true;
                 try {
                     const refreshResponse = await authService.refreshAccessToken();
                     isRefreshing = false;
+
                     if (refreshResponse.success) {
-                        localStorage.setItem("accessToken", refreshResponse.token);
-                        onTokenRefreshed(refreshResponse.token);
+                        const newAccessToken = refreshResponse.token;
+
+                        // Notify all subscribers with the new token
+                        onTokenRefreshed(newAccessToken);
+
+                        // Retry the original request with the new token
+                        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                         return axiosInstance(originalRequest);
-                    } else {
-                        toast.error("Session expired. Please log in again.");
-                        window.location.href = "/login"; // Redirect to login
-                        return Promise.reject(error);
                     }
                 } catch (refreshError) {
                     isRefreshing = false;
-                    toast.error("Unable to refresh session. Please log in again.");
-                    window.location.href = "/login"; // Redirect to login
+                    console.error("Token refresh failed:", refreshError);
+                    // Session expired, trigger logout and notify user
+                    store.dispatch(logout());
                     return Promise.reject(refreshError);
                 }
             }
 
-            // Wait for the new token
+            // Wait for the token refresh to complete
             return new Promise((resolve) => {
                 addRefreshSubscriber((token) => {
                     originalRequest.headers.Authorization = `Bearer ${token}`;
@@ -72,12 +81,14 @@ axiosInstance.interceptors.response.use(
             });
         }
 
+        // Other error types, reject the promise
         return Promise.reject(error);
     }
 );
 
-export default axiosInstance;
 
 export const refreshAxiosInstance = axios.create({
     baseURL: BASEURL,
 });
+
+export default axiosInstance;
