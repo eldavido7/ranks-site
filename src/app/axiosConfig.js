@@ -2,9 +2,20 @@ import axios from "axios";
 import { BASEURL } from "../constants/api.routes";
 import authService from "./service/auth.service";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
-const navigate = useNavigate();
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+// Notify all subscribers of the new token
+const onTokenRefreshed = (token) => {
+    refreshSubscribers.forEach((callback) => callback(token));
+    refreshSubscribers = [];
+};
+
+// Add a new subscriber for the token refresh
+const addRefreshSubscriber = (callback) => {
+    refreshSubscribers.push(callback);
+};
 
 // Create Axios instance
 const axiosInstance = axios.create({
@@ -24,37 +35,41 @@ axiosInstance.interceptors.request.use(
 );
 
 // Response interceptor to handle token refresh
-// Response interceptor to handle token refresh
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
-
-            try {
-                // Attempt to refresh the token
-                const refreshResponse = await authService.refreshAccessToken();
-                if (refreshResponse.success) {
-                    // Set the new token on the original request
-                    originalRequest.headers.Authorization = `Bearer ${refreshResponse.token}`;
-                    return axiosInstance(originalRequest);
-                } else {
-                    // Refresh failed, notify user and redirect to login
-                    console.error("Token refresh failed:", refreshResponse.message);
-                    toast.error("Session expired. Please log in again.");
-                    navigate("/login"); // Redirect to the login page
+            if (!isRefreshing) {
+                isRefreshing = true;
+                try {
+                    const refreshResponse = await authService.refreshAccessToken();
+                    isRefreshing = false;
+                    if (refreshResponse.success) {
+                        localStorage.setItem("accessToken", refreshResponse.token);
+                        onTokenRefreshed(refreshResponse.token);
+                        return axiosInstance(originalRequest);
+                    } else {
+                        toast.error("Session expired. Please log in again.");
+                        window.location.href = "/login"; // Redirect to login
+                        return Promise.reject(error);
+                    }
+                } catch (refreshError) {
+                    isRefreshing = false;
+                    toast.error("Unable to refresh session. Please log in again.");
+                    window.location.href = "/login"; // Redirect to login
+                    return Promise.reject(refreshError);
                 }
-            } catch (refreshError) {
-                console.error("Error during token refresh:", refreshError);
-                toast.error("Unable to refresh session. Please log in again.");
-                navigate("/login"); // Redirect to the login page
             }
-        } else if (error.response?.status === 401) {
-            console.error("401 Unauthorized:", error.response.data?.message || "Unauthorized access.");
-            toast.error(error.response.data?.message || "Unauthorized access. Please log in.");
-            navigate("/login"); // Redirect to the login page
+
+            // Wait for the new token
+            return new Promise((resolve) => {
+                addRefreshSubscriber((token) => {
+                    originalRequest.headers.Authorization = `Bearer ${token}`;
+                    resolve(axiosInstance(originalRequest));
+                });
+            });
         }
 
         return Promise.reject(error);
@@ -65,8 +80,4 @@ export default axiosInstance;
 
 export const refreshAxiosInstance = axios.create({
     baseURL: BASEURL,
-    headers: {
-        // Ensure no Authorization header is sent with the refresh request
-        Authorization: null,
-    },
 });
