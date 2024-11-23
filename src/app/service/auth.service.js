@@ -1,4 +1,4 @@
-import axiosInstance from "../axiosConfig"; // Import the Axios instance
+import {axiosInstance,refreshAxiosInstance} from "../axiosConfig"; // Import the Axios instance
 import {
     loginAPI,
     meAPI,
@@ -144,7 +144,8 @@ const authService = {
             const refreshToken = localStorage.getItem("refreshToken");
             if (!refreshToken) throw new Error("No refresh token found.");
 
-            const response = await axiosInstance.post(refreshTokenAPI, { refresh: refreshToken });
+            // Use the refreshAxiosInstance to send the refresh request
+            const response = await refreshAxiosInstance.post(refreshTokenAPI, { refresh: refreshToken });
             const newAccessToken = response.data.access_token;
 
             // Save the new access token
@@ -155,9 +156,10 @@ const authService = {
         } catch (error) {
             console.error("Failed to refresh access token:", error.response?.data?.message || error.message);
 
-            // Only notify the user of session expiration
-            if (error.response?.status === 401) {
+            // Consolidate toast error for session expiration
+            if (error.response?.status === 401 || error.message === "No refresh token found.") {
                 toast.error("Session expired. Please log in again.");
+                logout()
             }
 
             return { success: false, message: error.response?.data?.message || "Failed to refresh token." };

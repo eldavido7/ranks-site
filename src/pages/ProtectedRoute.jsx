@@ -11,7 +11,9 @@ const ProtectedRoute = () => {
 
     useEffect(() => {
         const validateAndHandleAuth = async () => {
-            if (!token || !isAuthenticated || !authService.validateToken(token)) {
+            if (!token || !isAuthenticated) {
+                // console.log("i am here")
+                // console.log(token,isAuthenticated,authService.validateToken(token))
                 authService.logout(); // Logout the user
                 setIsValid(false); // Mark token as invalid
             } else {
