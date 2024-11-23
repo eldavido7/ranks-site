@@ -15,10 +15,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BottomNavMobile from "./components/BottomNavMobile";
 import authService from "../../app/service/auth.service"; // Import authService for fetching profile data
+import { logout } from "../../app/slice/auth.slice";
+import { login } from "../../constants/app.routes";
+import { useDispatch } from "react-redux";
 
 const Profile = () => {
     const [profile, setProfile] = useState(null);
     const navigate = useNavigate();
+    const dispatch = useDispatch(); // Initialize dispatch
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -50,6 +54,12 @@ const Profile = () => {
                 draggable: true,
             });
         }
+    };
+
+    const handleLogout = () => {
+        authService.logout(); // Clear tokens and state
+        dispatch(logout()); // Dispatch the logout action
+        navigate(login);
     };
 
     return (
@@ -198,7 +208,7 @@ const Profile = () => {
                 <motion.button
                     initial={fadeIn("right", null).initial}
                     whileInView={fadeIn("right", 7 * 2).animate}
-                    onClick={() => navigate("/")}
+                    onClick={handleLogout}
                     className="w-full bg-white text-red-600 md:mb-2 mb-52 border shadow font-semibold py-3 rounded-full flex items-center justify-center">
                     <BiLogOutCircle className="mr-2" /> Logout
                 </motion.button>

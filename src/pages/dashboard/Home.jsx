@@ -6,7 +6,7 @@ import { BiBook } from "react-icons/bi";
 import { FaCcMastercard } from "react-icons/fa";
 import { TbCertificate } from "react-icons/tb";
 import { MdRestartAlt } from "react-icons/md";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
@@ -16,14 +16,24 @@ import { CiCreditCard1 } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
 import { about, certificate, deposit, events, faq, notifications, starting, terms, withdraw } from "../../constants/app.routes";
 import BottomNavMobile from "./components/BottomNavMobile";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchActivePacks } from "../../app/service/packs.service"; // Import the service
 
 const Home = () => {
-
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [showWelcome, setShowWelcome] = useState(true);
     // eslint-disable-next-line no-unused-vars
     const [Notifications, setNotifications] = useState(3);
+
+    // Fetch packs data from Redux state
+    const { packs, isLoading, error } = useSelector((state) => state.packs);
+
+    useEffect(() => {
+        // Fetch the packs on component mount
+        dispatch(fetchActivePacks());
+    }, [dispatch]);
 
     const toggleWelcome = () => {
         setShowWelcome(!showWelcome);
@@ -97,17 +107,17 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Sliding Welcome Banner within Inner Window */}
+            {/* Sliding Welcome Banner */}
             <motion.div
                 initial={{ x: 0 }}
                 animate={{ x: showWelcome ? 0 : -10 }}
                 transition={{ duration: 0.5 }}
-                className="fixed bottom-24 left-4 md:left-80 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center cursor-pointer z-10 md:bottom-4" // Adjust the bottom position for mobile
+                className="fixed bottom-24 left-4 md:left-80 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center cursor-pointer z-10 md:bottom-4"
                 onClick={toggleWelcome}
                 style={{
-                    width: showWelcome ? 'auto' : '10px',
-                    padding: showWelcome ? '12px' : '8px',
-                    height: showWelcome ? 'auto' : '70px',
+                    width: showWelcome ? "auto" : "10px",
+                    padding: showWelcome ? "12px" : "8px",
+                    height: showWelcome ? "auto" : "70px",
                 }}
             >
                 {showWelcome ? (
@@ -124,7 +134,7 @@ const Home = () => {
                 )}
             </motion.div>
 
-            {/* VIP Levels Section */}
+            {/* Packs Section */}
             <div className="container mx-auto mt-8 px-2 md:mb-2 mb-52">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-gray-800">VIP Levels</h2>
@@ -137,39 +147,35 @@ const Home = () => {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {[
-                        { level: "Beginner", icon: "🌟", amount: "$100", rate: "0.5%", tasks: 35 },
-                        { level: "Bronze", icon: "🥉", amount: "$500", rate: "1.2%", tasks: 40 },
-                        { level: "Silver (VIP 1)", icon: "🥈", amount: "$1500", rate: "1.3%", tasks: 45 },
-                        { level: "Gold (VIP 2)", icon: "🥇", amount: "$8500", rate: "1.6%", tasks: 50 },
-                        { level: "Platinum (VIP 3)", icon: "💎", amount: "$10500", rate: "2.1%", tasks: 55 },
-                        { level: "Emerald (VIP 4)", icon: "💠", amount: "$13500", rate: "2.5%", tasks: 60 },
-                        { level: "Diamond (VIP 5)", icon: "🔷", amount: "$20000", tasks: 65 },
-                        { level: "Masters (VIP 6)", icon: "🏆", amount: "$30000", rate: "5.1%", tasks: 65 },
-                    ].map((vip, idx) => (
-                        <motion.div
-                            key={idx}
-                            whileHover={{ scale: 1.05 }}
-                            onClick={() => navigate("/home/level")}
-                            className="bg-white p-5 rounded-lg cursor-pointer shadow-lg flex flex-col justify-center items-center h-auto md:h-40 relative"
-                        >
-                            {/* Icon and Price positioned at the top for mobile */}
-                            <div className="flex justify-between w-full items-center mb-2">
-                                <span className="text-2xl">{vip.icon}</span>
-                                <span className="text-white rounded-lg p-2 border text-center bg-red-600 w-[60px] h-8 text-xs">{vip.amount}</span>
-                            </div>
-
-                            {/* Centered Title */}
-                            <h3 className="font-semibold text-gray-800 md:text-lg text-[15px] text-center mb-4">
-                                {vip.level}
-                            </h3>
-
-                            {/* Description */}
-                            <p className="text-gray-600 text-sm text-center">
-                                Commission rate {vip.rate}, {vip.tasks} tasks/day.
-                            </p>
-                        </motion.div>
-                    ))}
+                    {isLoading ? (
+                        <p>Loading packs...</p>
+                    ) : error ? (
+                        <p className="text-red-600">{error}</p>
+                    ) : Array.isArray(packs) && packs.length > 0 ? (
+                        packs.map((pack, idx) => (
+                            <motion.div
+                                key={idx}
+                                whileHover={{ scale: 1.05 }}
+                                onClick={() => navigate("/home/level")}
+                                className="bg-white p-5 rounded-lg cursor-pointer shadow-lg flex flex-col justify-center items-center h-auto md:h-40 relative"
+                            >
+                                <div className="flex justify-between w-full items-center mb-2">
+                                    <span className="text-2xl">{pack.icon || "📦"}</span>
+                                    <span className="text-white rounded-lg p-2 border text-center bg-red-600 w-[60px] h-8 text-xs">
+                                        ${pack.usd_value}
+                                    </span>
+                                </div>
+                                <h3 className="font-semibold text-gray-800 md:text-lg text-[15px] text-center mb-4">
+                                    {pack.name}
+                                </h3>
+                                <p className="text-gray-600 text-sm text-center">
+                                    {pack.short_description || "No description available."}
+                                </p>
+                            </motion.div>
+                        ))
+                    ) : (
+                        <p>No packs available.</p>
+                    )}
                 </div>
             </div>
             <BottomNavMobile className="md:hidden" />
@@ -178,4 +184,3 @@ const Home = () => {
 };
 
 export default Home;
-

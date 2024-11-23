@@ -12,7 +12,7 @@ const HomeLayout = () => {
         <div className="flex bg-gray-50 h-screen">
             <SideBarWeb />
             <div className="flex flex-col w-full h-full">
-                <div className="nav-bar flex items-center justify-between h-16 bg-white shadow px-4 md:mx-4">
+                <div className="nav-bar flex items-center md:hidden justify-between h-16 bg-white shadow px-4 md:mx-4">
                     <div className="flex items-center">
                         <img
                             src={logo}

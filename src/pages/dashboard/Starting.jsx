@@ -4,6 +4,8 @@ import { GiCrown } from "react-icons/gi";
 import { motion } from "framer-motion";
 import { slideIn } from "../../motion";
 import BottomNavMobile from "./components/BottomNavMobile";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../../app/service/products.service";
 
 const slideVariants = {
     enter: (direction) => ({
@@ -21,6 +23,9 @@ const slideVariants = {
 };
 
 const Starting = () => {
+    const dispatch = useDispatch();
+    // eslint-disable-next-line no-unused-vars
+    const [profile, setProfile] = useState(null);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [direction, setDirection] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,6 +37,19 @@ const Starting = () => {
         'https://adsterra-ranks.site//assets/img/02-min.jpg',
         'https://adsterra-ranks.site//assets/img/03-min.jpg',
     ];
+
+    const products = useSelector((state) => state.products.products); // Access products from the Redux store
+
+    useEffect(() => {
+        const fetchProductsData = async () => {
+            if (!products || products.length === 0) { // Only fetch if products are not already in the state
+                await dispatch(fetchProducts()); // Use the fetchProducts function from the service
+            }
+        };
+
+        fetchProductsData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch]);
 
     const handleNextSlide = () => {
         setDirection(1);
@@ -71,7 +89,9 @@ const Starting = () => {
                     initial={slideIn("up", null).initial}
                     whileInView={slideIn("up", 1 * 2).animate}
                     className="grid grid-cols-2 gap-4 mt-4">
-                    {[{ label: "Wallet Balance", amount: "1123.66 USD", description: "Profits will be added here" },
+                    {[{
+                        label: "Wallet Balance", amount: `$${profile?.wallet?.profit_today || "0.00"} USD`, description: "Profits will be added here"
+                    },
                     { label: "Today's Profit", amount: "183.64 USD", description: "Profit Earned" },
                     { label: "On Hold", amount: "-3226.34 USD", description: "Will be added to your balance" },
                     { label: "Salary", amount: "0 USD", description: "Today's Salary" }].map((item, idx) => (

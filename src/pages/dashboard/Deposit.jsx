@@ -1,37 +1,89 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { fadeIn, slideIn } from "../../motion";
 import { GoArrowLeft } from "react-icons/go";
-import { toast } from "react-toastify";
+import { toast, Toaster } from "sonner";
+import { fetchDeposits, submitDeposit } from "../../app/service/deposit.service";
 
 const Deposit = () => {
+    const dispatch = useDispatch();
+    const deposits = useSelector((state) => state.deposits?.deposits || []); // Fallback to empty array
+    const isSubmitting = useSelector((state) => state.deposits.isSubmitting);
+
     const [activeTab, setActiveTab] = useState("deposit");
     const [amount, setAmount] = useState("");
     const [isDepositPage, setIsDepositPage] = useState(false); // State to toggle the new deposit page
-    const [receipt, setReceipt] = useState(null); // State for uploaded file preview
+    const [receipt, setReceipt] = useState(null); // State for uploaded file
+    // eslint-disable-next-line no-unused-vars
+    const [profile, setProfile] = useState(null); // Placeholder for wallet balance
 
-    const handleTabChange = (tab) => {
-        setActiveTab(tab);
-    };
+    // Handle Tab Changes
+    const handleTabChange = (tab) => setActiveTab(tab);
 
-    const handlePresetAmount = (value) => {
-        setAmount(value.toString());
-    };
+    // Handle Preset Amount
+    const handlePresetAmount = (value) => setAmount(value.toString());
 
+    // Handle Receipt Upload
     const handleReceiptUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const fileReader = new FileReader();
-            fileReader.onload = () => {
-                setReceipt(fileReader.result);
-            };
-            fileReader.readAsDataURL(file);
+            setReceipt(file); // File for submission
         }
     };
 
-    const handleConfirmDeposit = () => {
-        toast.success("Deposit confirmed successfully!");
-        setIsDepositPage(false);
+    // Fetch Deposits if State is Empty
+    useEffect(() => {
+        if (deposits.length === 0) {
+            dispatch(fetchDeposits());
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch,]);
+
+    // Submit Deposit
+    const handleConfirmDeposit = async () => {
+        if (!amount || !receipt) {
+            toast.error("Amount and receipt are required!");
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append("amount", amount);
+            formData.append("screenshot", receipt);
+
+            const result = await dispatch(submitDeposit(formData));
+
+            if (result.success) {
+                toast.success("Deposit submitted successfully!");
+                setIsDepositPage(false);
+                setAmount("");
+                setReceipt(null);
+            } else {
+                // Handle backend error messages
+                const backendErrors = result.message; // Adjust to access `message` object
+                if (typeof backendErrors === "object") {
+                    // Display all errors in a toast
+                    Object.entries(backendErrors).forEach(([field, errors]) => {
+                        errors.forEach((error) => toast.error(`${field}: ${error}`));
+                    });
+                } else {
+                    toast.error(result.message || "Failed to submit deposit.");
+                }
+            }
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.message || "An unexpected error occurred.";
+            if (typeof errorMessage === "object") {
+                // Parse backend error messages
+                Object.entries(errorMessage).forEach(([field, errors]) => {
+                    errors.forEach((error) => toast.error(`${field}: ${error}`));
+                });
+            } else {
+                toast.error(errorMessage);
+            }
+            console.error("Deposit submission error:", error.response || error);
+        }
     };
 
     return (
@@ -40,6 +92,7 @@ const Deposit = () => {
             whileInView={fadeIn("right", 1 * 2).animate}
             className="mx-w-full mx-auto md:p-6 p-2 md:mb-2 mb-52 bg-white rounded-lg"
         >
+            <Toaster position="top-right" />
             {/* Back Button */}
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
                 <button
@@ -51,10 +104,8 @@ const Deposit = () => {
                 </button>
             </div>
 
-            {/* Page Title */}
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Deposit</h1>
 
-            {/* Render Deposit Confirmation Page */}
             {isDepositPage ? (
                 <motion.div
                     key="deposit-confirmation"
@@ -64,11 +115,13 @@ const Deposit = () => {
                     {/* ETH/TRC20 Addresses */}
                     <div className="bg-red-600 text-white p-4 rounded-lg mb-4">
                         <p>
-                            <span className="font-bold">ETH address:</span> 0x2835a3a46a193946b395d877a29dc3bc51bd49{" "}
+                            <span className="font-bold">ETH address:</span>{" "}
+                            0x2835a3a46a193946b395d877a29dc3bc51bd49{" "}
                             <button className="text-sm text-blue-300 underline">Copy</button>
                         </p>
                         <p>
-                            <span className="font-bold">TRC20 address:</span> TTXWm4XjoRXem2Ce1KeevUcBrzK2Whpv61{" "}
+                            <span className="font-bold">TRC20 address:</span>{" "}
+                            TTXWm4XjoRXem2Ce1KeevUcBrzK2Whpv61{" "}
                             <button className="text-sm text-blue-300 underline">Copy</button>
                         </p>
                     </div>
@@ -83,7 +136,7 @@ const Deposit = () => {
                         <label className="block text-gray-600 font-semibold mb-2">Deposit receipt</label>
                         {receipt && (
                             <img
-                                src={receipt}
+                                src={typeof receipt === "string" ? receipt : URL.createObjectURL(receipt)}
                                 alt="Receipt Preview"
                                 className="w-full max-h-64 mb-4 object-cover rounded-lg"
                             />
@@ -99,9 +152,10 @@ const Deposit = () => {
                     {/* Confirm Button */}
                     <button
                         onClick={handleConfirmDeposit}
+                        disabled={isSubmitting}
                         className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition duration-200"
                     >
-                        Confirm Deposit
+                        {isSubmitting ? "Submitting..." : "Confirm Deposit"}
                     </button>
                 </motion.div>
             ) : (
@@ -138,29 +192,20 @@ const Deposit = () => {
                             {/* Balance Section */}
                             <div className="bg-red-600 text-white p-4 rounded-lg mb-10">
                                 <p className="font-semibold text-sm">Total Balance</p>
-                                <p className="text-3xl font-bold">USD 1123.66</p>
+                                <p className="text-3xl font-bold">{profile?.wallet?.profit_today || "0.00"} USD</p>
                             </div>
 
                             {/* Preset Amount Buttons */}
                             <div className="flex justify-between mb-10 gap-3">
-                                <button
-                                    onClick={() => handlePresetAmount(100)}
-                                    className="bg-white border border-gray-300 rounded-lg p-4 w-full shadow text-gray-700 font-semibold hover:bg-gray-100 transition"
-                                >
-                                    USD <br /> 100.00
-                                </button>
-                                <button
-                                    onClick={() => handlePresetAmount(200)}
-                                    className="bg-white border border-gray-300 rounded-lg p-4 w-full shadow text-gray-700 font-semibold hover:bg-gray-100 transition"
-                                >
-                                    USD <br /> 200.00
-                                </button>
-                                <button
-                                    onClick={() => handlePresetAmount(500)}
-                                    className="bg-white border border-gray-300 rounded-lg p-4 w-full shadow text-gray-700 font-semibold hover:bg-gray-100 transition"
-                                >
-                                    USD <br /> 500.00
-                                </button>
+                                {[100, 200, 500].map((value) => (
+                                    <button
+                                        key={value}
+                                        onClick={() => handlePresetAmount(value)}
+                                        className="bg-white border border-gray-300 rounded-lg p-4 w-full shadow text-gray-700 font-semibold hover:bg-gray-100 transition"
+                                    >
+                                        USD <br /> {value}.00
+                                    </button>
+                                ))}
                             </div>
 
                             {/* Input Field for Custom Deposit Amount */}
@@ -196,10 +241,8 @@ const Deposit = () => {
                             whileInView={slideIn("left", 1 * 2).animate}
                             className="space-y-4"
                         >
-                            {[{ id: 1, date: "11 Dec 2024 19:45", status: "Confirmed", amount: 700 },
-                            { id: 2, date: "11 Nov 2024 18:00", status: "Confirmed", amount: 100 },
-                            { id: 3, date: "07 Nov 2024 13:00", status: "Confirmed", amount: 500 }]
-                                .map((transaction) => (
+                            {deposits.length > 0 ? (
+                                deposits.map((transaction) => (
                                     <div
                                         key={transaction.id}
                                         className="flex items-center justify-between p-4 bg-white rounded-lg shadow border border-gray-200"
@@ -209,13 +252,25 @@ const Deposit = () => {
                                             <p className="text-sm text-gray-500">{transaction.date}</p>
                                         </div>
                                         <div className="flex flex-col items-end">
-                                            <span className="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded-full mb-1">
+                                            <span
+                                                className={`${transaction.status === "Confirmed"
+                                                    ? "bg-green-500"
+                                                    : "bg-red-500"
+                                                    } text-white text-sm font-semibold px-3 py-1 rounded-full mb-1`}
+                                            >
                                                 {transaction.status}
                                             </span>
-                                            <p className="text-gray-700 font-bold">{transaction.amount} USD</p>
+                                            <p className="text-gray-700 font-bold">
+                                                {transaction.amount} USD
+                                            </p>
                                         </div>
                                     </div>
-                                ))}
+                                ))
+                            ) : (
+                                <p className="text-center text-gray-500">
+                                    No deposit history available.
+                                </p>
+                            )}
                         </motion.div>
                     )}
                 </>

@@ -1,14 +1,11 @@
 import axios from "axios";
-import { BASEURL } from "../constants/api.routes"; // Ensure your BASEURL is properly set
-import authService from "./service/auth.service"; // Import authService
-import { toast } from "sonner"; // Import Sonner for toasts
+import { BASEURL } from "../constants/api.routes";
+import authService from "./service/auth.service";
+import { toast } from "sonner";
 
 // Create Axios instance
 const axiosInstance = axios.create({
     baseURL: BASEURL,
-    headers: {
-        "Content-Type": "application/json",
-    },
 });
 
 // Request interceptor to include access token
@@ -30,7 +27,7 @@ axiosInstance.interceptors.response.use(
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true; // Prevent infinite retry loops
+            originalRequest._retry = true;
 
             try {
                 // Attempt to refresh the token
@@ -38,7 +35,7 @@ axiosInstance.interceptors.response.use(
                 if (refreshResponse.success) {
                     // Set the new token on the original request
                     originalRequest.headers.Authorization = `Bearer ${refreshResponse.token}`;
-                    return axiosInstance(originalRequest); // Retry the request
+                    return axiosInstance(originalRequest);
                 } else {
                     // Refresh failed, log and notify user
                     console.error("Token refresh failed:", refreshResponse.message);
