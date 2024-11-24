@@ -11,3 +11,4 @@ export const packsAPI = `${BASEURL}/api/packs/active_packs/`;
 export const productsAPI = `${BASEURL}/api/products/`;
 export const depositsAPI = `${BASEURL}/api/deposits/`;
 export const settingsAPI = `${BASEURL}/auth/settings/`;
+export const paymentsAPI = `${BASEURL}/api/payments/`;

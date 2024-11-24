@@ -12,6 +12,7 @@ import {
 } from "../../app/slice/profile.slice";
 import authService from "../../app/service/auth.service";
 import Loader from "./components/Load";
+import ButtonLoader from "./components/loader";
 
 const PersonalInfo = () => {
     const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const PersonalInfo = () => {
 
     const [isLoginPasswordModalOpen, setIsLoginPasswordModalOpen] = useState(false);
     const [isWithdrawPasswordModalOpen, setIsWithdrawPasswordModalOpen] = useState(false);
+    const [isSavingPassword, setIsSavingPassword] = useState(false);
 
     // Toggle Modals
     const toggleLoginPasswordModal = () => setIsLoginPasswordModalOpen(!isLoginPasswordModalOpen);
@@ -156,6 +158,9 @@ const PersonalInfo = () => {
             new_password: passwordData.new_password,
         };
 
+        // Show loader on button
+        setIsSavingPassword(true);
+
         try {
             // Dispatch change password action
             const result = await dispatch(changePassword(payload));
@@ -168,20 +173,19 @@ const PersonalInfo = () => {
                     confirm_new_password: "",
                 }); // Reset fields
             } else {
-                // Frontend error handling for current_password issue
-                toast.error("Current password is wrong.");
+                toast.error(result.message || "An error occurred while updating the password.");
             }
         } catch (error) {
             console.error("Error changing password:", error);
-
-            // Frontend fallback for backend error
-            toast.error("Current password is wrong."); // Show a consistent frontend error message
+            toast.error("An unexpected error occurred.");
+        } finally {
+            // Hide loader after update
+            setIsSavingPassword(false);
         }
     };
 
     return (
         <div className="bg-gray-50 md:p-6 p-2">
-            {/* <Toaster position="top-right" /> */}
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
                 <button
                     onClick={() => window.history.back()}
@@ -379,9 +383,10 @@ const PersonalInfo = () => {
                             <button
                                 type="button"
                                 onClick={handleChangePassword}
-                                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-500 mt-4"
+                                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-500 mt-4 flex items-center justify-center"
+                                disabled={isSavingPassword}
                             >
-                                Save
+                                {isSavingPassword ? <ButtonLoader /> : "Save"}
                             </button>
                         </form>
                     </div>

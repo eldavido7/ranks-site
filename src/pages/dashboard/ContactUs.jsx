@@ -1,18 +1,52 @@
 import { FaHeadset, FaWhatsapp, FaTelegramPlane, FaCommentDots } from "react-icons/fa";
 import logo from "../../assets/logo-light.png";
 import { GoArrowLeft } from "react-icons/go";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
+import { useEffect } from "react";
+import { fetchProfileFailure, fetchProfileStart, fetchProfileSuccess } from "../../app/slice/profile.slice";
+import authService from "../../app/service/auth.service";
+import Loader from "./components/Load";
 
 const ContactUs = () => {
-    const profile = useSelector((state) => state.auth.user);
+    const settings = useSelector((state) => state.auth.settings);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            if (!settings) {
+                dispatch(fetchProfileStart());
+                try {
+                    const response = await authService.fetchSettings();
+                    if (response.success) {
+                        dispatch(fetchProfileSuccess(response.data));
+                    } else {
+                        dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
+                        toast.error(response.message || "Failed to load profile.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                    dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
+                    toast.error("An error occurred while fetching your profile.");
+                }
+            }
+        };
+
+        fetchSettings();
+    }, [dispatch, settings]);
 
     const handleNavigation = (url) => {
         if (url) {
-            window.open(url, "_blank");
+            window.open(url, "_blank"); // Open the URL in a new tab
         } else {
-            console.error("URL not provided or invalid");
+            toast.error("Unable to navigate. URL is invalid."); // Provide user feedback if URL is invalid
         }
     };
+
+    if (!settings) {
+        return <Loader />;
+    }
 
     return (
         <div className="flex flex-col items-center justify-center mt-10 md:2 mb-52 text-gray-800">
@@ -45,22 +79,43 @@ const ContactUs = () => {
             <div className="bg-white p-8 rounded-lg shadow-md w-80 text-center">
                 <h2 className="text-xl font-semibold text-gray-800 mb-6">Choose a Support Option</h2>
                 <div className="space-y-4">
+                    {/* Online Chat */}
                     <button
-                        onClick={() => handleNavigation(profile?.settings?.online_chat_url)}
+                        onClick={() => settings?.online_chat_url && handleNavigation(settings.online_chat_url)}
                         className="w-full bg-red-500 text-white py-2 rounded-full flex items-center justify-center gap-2 hover:bg-red-600 transition duration-200"
                     >
                         <FaCommentDots />
                         Online Chat
                     </button>
+
+                    {/* WhatsApp Chat */}
                     <button
-                        onClick={() => handleNavigation(`https://wa.me/${profile?.settings?.whatsapp_contact?.replace(/[^\d]/g, "")}`)}
+                        onClick={() => {
+                            const whatsappNumber = settings?.whatsapp_contact?.replace(/[^\d]/g, "");
+                            console.log(whatsappNumber)
+                            if (whatsappNumber) {
+                                handleNavigation(`https://wa.me/${whatsappNumber}`);
+                            } else {
+                                console.error("WhatsApp contact is missing or invalid.");
+                                console.log(whatsappNumber)
+                            }
+                        }}
                         className="w-full bg-green-500 text-white py-2 rounded-full flex items-center justify-center gap-2 hover:bg-green-600 transition duration-200"
                     >
                         <FaWhatsapp />
                         WhatsApp Chat
                     </button>
+
+                    {/* Telegram Chat */}
                     <button
-                        onClick={() => handleNavigation(`https://t.me/${profile?.settings?.telegram_username?.replace("@", "")}`)}
+                        onClick={() => {
+                            const telegramUsername = settings?.telegram_username?.replace("@", "");
+                            if (telegramUsername) {
+                                handleNavigation(`https://t.me/${telegramUsername}`);
+                            } else {
+                                console.error("Telegram username is missing or invalid.");
+                            }
+                        }}
                         className="w-full bg-blue-500 text-white py-2 rounded-full flex items-center justify-center gap-2 hover:bg-blue-600 transition duration-200"
                     >
                         <FaTelegramPlane />
