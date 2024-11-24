@@ -4,6 +4,7 @@ import {
     meAPI,
     refreshToken as refreshTokenAPI,
     registerAPI,
+    settingsAPI,
 } from "../../constants/api.routes"; // Use defined API routes
 import {
     loginSuccess,
@@ -12,6 +13,9 @@ import {
     logout,
     registerSuccess,
     registerFailure,
+    fetchSettingsStart,
+    fetchSettingsSuccess,
+    fetchSettingsFailure,
 } from "../slice/auth.slice";
 import { toast } from "sonner"; // Import Sonner for toast notifications
 import { jwtDecode } from "jwt-decode"; // Import jwt-decode to parse JWTs
@@ -126,14 +130,33 @@ const authService = {
     },
 
     /**
+     * Fetches application settings using the `settingAPI` endpoint.
+     */
+    fetchSettings: async () => {
+        try {
+            store.dispatch(fetchSettingsStart());
+            const response = await axiosInstance.get(settingsAPI);
+            const settings = response.data.data;
+            store.dispatch(fetchSettingsSuccess(settings)); // Dispatch success with settings
+            return { success: true, data: settings };
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || "Failed to fetch settings.";
+            console.error("Failed to fetch settings:", errorMessage);
+            store.dispatch(fetchSettingsFailure(errorMessage)); // Dispatch failure
+            toast.error(errorMessage); // Show error via toast
+            return { success: false, message: errorMessage };
+        }
+    },
+
+    /**
      * Logs the user out by clearing tokens and state.
      */
-    logout: (show_toast=true) => {
+    logout: (show_toast = true) => {
         // Explicit logout by the user
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         store.dispatch(logout());
-        
+
         show_toast && toast.success("Logged out successfully."); // Notify user of successful logout
     },
 

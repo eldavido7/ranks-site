@@ -16,7 +16,7 @@ export const updateProfile = (data) => async (dispatch) => {
     try {
         const formData = new FormData();
 
-        // Append fields to FormData object
+        // Append only changed fields to FormData
         Object.entries(data).forEach(([key, value]) => {
             if (value !== null && value !== undefined) {
                 formData.append(key, value);

@@ -1,16 +1,13 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GoArrowLeft } from "react-icons/go";
-import { toast } from "sonner"; // Import Sonner for toasts
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 import { updateProfile, changePassword } from "../../app/service/profile.service";
 import {
     fetchProfileStart,
     fetchProfileSuccess,
     fetchProfileFailure,
-    updateProfileStart,
     updateProfileSuccess,
-    updateProfileFailure,
     setImagePreview,
 } from "../../app/slice/profile.slice";
 import authService from "../../app/service/auth.service";
@@ -87,26 +84,36 @@ const PersonalInfo = () => {
             return;
         }
 
-        const updatedData = { ...formData };
+        // Prepare payload with only changed fields
+        const updatedData = {};
+        Object.keys(formData).forEach((key) => {
+            if (key === "profile_picture") {
+                if (typeof profilePicture !== "string" || !profilePicture.startsWith("http")) {
+                    updatedData.profile_picture = profilePicture; // Include if it's a file
+                }
+            } else if (formData[key] !== updatedData[key]) {
+                updatedData[key] = formData[key]; // Include other changed fields
+            }
+        });
 
-        // Convert gender to the expected format
-        updatedData.gender = formData.gender === "Male" ? "M" : formData.gender === "Female" ? "F" : "";
-
-        // Add the profile picture file if it exists
-        if (profilePicture) {
-            updatedData.profile_picture = profilePicture;
+        // If no changes detected, show a toast and exit
+        if (Object.keys(updatedData).length === 0) {
+            toast.error("No changes detected.");
+            return;
         }
 
         try {
             const result = await dispatch(updateProfile(updatedData));
             if (result.success) {
                 toast.success(result.message);
+                dispatch(fetchProfileSuccess(result.data)); // Update Redux state with new profile
             } else {
                 toast.error(result.message);
             }
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
-            console.error("Error updating profile:", error);
-            toast.error("An unexpected error occurred.");
+            // console.error("Error updating profile:", error);
+            // toast.error(error.message || "An unexpected error occurred.");
         }
     };
 
@@ -210,7 +217,7 @@ const PersonalInfo = () => {
                     <input
                         type="text"
                         name="username"
-                        value={formData.username ?? ""}
+                        value={formData.username || ""} // Ensure value is always controlled
                         onChange={handleChange}
                         className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
@@ -258,13 +265,30 @@ const PersonalInfo = () => {
                 </div>
                 <div>
                     <label className="text-gray-600 font-semibold">Gender</label>
-                    <input
-                        type="text"
-                        name="gender"
-                        value={formData.gender || ""}
-                        onChange={handleChange}
-                        className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
-                    />
+                    <div className="mt-2 flex space-x-4">
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                name="gender"
+                                value="M"
+                                checked={formData.gender === "M"}
+                                onChange={handleChange}
+                                className="form-radio h-4 w-4 text-red-600 focus:ring-red-600"
+                            />
+                            <span className="text-gray-700">Male</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                name="gender"
+                                value="F"
+                                checked={formData.gender === "F"}
+                                onChange={handleChange}
+                                className="form-radio h-4 w-4 text-red-600 focus:ring-red-600"
+                            />
+                            <span className="text-gray-700">Female</span>
+                        </label>
+                    </div>
                 </div>
                 <div>
                     <label className="text-gray-600 font-semibold">Referral Code</label>

@@ -6,8 +6,8 @@ const initialState = {
     isPasswordLoading: false,
     error: null,
     success: null,
-    profilePicture: null, // Added for image handling
-    imagePreview: null, // Added for image preview
+    profilePicture: null,
+    imagePreview: null,
 };
 
 const profileSlice = createSlice({
@@ -23,7 +23,7 @@ const profileSlice = createSlice({
         fetchProfileSuccess(state, action) {
             state.isLoading = false;
             state.user = action.payload;
-            state.profilePicture = action.payload.profile_picture || null; // Set profile picture
+            state.profilePicture = action.payload.profile_picture || null;
         },
         fetchProfileFailure(state, action) {
             state.isLoading = false;
@@ -38,8 +38,8 @@ const profileSlice = createSlice({
         },
         updateProfileSuccess(state, action) {
             state.isLoading = false;
-            state.user = action.payload;
-            state.profilePicture = action.payload.profile_picture || null; // Update profile picture
+            state.user = { ...state.user, ...action.payload }; // Merge existing and updated data
+            state.profilePicture = action.payload.profile_picture || state.profilePicture; // Keep or update the profile picture
             state.success = "Profile updated successfully.";
         },
         updateProfileFailure(state, action) {

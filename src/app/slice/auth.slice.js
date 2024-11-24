@@ -6,6 +6,7 @@ const initialState = {
     refreshToken: localStorage.getItem("refreshToken") || null,
     user: null,
     wallet: null,
+    settings: null,
     error: null,
     registrationSuccess: false,
     sessionExpired: false, // Track session expiration
@@ -40,6 +41,7 @@ const authSlice = createSlice({
             state.refreshToken = null;
             state.user = null;
             state.wallet = null;
+            state.settings = null;
             state.error = null;
             state.sessionExpired = false; // Reset session expiration
 
@@ -65,6 +67,15 @@ const authSlice = createSlice({
         clearError(state) {
             state.error = null;
         },
+        fetchSettingsStart(state) {
+            state.error = null;
+        },
+        fetchSettingsSuccess(state, action) {
+            state.settings = action.payload;
+        },
+        fetchSettingsFailure(state, action) {
+            state.error = action.payload;
+        },
     },
 });
 
@@ -78,6 +89,9 @@ export const {
     registerFailure,
     sessionExpired,
     clearError,
+    fetchSettingsStart,
+    fetchSettingsSuccess,
+    fetchSettingsFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;

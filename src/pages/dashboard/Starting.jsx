@@ -24,13 +24,13 @@ const slideVariants = {
 
 const Starting = () => {
     const dispatch = useDispatch();
-    // eslint-disable-next-line no-unused-vars
-    const [profile, setProfile] = useState(null);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [direction, setDirection] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedStar, setSelectedStar] = useState(0);
     const [comments, setComments] = useState("");
+
+    const profile = useSelector((state) => state.profile.user);
 
     const images = [
         'https://adsterra-ranks.site//assets/img/01-min.jpg',
@@ -90,11 +90,11 @@ const Starting = () => {
                     whileInView={slideIn("up", 1 * 2).animate}
                     className="grid grid-cols-2 gap-4 mt-4">
                     {[{
-                        label: "Wallet Balance", amount: `$${profile?.wallet?.profit_today || "0.00"} USD`, description: "Profits will be added here"
+                        label: "Wallet Balance", amount: `$${profile?.wallet?.balance || "0.00"} USD`, description: "Profits will be added here"
                     },
                     { label: "Today's Profit", amount: "183.64 USD", description: "Profit Earned" },
-                    { label: "On Hold", amount: "-3226.34 USD", description: "Will be added to your balance" },
-                    { label: "Salary", amount: "0 USD", description: "Today's Salary" }].map((item, idx) => (
+                    { label: "On Hold", amount: `$${profile?.wallet?.on_hold || "0.00"} USD`, description: "Will be added to your balance" },
+                    { label: "Salary", amount: `$${profile?.wallet?.salary || "0.00"} USD`, description: "Today's Salary" }].map((item, idx) => (
                         <div key={idx} className="p-4 bg-gray-50 rounded-lg shadow-md">
                             <p className="font-bold text-lg text-gray-700">{item.label}</p>
                             <p className="text-sm text-gray-500">{item.description}</p>
@@ -148,7 +148,7 @@ const Starting = () => {
             <div className="w-full md:mb-2 mb-52 mx-auto mt-4 bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-lg font-bold">Important Hint</h2>
                 <ul className="list-disc ml-4 mt-2 text-gray-600">
-                    <li>Working hours: 10:00:00 - 23:00:00</li>
+                    <li>Working hours: {profile?.settings?.service_availability_start_time || "00:00"} - {profile?.settings?.service_availability_end_time || "23:00:00"}</li>
                     <li>For inquiries about applicants, please consult agency services</li>
                 </ul>
             </div>

@@ -11,14 +11,14 @@ import Loader from "./components/loader";
 const Deposit = () => {
     const dispatch = useDispatch();
     const deposits = useSelector((state) => state.deposits?.deposits || []); // Fallback to empty array
+    const profile = useSelector((state) => state.profile.user);
     const isSubmitting = useSelector((state) => state.deposits.isSubmitting);
 
     const [activeTab, setActiveTab] = useState("deposit");
     const [amount, setAmount] = useState("");
     const [isDepositPage, setIsDepositPage] = useState(false); // State to toggle the new deposit page
     const [receipt, setReceipt] = useState(null); // State for uploaded file
-    // eslint-disable-next-line no-unused-vars
-    const [profile, setProfile] = useState(null); // Placeholder for wallet balance
+
 
     // Handle Tab Changes
     const handleTabChange = (tab) => setActiveTab(tab);
@@ -137,17 +137,18 @@ const Deposit = () => {
                     <div className="bg-red-600 text-white p-4 rounded-lg mb-4">
                         <p>
                             <span className="font-bold">ETH address:</span>{" "}
-                            0x2835a3a46a193946b395d877a29dc3bc51bd49{" "}
+                            {profile?.settings?.erc_address || "0x2835a3a46a193946b395d877a29dc3bc51bd49"}
                             <button
-                                onClick={() => copyToClipboard("0x2835a3a46a193946b395d877a29dc3bc51bd49")}>
+                                onClick={() => copyToClipboard(profile?.settings?.erc_address)}>
                                 <BiCopy className="ml-2 cursor-pointer"></BiCopy>
                             </button>
                         </p>
                         <p>
                             <span className="font-bold">TRC20 address:</span>{" "}
-                            TTXWm4XjoRXem2Ce1KeevUcBrzK2Whpv61{" "}
+
+                            {profile?.settings?.trc_address || "TTXWm4XjoRXem2Ce1KeevUcBrzK2Whpv61"}
                             <button
-                                onClick={() => copyToClipboard("TTXWm4XjoRXem2Ce1KeevUcBrzK2Whpv61")}>
+                                onClick={() => copyToClipboard(profile?.settings?.trc_address)}>
                                 <BiCopy className="ml-2 cursor-pointer"></BiCopy>
                             </button>
                         </p>
