@@ -291,6 +291,18 @@ const Deposit = () => {
                                             <p className="text-gray-700 font-bold">
                                                 {transaction.amount} USD
                                             </p>
+                                            <p className="text-gray-700 font-bold">
+                                                {new Date(transaction.created_at).toLocaleDateString('en-US', {
+                                                    day: '2-digit',
+                                                    month: 'short',
+                                                    year: 'numeric',
+                                                })} at {new Date(transaction.created_at).toLocaleTimeString('en-US', {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: true,
+                                                })}
+                                            </p>
+
                                         </div>
                                     </div>
                                 ))

@@ -5,6 +5,7 @@ import packsSlice from "./slice/packs.slice";
 import productSlice from "./slice/product.slice";
 import depositSlice from "./slice/deposit.slice";
 import paymentsSlice from "./slice/payments.slice";
+import withdrawSlice from "./slice/withdraw.slice";
 
 const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
         products: productSlice,
         deposits: depositSlice,
         payments: paymentsSlice,
+        withdrawals: withdrawSlice,
     },
 });
 

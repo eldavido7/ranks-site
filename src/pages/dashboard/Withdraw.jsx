@@ -1,14 +1,85 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { fadeIn, slideIn } from "../../motion";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
+import { fetchWithdrawalHistory, makeWithdrawal } from "../../app/service/withdraw.service";
+import { fetchWithdrawalsStart } from "../../app/slice/withdraw.slice";
+import Loader from "./components/loader";
 import { GoArrowLeft } from "react-icons/go";
+import { fadeIn, slideIn } from "../../motion";
 
 const Withdraw = () => {
-    const [activeTab, setActiveTab] = useState("withdraw");
+    const dispatch = useDispatch();
+    const { history, isLoading } = useSelector((state) => state.withdrawals);
+    const profile = useSelector((state) => state.profile.user);
 
-    const handleTabChange = (tab) => {
-        setActiveTab(tab);
+    // State for inputs
+    const [amount, setAmount] = useState("");
+    const [password, setPassword] = useState("");
+    const [activeTab, setActiveTab] = useState("withdraw");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Fetch withdrawal history initially if the state is empty
+    useEffect(() => {
+        const fetchWithdrawalsIfEmpty = async () => {
+            if (!history || history.length === 0) {
+                dispatch(fetchWithdrawalsStart());
+                try {
+                    await dispatch(fetchWithdrawalHistory());
+                    console.log(history)
+                } catch (error) {
+                    console.error("Error fetching withdrawals:", error);
+                }
+            }
+        };
+
+        fetchWithdrawalsIfEmpty();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch]);
+
+    // Handle Submit
+    const handleSubmit = async () => {
+        // Frontend validation
+        if (!amount || !password) {
+            toast.error("Both amount and password are required.");
+            return;
+        }
+
+        if (isNaN(amount) || Number(amount) <= 0) {
+            toast.error("Please enter a valid amount.");
+            return;
+        }
+
+        // Show loader on button
+        setIsSubmitting(true);
+
+        try {
+            const payload = { amount: Number(amount), password };
+            const response = await dispatch(makeWithdrawal(payload));
+
+            if (response.success) {
+                toast.success(response.message || "Withdrawal request successful.");
+                setAmount("");
+                setPassword("");
+            } else {
+                // Extract error message
+                const errorMessage =
+                    response.message?.error?.[0] || // Check `message.error`
+                    response.errors?.error?.[0] || // Check `errors.error`
+                    "An error occurred during withdrawal."; // Fallback error message
+
+                toast.error(errorMessage);
+            }
+        } catch (error) {
+            // Log and display unexpected errors
+            console.error("Unexpected error:", error);
+            toast.error("An unexpected error occurred. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
+
+    const handleTabChange = (tab) => setActiveTab(tab);
 
     return (
         <motion.div
@@ -30,7 +101,7 @@ const Withdraw = () => {
             {/* Page Title */}
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Withdraw</h1>
 
-            {/* Tabs for Withdraw Now and Withdraw History */}
+            {/* Tabs */}
             <div className="flex space-x-4 mb-10 border-b">
                 <button
                     onClick={() => handleTabChange("withdraw")}
@@ -48,52 +119,57 @@ const Withdraw = () => {
                 </button>
             </div>
 
-            {/* Withdraw Now Content */}
+            {/* Withdraw Now */}
             {activeTab === "withdraw" && (
                 <motion.div
                     key="withdraw"
                     initial={slideIn("right", null).initial}
                     animate={slideIn("right", 1 * 2).animate}
                 >
-                    {/* Balance Section */}
                     <div className="bg-red-600 text-white p-4 rounded-lg mb-10">
                         <p className="font-semibold text-sm">Total Balance</p>
-                        <p className="text-3xl font-bold">USD 101.53</p>
-                        {/* <p className="text-sm mt-2">You will receive your withdrawal within an hour</p> */}
+                        <p className="text-3xl font-bold">{profile?.wallet?.balance}</p>
                     </div>
 
-                    {/* Input Fields */}
                     <div className="mb-10">
-                        <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-700">
                             Withdrawal Amount
                         </label>
                         <input
-                            type="text"
+                            type="number"
                             id="amount"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
                             placeholder="Enter amount"
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
+
                     <div className="mb-10">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-700">
                             Withdrawal Password
                         </label>
                         <input
                             type="password"
                             id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter password"
                             className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/* Submit Button */}
-                    <button className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition duration-200">
-                        Submit
+                    <button
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition duration-200 flex items-center justify-center"
+                    >
+                        {isSubmitting ? <Loader /> : "Submit"}
                     </button>
                 </motion.div>
             )}
 
-            {/* Withdraw History Content */}
+            {/* Withdraw History */}
             {activeTab === "history" && (
                 <motion.div
                     key="history"
@@ -102,7 +178,23 @@ const Withdraw = () => {
                     exit={{ opacity: 0, x: 50 }}
                     className="text-gray-500 text-center mt-6"
                 >
-                    <p>No history available</p>
+                    {isLoading ? (
+                        <Loader />
+                    ) : Array.isArray(history) ? (
+                        history.length > 0 ? (
+                            <ul>
+                                {history.map((item, index) => (
+                                    <li key={index} className="p-4 border-b">
+                                        Amount: {item.amount} USD | Date: {item.date} | Status: {item.status}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-500 text-center">No withdrawal history</p>
+                        )
+                    ) : (
+                        <p className="text-red-500">An error occurred while fetching withdrawal history.</p>
+                    )}
                 </motion.div>
             )}
         </motion.div>

@@ -21,6 +21,8 @@ import { fetchActivePacks } from "../../app/service/packs.service"; // Import th
 import { setPacks } from "../../app/slice/packs.slice";
 import Loader from "./components/Load";
 import { toast } from "sonner";
+import { fetchProfileFailure, fetchProfileStart, fetchProfileSuccess } from "../../app/slice/profile.slice";
+import authService from "../../app/service/auth.service";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -29,6 +31,8 @@ const Home = () => {
     const [showWelcome, setShowWelcome] = useState(true);
     // eslint-disable-next-line no-unused-vars
     const [Notifications, setNotifications] = useState(3);
+
+    const profile = useSelector((state) => state.profile.user);
 
     // Fetch packs data from Redux state
     const { packs, isLoading, error } = useSelector((state) => state.packs);
@@ -50,6 +54,29 @@ const Home = () => {
         fetchPacks();
     }, [dispatch, packs]);
 
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (!profile) {
+                dispatch(fetchProfileStart());
+                try {
+                    const response = await authService.fetchProfile();
+                    if (response.success) {
+                        dispatch(fetchProfileSuccess(response.data));
+                    } else {
+                        dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
+                        toast.error(response.message || "Failed to load profile.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                    dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
+                    toast.error("An error occurred while fetching your profile.");
+                }
+            }
+        };
+
+        fetchProfile();
+    }, [dispatch, profile]);
+
     const toggleWelcome = () => {
         setShowWelcome(!showWelcome);
     };
@@ -66,8 +93,15 @@ const Home = () => {
                     loop
                     muted
                     playsInline
+                    onError={(e) => {
+                        console.error("Video failed to load:", e);
+                        e.target.src = videoSource; // Fallback to the default video
+                    }}
                 >
-                    <source src={videoSource} type="video/mp4" />
+                    <source
+                        src={profile?.settings?.video || videoSource} // Use the provided video link or fallback
+                        type="video/mp4"
+                    />
                     Your browser does not support HTML5 video.
                 </video>
             </div>

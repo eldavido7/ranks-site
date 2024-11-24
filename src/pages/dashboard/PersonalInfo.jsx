@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GoArrowLeft } from "react-icons/go";
 import { toast } from "sonner";
-import { updateProfile, changePassword } from "../../app/service/profile.service";
+import { updateProfile, changePassword, changeTransactionPassword } from "../../app/service/profile.service";
 import {
     fetchProfileStart,
     fetchProfileSuccess,
@@ -27,13 +27,19 @@ const PersonalInfo = () => {
         confirm_new_password: "",
     });
 
+    const [transactionPasswordData, setTransactionPasswordData] = useState({
+        current_password: "",
+        new_password: "",
+    });
+
     const [isLoginPasswordModalOpen, setIsLoginPasswordModalOpen] = useState(false);
-    const [isWithdrawPasswordModalOpen, setIsWithdrawPasswordModalOpen] = useState(false);
     const [isSavingPassword, setIsSavingPassword] = useState(false);
+    const [isTransactionPasswordModalOpen, setIsTransactionPasswordModalOpen] = useState(false);
+    const [isTransactionPasswordSaving, setIsTransactionPasswordSaving] = useState(false);
 
     // Toggle Modals
     const toggleLoginPasswordModal = () => setIsLoginPasswordModalOpen(!isLoginPasswordModalOpen);
-    const toggleWithdrawPasswordModal = () => setIsWithdrawPasswordModalOpen(!isWithdrawPasswordModalOpen);
+    // const toggleWithdrawPasswordModal = () => setIsWithdrawPasswordModalOpen(!isWithdrawPasswordModalOpen);
 
     // Fetch Profile Data
     useEffect(() => {
@@ -184,6 +190,68 @@ const PersonalInfo = () => {
         }
     };
 
+
+
+    // Toggle Transaction Password Modal
+    const toggleTransactionPasswordModal = () =>
+        setIsTransactionPasswordModalOpen(!isTransactionPasswordModalOpen);
+
+    // Handle Transaction Password Input Changes
+    const handleTransactionPasswordChange = (e) => {
+        const { name, value } = e.target;
+        setTransactionPasswordData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    // Handle Transaction Password Save
+    const handleTransactionPasswordSave = async () => {
+        const { current_password, new_password, confirm_new_password } = transactionPasswordData;
+
+        // Frontend validation
+        if (!current_password || !new_password || !confirm_new_password) {
+            toast.error("All fields are required.");
+            return;
+        }
+        if (new_password !== confirm_new_password) {
+            toast.error("New password and confirm password must match.");
+            return;
+        }
+        if (current_password === new_password) {
+            toast.error("New transaction password cannot be the same as the current password.");
+            return;
+        }
+        if (new_password.length !== 4 || isNaN(new_password)) {
+            toast.error("Transaction password must be exactly 4 numeric characters.");
+            return;
+        }
+
+        // Show loader
+        setIsTransactionPasswordSaving(true);
+
+        try {
+            const payload = { current_password, new_password }; // Backend only needs current and new password
+            const result = await dispatch(changeTransactionPassword(payload));
+            if (result.success) {
+                toast.success(result.message || "Transaction password updated successfully.");
+                toggleTransactionPasswordModal(); // Close modal
+                setTransactionPasswordData({
+                    current_password: "",
+                    new_password: "",
+                    confirm_new_password: "",
+                }); // Reset fields
+            } else {
+                toast.error(result.message || "Failed to update transaction password.");
+            }
+        } catch (error) {
+            toast.error("An unexpected error occurred.");
+            console.error("Error updating transaction password:", error);
+        } finally {
+            setIsTransactionPasswordSaving(false);
+        }
+    };
+
     return (
         <div className="bg-gray-50 md:p-6 p-2">
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
@@ -331,10 +399,10 @@ const PersonalInfo = () => {
                     Change Login Password
                 </button>
                 <button
-                    onClick={toggleWithdrawPasswordModal}
-                    className="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-500"
+                    onClick={toggleTransactionPasswordModal}
+                    className="w-full bg-yellow-600 text-white font-semibold py-3 rounded-lg hover:bg-yellow-500"
                 >
-                    Change Withdraw Password
+                    Change Transaction Password
                 </button>
             </div>
 
@@ -393,45 +461,55 @@ const PersonalInfo = () => {
                 </div>
             )}
 
-            {/* Withdraw Password Modal */}
-            {isWithdrawPasswordModalOpen && (
+            {/* Transaction Password Modal */}
+            {isTransactionPasswordModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full relative">
                         <button
-                            onClick={toggleWithdrawPasswordModal}
-                            className="absolute top-4 right-4 text-green-600 font-bold text-lg"
+                            onClick={toggleTransactionPasswordModal}
+                            className="absolute top-4 right-4 text-yellow-600 font-bold text-lg"
                         >
                             ✕
                         </button>
-                        <h2 className="text-xl font-bold text-gray-800 mb-4">Change Withdraw Password</h2>
+                        <h2 className="text-xl font-bold text-gray-800 mb-4">Change Transaction Password</h2>
                         <form className="space-y-4">
                             <div>
-                                <label className="text-gray-600 font-semibold">Old Password</label>
+                                <label className="text-gray-600 font-semibold">Current Password</label>
                                 <input
                                     type="password"
-                                    className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                    name="current_password"
+                                    value={transactionPasswordData.current_password}
+                                    onChange={handleTransactionPasswordChange}
+                                    className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600"
                                 />
                             </div>
                             <div>
                                 <label className="text-gray-600 font-semibold">New Password</label>
                                 <input
                                     type="password"
-                                    className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                    name="new_password"
+                                    value={transactionPasswordData.new_password}
+                                    onChange={handleTransactionPasswordChange}
+                                    className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600"
                                 />
                             </div>
                             <div>
                                 <label className="text-gray-600 font-semibold">Confirm New Password</label>
                                 <input
                                     type="password"
-                                    className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                    name="confirm_new_password"
+                                    value={transactionPasswordData.confirm_new_password}
+                                    onChange={handleTransactionPasswordChange}
+                                    className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600"
                                 />
                             </div>
                             <button
                                 type="button"
-                                onClick={toggleWithdrawPasswordModal}
-                                className="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-500 mt-4"
+                                onClick={handleTransactionPasswordSave}
+                                className="w-full bg-yellow-600 text-white font-semibold py-3 rounded-lg hover:bg-yellow-500 mt-4 flex items-center justify-center"
+                                disabled={isTransactionPasswordSaving}
                             >
-                                Save
+                                {isTransactionPasswordSaving ? <ButtonLoader /> : "Save"}
                             </button>
                         </form>
                     </div>

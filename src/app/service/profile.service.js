@@ -1,4 +1,4 @@
-import { passwordAPI, updateAPI } from "../../constants/api.routes";
+import { passwordAPI, updateAPI, transactionPasswordAPI } from "../../constants/api.routes";
 import axiosInstance from "../axiosConfig";
 import {
     updateProfileStart,
@@ -43,6 +43,20 @@ export const changePassword = (data) => async (dispatch) => {
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Failed to change password.";
         dispatch(changePasswordFailure(errorMessage)); // Dispatch failure with error message
+        return { success: false, message: errorMessage };
+    }
+};
+
+// Change Transaction Password Service
+export const changeTransactionPassword = (data) => async (dispatch) => {
+    dispatch(changePasswordStart()); // Reuse the same action for password loading state
+    try {
+        const response = await axiosInstance.post(transactionPasswordAPI, data); // Use the new endpoint
+        dispatch(changePasswordSuccess(response.data.message)); // Dispatch success with the message
+        return { success: true, message: "Transaction password updated successfully." };
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || "Failed to change transaction password.";
+        dispatch(changePasswordFailure(errorMessage)); // Dispatch failure with the error message
         return { success: false, message: errorMessage };
     }
 };
