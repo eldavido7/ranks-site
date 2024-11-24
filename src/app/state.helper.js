@@ -9,7 +9,6 @@ async function AppInit({ dispatch, isAuthenticated }) {
             const profileResponse = await authService.fetchProfile();
             if (profileResponse.success) {
                 dispatch(setUserProfile(profileResponse.data));
-                dispatch()
                 console.log("User profile initialized successfully.");
             } else {
                 toast.error(profileResponse.message || "Failed to fetch user profile.");
