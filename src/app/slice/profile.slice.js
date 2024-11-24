@@ -6,6 +6,8 @@ const initialState = {
     isPasswordLoading: false,
     error: null,
     success: null,
+    profilePicture: null, // Added for image handling
+    imagePreview: null, // Added for image preview
 };
 
 const profileSlice = createSlice({
@@ -21,6 +23,7 @@ const profileSlice = createSlice({
         fetchProfileSuccess(state, action) {
             state.isLoading = false;
             state.user = action.payload;
+            state.profilePicture = action.payload.profile_picture || null; // Set profile picture
         },
         fetchProfileFailure(state, action) {
             state.isLoading = false;
@@ -36,11 +39,17 @@ const profileSlice = createSlice({
         updateProfileSuccess(state, action) {
             state.isLoading = false;
             state.user = action.payload;
+            state.profilePicture = action.payload.profile_picture || null; // Update profile picture
             state.success = "Profile updated successfully.";
         },
         updateProfileFailure(state, action) {
             state.isLoading = false;
             state.error = action.payload;
+        },
+
+        // Handle image upload and preview
+        setImagePreview(state, action) {
+            state.imagePreview = action.payload;
         },
 
         // Password change reducers
@@ -57,6 +66,7 @@ const profileSlice = createSlice({
             state.isPasswordLoading = false;
             state.error = action.payload;
         },
+
         clearProfileState(state) {
             state.error = null;
             state.success = null;
@@ -71,6 +81,7 @@ export const {
     updateProfileStart,
     updateProfileSuccess,
     updateProfileFailure,
+    setImagePreview,
     changePasswordStart,
     changePasswordSuccess,
     changePasswordFailure,

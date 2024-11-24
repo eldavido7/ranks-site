@@ -85,8 +85,15 @@ const Profile = () => {
                 className="bg-red-600 rounded-2xl md:mx-4 md:my-6 mx-2 md:p-8 p-2 mt-2 text-white">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center">
-                        <BiUserCircle className="md:text-6xl text-4xl md:mr-6 mr-2" />
-                        <div>
+                        {profile?.profile_picture ? (
+                            <img
+                                src={profile.profile_picture}
+                                alt="Profile"
+                                className="md:w-24 md:h-24 w-16 h-16 md:mr-6 mr-2 rounded-full object-cover"
+                            />
+                        ) : (
+                            <BiUserCircle className="md:text-6xl text-4xl md:mr-6 mr-2" />
+                        )}                        <div>
                             <p className="text-xl font-bold">
                                 {profile?.username || "N/A"}
                             </p>
@@ -105,8 +112,18 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className="text-center">
-                        <GiCrown className="text-5xl ml-6" />
-                        <p className="font-bold text-sm mt-2 md:mr-0 mr-8">Crown (VIP8)</p>
+                        {profile?.wallet?.package?.icon ? (
+                            <img
+                                src={profile.wallet.package.icon}
+                                alt={profile.wallet.package.name || "Package Icon"}
+                                className="text-5xl ml-6 w-12 h-12 object-contain inline-block mr-4"
+                            />
+                        ) : (
+                            <GiCrown className="text-5xl ml-6" />
+                        )}
+                        <p className="font-bold text-sm mt-2 mr-0">
+                            {profile?.wallet?.package?.name || "N/A"}
+                        </p>
                     </div>
                 </div>
 

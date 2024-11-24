@@ -1,29 +1,26 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { GoArrowLeft } from "react-icons/go";
 import { toast } from "sonner"; // Import Sonner for toasts
 import "react-toastify/dist/ReactToastify.css";
 import { updateProfile, changePassword } from "../../app/service/profile.service";
+import {
+    fetchProfileStart,
+    fetchProfileSuccess,
+    fetchProfileFailure,
+    updateProfileStart,
+    updateProfileSuccess,
+    updateProfileFailure,
+    setImagePreview,
+} from "../../app/slice/profile.slice";
 import authService from "../../app/service/auth.service";
+import Loader from "./components/Load";
 
 const PersonalInfo = () => {
     const dispatch = useDispatch();
-
-    // Profile fields
-    const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        phone_number: "",
-        first_name: "",
-        last_name: "",
-        gender: "",
-        referral_code: "",
-        // last_connection: "",
-        date_joined: "",
-    });
-
-    const [profilePicture, setProfilePicture] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
+    const { user: formData = {}, isLoading, profilePicture, imagePreview } = useSelector(
+        (state) => state.profile
+    );
 
     // Password fields
     const [passwordData, setPasswordData] = useState({
@@ -42,51 +39,41 @@ const PersonalInfo = () => {
     // Fetch Profile Data
     useEffect(() => {
         const fetchProfile = async () => {
+            dispatch(fetchProfileStart());
             try {
                 const response = await authService.fetchProfile();
                 if (response.success) {
-                    const profile = response.data;
-                    setFormData({
-                        username: profile.username || "",
-                        email: profile.email || "",
-                        phone_number: profile.phone_number || "",
-                        first_name: profile.first_name || "",
-                        last_name: profile.last_name || "",
-                        gender: profile.gender === "M" ? "Male" : profile.gender === "F" ? "Female" : "Other",
-                        referral_code: profile.referral_code || "N/A",
-                        // last_connection: new Date(profile.last_connection).toLocaleString() || "N/A",
-                        date_joined: new Date(profile.date_joined).toLocaleString() || "N/A",
-                    });
-                    setProfilePicture(profile.profile_picture); // Profile picture
+                    dispatch(fetchProfileSuccess(response.data));
                 } else {
+                    dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
                     toast.error(response.message || "Failed to load profile.");
                 }
             } catch (error) {
                 console.error("Error fetching profile:", error);
+                dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
                 toast.error("An error occurred while fetching your profile.");
             }
         };
 
-        fetchProfile();
-    }, []);
+        if (!formData) {
+            fetchProfile();
+        }
+    }, [dispatch, formData]);
 
     // Handle Profile Changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
+        dispatch(updateProfileSuccess({ ...formData, [name]: value })); // Update Redux state
     };
 
     // Handle Image Upload
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setProfilePicture(file); // Save the file for uploading
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImagePreview(reader.result); // Preview image
+                dispatch(setImagePreview(reader.result)); // Set preview in Redux
+                dispatch(updateProfileSuccess({ ...formData, profile_picture: file })); // Update Redux state
             };
             reader.readAsDataURL(file);
         }
@@ -122,6 +109,11 @@ const PersonalInfo = () => {
             toast.error("An unexpected error occurred.");
         }
     };
+
+    // Show Loader when the page is loading
+    if (isLoading || !formData) {
+        return <Loader />;
+    }
 
     // Handle Password Changes
     const handlePasswordChange = (e) => {
@@ -218,10 +210,11 @@ const PersonalInfo = () => {
                     <input
                         type="text"
                         name="username"
-                        value={formData.username}
+                        value={formData.username ?? ""}
                         onChange={handleChange}
                         className="w-full mt-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
+
                 </div>
                 <div>
                     <label className="text-gray-600 font-semibold">Email</label>
@@ -283,7 +276,7 @@ const PersonalInfo = () => {
                         className="w-full mt-1 p-2 border rounded-lg bg-gray-100 cursor-not-allowed"
                     />
                 </div>
-                <div>
+                {/* <div>
                     <label className="text-gray-600 font-semibold">Date Joined</label>
                     <input
                         type="text"
@@ -292,7 +285,7 @@ const PersonalInfo = () => {
                         readOnly
                         className="w-full mt-1 p-2 border rounded-lg bg-gray-100 cursor-not-allowed"
                     />
-                </div>
+                </div> */}
             </div>
 
             {/* Buttons Section */}
