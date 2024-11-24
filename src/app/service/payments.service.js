@@ -50,7 +50,7 @@ const paymentsService = {
         } catch (error) {
             const errorMessage = error.response?.data?.message || "An error occurred while updating payment data.";
             dispatch(postPaymentFailure(errorMessage));
-            return { success: false, message: errorMessage };
+            return { success: false, message: error };
         }
     },
 };

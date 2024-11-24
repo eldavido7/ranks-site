@@ -23,6 +23,7 @@ import Loader from "./components/Load";
 import { toast } from "sonner";
 import { fetchProfileFailure, fetchProfileStart, fetchProfileSuccess } from "../../app/slice/profile.slice";
 import authService from "../../app/service/auth.service";
+import ErrorHandler from "../../app/ErrorHandler";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -47,7 +48,8 @@ const Home = () => {
                     const packData = await dispatch(fetchActivePacks()).unwrap(); // Fetch data
                     dispatch(setPacks(packData)); // Update state
                 } catch (error) {
-                    console.error("Error fetching packs:", error);
+                    // console.error("Error fetching packs:", error);
+                    ErrorHandler(error)
                 }
             }
         };

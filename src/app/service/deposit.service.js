@@ -43,6 +43,6 @@ export const submitDeposit = (formData) => async (dispatch) => {
     } catch (error) {
         const errorMessage = error.response?.data || "An unexpected error occurred.";
         dispatch(submitDepositFailure(errorMessage));
-        return { success: false, message: errorMessage };
+        return { success: false, message: error };
     }
 };

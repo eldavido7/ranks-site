@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { fetchProfileFailure, fetchProfileStart, fetchProfileSuccess } from "../../app/slice/profile.slice";
 import authService from "../../app/service/auth.service";
 import Loader from "./components/Load";
+import ErrorHandler from "../../app/ErrorHandler";
 
 const ContactUs = () => {
     const settings = useSelector((state) => state.auth.settings);
@@ -28,7 +29,8 @@ const ContactUs = () => {
                 } catch (error) {
                     console.error("Error fetching profile:", error);
                     dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
-                    toast.error("An error occurred while fetching your profile.");
+                    // toast.error("An error occurred while fetching your profile.");
+                    ErrorHandler(error)
                 }
             }
         };

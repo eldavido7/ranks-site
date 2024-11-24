@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { fetchDeposits, submitDeposit } from "../../app/service/deposit.service";
 import { BiCopy } from "react-icons/bi";
 import Loader from "./components/loader";
+import ErrorHandler from "../../app/ErrorHandler";
 
 const Deposit = () => {
     const dispatch = useDispatch();
@@ -81,17 +82,18 @@ const Deposit = () => {
                 }
             }
         } catch (error) {
-            const errorMessage =
-                error.response?.data?.message || "An unexpected error occurred.";
-            if (typeof errorMessage === "object") {
-                // Parse backend error messages
-                Object.entries(errorMessage).forEach(([field, errors]) => {
-                    errors.forEach((error) => toast.error(`${field}: ${error}`));
-                });
-            } else {
-                toast.error(errorMessage);
-            }
-            console.error("Deposit submission error:", error.response || error);
+            // const errorMessage =
+            //     error.response?.data?.message || "An unexpected error occurred.";
+            // if (typeof errorMessage === "object") {
+            //     // Parse backend error messages
+            //     Object.entries(errorMessage).forEach(([field, errors]) => {
+            //         errors.forEach((error) => toast.error(`${field}: ${error}`));
+            //     });
+            ErrorHandler(error)
+            // } else {
+            //     toast.error(errorMessage);
+            // }
+            // console.error("Deposit submission error:", error.response || error);
         }
     };
 

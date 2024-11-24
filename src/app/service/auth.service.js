@@ -12,7 +12,6 @@ import {
     setUserProfile,
     logout,
     registerSuccess,
-    registerFailure,
     fetchSettingsStart,
     fetchSettingsSuccess,
     fetchSettingsFailure,
@@ -50,25 +49,25 @@ const authService = {
             console.log(response);
             return { success: true, message: "Registration successful." };
         } catch (error) {
-            let errorMessage = "Registration failed. Please try again.";
-            const errorData = error.response?.data;
+            // let errorMessage = "Registration failed. Please try again.";
+            // const errorData = error.response?.data;
 
-            // Handle nested or multiple error messages
-            if (errorData?.message) {
-                if (typeof errorData.message === "string") {
-                    errorMessage = errorData.message;
-                } else if (typeof errorData.message === "object") {
-                    const messages = Object.values(errorData.message).flat();
-                    errorMessage = messages[0] || errorMessage;
-                }
-            } else if (errorData?.errors) {
-                const errorMessages = Object.values(errorData.errors).flat();
-                errorMessage = errorMessages[0] || errorMessage;
-            }
+            // // Handle nested or multiple error messages
+            // if (errorData?.message) {
+            //     if (typeof errorData.message === "string") {
+            //         errorMessage = errorData.message;
+            //     } else if (typeof errorData.message === "object") {
+            //         const messages = Object.values(errorData.message).flat();
+            //         errorMessage = messages[0] || errorMessage;
+            //     }
+            // } else if (errorData?.errors) {
+            //     const errorMessages = Object.values(errorData.errors).flat();
+            //     errorMessage = errorMessages[0] || errorMessage;
+            // }
 
-            store.dispatch(registerFailure(errorMessage));
-            toast.error(errorMessage); // Show error message via toast
-            return { success: false, message: errorMessage };
+            // store.dispatch(registerFailure(errorMessage));
+            // toast.error(errorMessage); // Show error message via toast
+            return { success: false, message: error };
         }
     },
 
@@ -125,7 +124,7 @@ const authService = {
         } catch (error) {
             console.error("Failed to fetch user profile:", error);
             toast.error("Failed to fetch user profile."); // Show error via toast
-            return { success: false, message: error.response?.data?.message || "Failed to fetch profile." };
+            return { success: false, message: error || "Failed to fetch profile." };
         }
     },
 
@@ -144,7 +143,7 @@ const authService = {
             console.error("Failed to fetch settings:", errorMessage);
             store.dispatch(fetchSettingsFailure(errorMessage)); // Dispatch failure
             toast.error(errorMessage); // Show error via toast
-            return { success: false, message: errorMessage };
+            return { success: false, message: error };
         }
     },
 

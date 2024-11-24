@@ -7,6 +7,7 @@ import { fetchWithdrawalsStart } from "../../app/slice/withdraw.slice";
 import Loader from "./components/loader";
 import { GoArrowLeft } from "react-icons/go";
 import { fadeIn, slideIn } from "../../motion";
+import ErrorHandler from "../../app/ErrorHandler";
 
 const Withdraw = () => {
     const dispatch = useDispatch();
@@ -72,8 +73,9 @@ const Withdraw = () => {
             }
         } catch (error) {
             // Log and display unexpected errors
-            console.error("Unexpected error:", error);
-            toast.error("An unexpected error occurred. Please try again.");
+            // console.error("Unexpected error:", error);
+            // toast.error("An unexpected error occurred. Please try again.");
+            ErrorHandler(error);
         } finally {
             setIsSubmitting(false);
         }

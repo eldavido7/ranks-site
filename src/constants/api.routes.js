@@ -15,3 +15,6 @@ export const settingsAPI = `${BASEURL}/auth/settings/`;
 export const paymentsAPI = `${BASEURL}/api/payments/`;
 export const fetchWithdrawals = `${BASEURL}/api/withdrawals/withdrawal_history/`;
 export const makeWithdrawals = `${BASEURL}/api/withdrawals/make_withdrawal/`;
+export const notificationsAPI = `${BASEURL}/api/notifications/`;
+export const markRead = `${BASEURL}/api/notifications/mark-read/`;
+export const markallRead = `${BASEURL}/api/notifications/mark-all-read/`;

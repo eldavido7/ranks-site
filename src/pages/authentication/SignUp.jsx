@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner"; // Import Sonner toast
 import logo from "../../assets/logo-light.png";
 import authService from "../../app/service/auth.service";
+import ErrorHandler from "../../app/ErrorHandler";
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -93,11 +94,12 @@ const SignUp = () => {
                 toast.success("Registration successful!");
                 setTimeout(() => navigate("/"), 2000); // Redirect to login page
             } else {
-                toast.error(response.message); // Show error message from backend
+                console.log("ddfjkwnkjednjknjekn", response.message)
+                ErrorHandler(response.message); // Show error message from backend
             }
         } catch (err) {
             console.error(err);
-            toast.error("An unexpected error occurred. Please try again.");
+            ErrorHandler(err)
         } finally {
             setLoading(false);
         }

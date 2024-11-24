@@ -66,7 +66,7 @@ export const makeWithdrawal = (payload) => async (dispatch) => {
 
         dispatch(makeWithdrawalFailure(errorMessage));
         toast.error(errorMessage);
-        return { success: false, message: errorMessage };
+        return { success: false, message: error };
     }
 };
 

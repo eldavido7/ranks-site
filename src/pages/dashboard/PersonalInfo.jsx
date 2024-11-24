@@ -13,6 +13,7 @@ import {
 import authService from "../../app/service/auth.service";
 import Loader from "./components/Load";
 import ButtonLoader from "./components/loader";
+import ErrorHandler from "../../app/ErrorHandler";
 
 const PersonalInfo = () => {
     const dispatch = useDispatch();
@@ -51,7 +52,7 @@ const PersonalInfo = () => {
                     dispatch(fetchProfileSuccess(response.data));
                 } else {
                     dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
-                    toast.error(response.message || "Failed to load profile.");
+                    ErrorHandler(response.message)
                 }
             } catch (error) {
                 console.error("Error fetching profile:", error);
@@ -113,15 +114,19 @@ const PersonalInfo = () => {
         try {
             const result = await dispatch(updateProfile(updatedData));
             if (result.success) {
+                console.log("dwfwefwe", result)
                 toast.success(result.message);
-                dispatch(fetchProfileSuccess(result.data)); // Update Redux state with new profile
+                dispatch(updateProfileSuccess(result.data)); // Update Redux state with new profile
             } else {
-                toast.error(result.message);
+                // Check for error object or array
+                const errorMessage = result.message;
+                ErrorHandler(errorMessage)
             }
-            // eslint-disable-next-line no-unused-vars
         } catch (error) {
-            // console.error("Error updating profile:", error);
-            // toast.error(error.message || "An unexpected error occurred.");
+            console.error("Error updating profile:", error);
+
+            // Handle unexpected error format
+            ErrorHandler(error);
         }
     };
 
@@ -182,8 +187,9 @@ const PersonalInfo = () => {
                 toast.error(result.message || "An error occurred while updating the password.");
             }
         } catch (error) {
-            console.error("Error changing password:", error);
-            toast.error("An unexpected error occurred.");
+            // console.error("Error changing password:", error);
+            // toast.error("An unexpected error occurred.");
+            ErrorHandler(error)
         } finally {
             // Hide loader after update
             setIsSavingPassword(false);
@@ -245,8 +251,9 @@ const PersonalInfo = () => {
                 toast.error(result.message || "Failed to update transaction password.");
             }
         } catch (error) {
-            toast.error("An unexpected error occurred.");
-            console.error("Error updating transaction password:", error);
+            // toast.error("An unexpected error occurred.");
+            // console.error("Error updating transaction password:", error);
+            ErrorHandler(error)
         } finally {
             setIsTransactionPasswordSaving(false);
         }

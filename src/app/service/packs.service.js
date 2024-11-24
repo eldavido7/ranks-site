@@ -13,6 +13,6 @@ export const fetchActivePacks = () => async (dispatch) => {
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Failed to fetch packs.";
         dispatch(fetchPacksFailure(errorMessage));
-        return { success: false, message: errorMessage };
+        return { success: false, message: error };
     }
 };

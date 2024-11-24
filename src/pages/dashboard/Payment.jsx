@@ -13,6 +13,7 @@ import {
 } from "../../app/slice/payments.slice";
 import paymentsService from "../../app/service/payments.service";
 import { toast } from "sonner"; // Toast for notifications
+import ErrorHandler from "../../app/ErrorHandler";
 
 const Payment = () => {
     const dispatch = useDispatch();
@@ -66,7 +67,8 @@ const Payment = () => {
         } catch (error) {
             console.error("Failed to post payment data:", error);
             dispatch(postPaymentFailure("Failed to update payment details."));
-            toast.error("Failed to update payment details.");
+            // toast.error("Failed to update payment details.");
+            ErrorHandler(error);
         }
     };
 

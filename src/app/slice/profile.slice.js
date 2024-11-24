@@ -23,7 +23,7 @@ const profileSlice = createSlice({
         fetchProfileSuccess(state, action) {
             state.isLoading = false;
             state.user = action.payload;
-            state.profilePicture = action.payload.profile_picture || null;
+            state.profilePicture = action?.payload?.profile_picture || null;
         },
         fetchProfileFailure(state, action) {
             state.isLoading = false;
@@ -38,8 +38,8 @@ const profileSlice = createSlice({
         },
         updateProfileSuccess(state, action) {
             state.isLoading = false;
-            state.user = { ...state.user, ...action.payload }; // Merge existing and updated data
-            state.profilePicture = action.payload.profile_picture || state.profilePicture; // Keep or update the profile picture
+            state.user = { ...state.user, ...action?.payload }; // Merge existing and updated data
+            state.profilePicture = action?.payload?.profile_picture || state?.profilePicture; // Keep or update the profile picture
             state.success = "Profile updated successfully.";
         },
         updateProfileFailure(state, action) {

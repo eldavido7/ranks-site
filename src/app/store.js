@@ -6,6 +6,7 @@ import productSlice from "./slice/product.slice";
 import depositSlice from "./slice/deposit.slice";
 import paymentsSlice from "./slice/payments.slice";
 import withdrawSlice from "./slice/withdraw.slice";
+import notificationsSlice from "./slice/notifications.slice";
 
 const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
         deposits: depositSlice,
         payments: paymentsSlice,
         withdrawals: withdrawSlice,
+        notifications: notificationsSlice,
     },
 });
 

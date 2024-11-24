@@ -29,7 +29,7 @@ export const updateProfile = (data) => async (dispatch) => {
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Failed to update profile.";
         dispatch(updateProfileFailure(errorMessage));
-        return { success: false, message: errorMessage };
+        return { success: false, message: error };
     }
 };
 
@@ -43,7 +43,7 @@ export const changePassword = (data) => async (dispatch) => {
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Failed to change password.";
         dispatch(changePasswordFailure(errorMessage)); // Dispatch failure with error message
-        return { success: false, message: errorMessage };
+        return { success: false, message: error };
     }
 };
 
@@ -57,6 +57,6 @@ export const changeTransactionPassword = (data) => async (dispatch) => {
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Failed to change transaction password.";
         dispatch(changePasswordFailure(errorMessage)); // Dispatch failure with the error message
-        return { success: false, message: errorMessage };
+        return { success: false, message: error };
     }
 };
