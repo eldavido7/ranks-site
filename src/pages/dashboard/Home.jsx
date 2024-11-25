@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import videoSource from "../../assets/office-loop.mp4";
 import { CiCreditCard1 } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
-import { about, certificate, deposit, events, faq, notifications, starting, terms, withdraw } from "../../constants/app.routes";
+import { about, certificate, deposit, events, faq, starting, terms, withdraw } from "../../constants/app.routes";
 import BottomNavMobile from "./components/BottomNavMobile";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchActivePacks } from "../../app/service/packs.service"; // Import the service
@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { fetchProfileFailure, fetchProfileStart, fetchProfileSuccess } from "../../app/slice/profile.slice";
 import authService from "../../app/service/auth.service";
 import ErrorHandler from "../../app/ErrorHandler";
+import { fetchNotifications } from "../../app/service/notifications.service";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -34,6 +35,10 @@ const Home = () => {
     const [Notifications, setNotifications] = useState(3);
 
     const profile = useSelector((state) => state.profile.user);
+    const { notifications } = useSelector((state) => state.notifications);
+
+    // Unread notifications count
+    const unreadNotifications = notifications.filter(notification => !notification.is_read).length;
 
     // Fetch packs data from Redux state
     const { packs, isLoading, error } = useSelector((state) => state.packs);
@@ -45,11 +50,18 @@ const Home = () => {
         const fetchPacks = async () => {
             if (!packs || !packs.data || packs.data.length === 0) {
                 try {
-                    const packData = await dispatch(fetchActivePacks()).unwrap(); // Fetch data
-                    dispatch(setPacks(packData)); // Update state
+                    // Dispatch the action and await the promise
+                    const response = await dispatch(fetchActivePacks());
+
+                    // Check if the action returned the expected data
+                    if (response.payload?.success) {
+                        dispatch(setPacks(response.payload.data)); // Update state with fetched packs
+                    } else {
+                        return
+                    }
                 } catch (error) {
-                    // console.error("Error fetching packs:", error);
-                    ErrorHandler(error)
+                    console.error("Error fetching packs:", error);
+                    ErrorHandler(error); // Handle the error
                 }
             }
         };
@@ -78,6 +90,18 @@ const Home = () => {
 
         fetchProfile();
     }, [dispatch, profile]);
+
+    useEffect(() => {
+        const fetchNotificationsInterval = () => {
+            dispatch(fetchNotifications());
+        };
+
+        fetchNotificationsInterval();
+
+        const interval = setInterval(fetchNotificationsInterval, 120000);
+
+        return () => clearInterval(interval);
+    }, [dispatch]);
 
     const toggleWelcome = () => {
         setShowWelcome(!showWelcome);
@@ -119,11 +143,11 @@ const Home = () => {
                 <Link to={notifications}>
                     <div className="relative flex items-center">
                         <IoMdNotificationsOutline
-                            className={`text-lg mr-1 ${Notifications > 0 ? "shake" : ""}`}
+                            className={`text-lg mr-1 ${unreadNotifications > 0 ? "shake" : ""}`}
                         />
-                        {Notifications > 0 && (
+                        {unreadNotifications > 0 && (
                             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
-                                {Notifications}
+                                {unreadNotifications}
                             </span>
                         )}
                     </div>
@@ -177,7 +201,7 @@ const Home = () => {
                     <>
                         <FaUserCircle className="mr-2" />
                         <div>
-                            <p className="text-lg font-bold">Hi, tester 👋</p>
+                            <p className="text-lg font-bold">Hi, {profile?.first_name} 👋</p>
                             <p>Welcome Back</p>
                         </div>
                         <MdChevronLeft className="ml-2 text-2xl" />

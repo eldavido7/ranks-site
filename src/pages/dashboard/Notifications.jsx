@@ -83,7 +83,7 @@ const Notification = () => {
                     </div>
 
                     {/* Notifications Header */}
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center md:mb-0 mb-8">
                         <p className="text-gray-700 mb-4">
                             {notifications.length} Notification{notifications.length !== 1 ? "s" : ""}
                         </p>

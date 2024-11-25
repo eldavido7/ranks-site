@@ -288,7 +288,7 @@ const SignUp = () => {
                         {loading ? "Submitting..." : "Register"}
                     </button>
                 </form>
-                <p className="text-center text-gray-600 mt-4">
+                <p className="text-center text-gray-600 mt-4 md:mb-2 mb-52">
                     <button
                         type="button"
                         onClick={() => navigate("/")}

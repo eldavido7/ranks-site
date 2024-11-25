@@ -86,7 +86,7 @@ const TermsandCond = () => {
                     </p>
                 </section>
 
-                <section>
+                <section className="md:mb-2 mb-52">
                     <h2 className="text-xl font-semibold mb-2">9. Requirements</h2>
                     <ul className="list-disc list-inside">
                         <li>The minimum amount to initiate the 2nd data set is 100 USDT (Beginner Level).</li>

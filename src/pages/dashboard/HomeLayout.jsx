@@ -4,9 +4,12 @@ import logo from "../../assets/logo-light.png";
 import { useNavigate } from "react-router-dom";
 import { home } from "../../constants/app.routes";
 import profilep from "../../assets/profile-pic.jpg"
+import { useSelector } from "react-redux";
 
 const HomeLayout = () => {
     const navigate = useNavigate();
+
+    const profile = useSelector((state) => state.profile.user);
 
     return (
         <div className="flex bg-gray-50 h-screen">
@@ -23,9 +26,9 @@ const HomeLayout = () => {
                     </div>
                     <div className="flex items-center space-x-2 text-gray-500">
                         <a href="/home/profile" className="flex">
-                            <span className="text-lg font-medium">Tester</span>
+                            <span className="text-lg font-medium">{profile?.first_name || "User"}</span>
                             <img
-                                src={profilep}
+                                src={profile?.profile_picture || profilep}
                                 alt="Profile"
                                 className="w-6 h-6 ml-2 rounded-full object-cover"
                             />
