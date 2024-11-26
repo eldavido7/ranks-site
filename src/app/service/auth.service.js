@@ -152,8 +152,8 @@ const authService = {
      */
     logout: (show_toast = true) => {
         // Explicit logout by the user
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        // localStorage.removeItem("accessToken");
+        // localStorage.removeItem("refreshToken");
         store.dispatch(logout());
 
         show_toast && toast.success("Logged out successfully."); // Notify user of successful logout

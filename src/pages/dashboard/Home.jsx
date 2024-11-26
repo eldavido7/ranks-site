@@ -51,7 +51,7 @@ const Home = () => {
             if (!packs || !packs.data || packs.data.length === 0) {
                 try {
                     // Dispatch the action and await the promise
-                    const response = await dispatch(fetchActivePacks());
+                    const response = dispatch(fetchActivePacks());
 
                     // Check if the action returned the expected data
                     if (response.payload?.success) {
