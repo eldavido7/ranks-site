@@ -1,7 +1,6 @@
 import axios from "axios";
 import { BASEURL } from "../constants/api.routes";
 import authService from "./service/auth.service";
-import { toast } from "sonner";
 import store from "./store"; // Assuming you use Redux for state management
 import { logout } from "../app/slice/auth.slice";
 // import { logout } from "../../../app/slice/auth.slice"; 
