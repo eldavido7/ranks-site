@@ -25,7 +25,6 @@ const slideVariants = {
 const Starting = () => {
     const dispatch = useDispatch();
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [direction, setDirection] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedStar, setSelectedStar] = useState(0);
     const [comments, setComments] = useState("");
@@ -33,10 +32,28 @@ const Starting = () => {
     const profile = useSelector((state) => state.profile.user);
 
     const images = [
-        'https://adsterra-ranks.site//assets/img/01-min.jpg',
-        'https://adsterra-ranks.site//assets/img/02-min.jpg',
-        'https://adsterra-ranks.site//assets/img/03-min.jpg',
+        "https://picsum.photos/id/101/150/150", // Random image 1
+        "https://picsum.photos/id/102/150/150", // Random image 2
+        "https://picsum.photos/id/103/150/150", // Random image 3
+        "https://picsum.photos/id/104/150/150", // Random image 4
+        "https://picsum.photos/id/105/150/150", // Random image 5
+        "https://picsum.photos/id/106/150/150", // Random image 6
+        "https://picsum.photos/id/107/150/150", // Random image 7
+        "https://picsum.photos/id/108/150/150", // Random image 8
+        "https://picsum.photos/id/109/150/150", // Random image 9
+        "https://picsum.photos/id/110/150/150", // Random image 10
+        "https://picsum.photos/id/111/150/150", // Random image 11
+        "https://picsum.photos/id/112/150/150", // Random image 12
+        "https://picsum.photos/id/113/150/150", // Random image 13
+        "https://picsum.photos/id/114/150/150", // Random image 14
+        "https://picsum.photos/id/115/150/150", // Random image 15
+        "https://picsum.photos/id/116/150/150", // Random image 16
+        "https://picsum.photos/id/117/150/150", // Random image 17
+        "https://picsum.photos/id/118/150/150", // Random image 18
+        "https://picsum.photos/id/119/150/150", // Random image 19
+        "https://picsum.photos/id/120/150/150", // Random image 20
     ];
+
 
     const products = useSelector((state) => state.products.products); // Access products from the Redux store
 
@@ -51,15 +68,25 @@ const Starting = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch]);
 
+    const groupImages = (images, groupSize) => {
+        const grouped = [];
+        for (let i = 0; i < images.length; i += groupSize) {
+            grouped.push(images.slice(i, i + groupSize));
+        }
+        return grouped;
+    };
+
+    const groupedImages = groupImages(images, 10); // Group images into sets of 5
+    const totalSlides = groupedImages.length;
+
     const handleNextSlide = () => {
-        setDirection(1);
-        setCurrentSlide((prev) => (prev + 1) % images.length);
+        setCurrentSlide((prev) => (prev + 1) % totalSlides);
     };
 
     const handlePrevSlide = () => {
-        setDirection(-1);
-        setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
+        setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
     };
+
 
     const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -92,7 +119,7 @@ const Starting = () => {
                     {[{
                         label: "Wallet Balance", amount: `$${profile?.wallet?.balance || "0.00"} USD`, description: "Profits will be added here"
                     },
-                    { label: "Today's Profit", amount: "183.64 USD", description: "Profit Earned" },
+                    { label: "Today's Profit", amount: `$${profile?.wallet?.commission || "0.00"} USD`, description: "Profit Earned" },
                     { label: "On Hold", amount: `$${profile?.wallet?.on_hold || "0.00"} USD`, description: "Will be added to your balance" },
                     { label: "Salary", amount: `$${profile?.wallet?.salary || "0.00"} USD`, description: "Today's Salary" }].map((item, idx) => (
                         <div key={idx} className="p-4 bg-gray-50 rounded-lg shadow-md">
@@ -108,30 +135,71 @@ const Starting = () => {
             <div className="w-full h-auto mx-auto mt-8 bg-white rounded-lg shadow-lg p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold">Start Optimization</h2>
-                    <p className="text-red-500 text-xl font-semibold">29/80</p>
+                    <p className="text-red-500 text-xl font-semibold">
+                        {currentSlide + 1} / {totalSlides}
+                    </p>
                 </div>
-                <div className="relative">
+                <div className="relative flex justify-center items-center">
+                    {/* Previous Button */}
+                    <button
+                        onClick={handlePrevSlide}
+                        className="absolute left-0 bg-gray-200 hover:bg-gray-300 p-2 rounded-full z-10"
+                    >
+                        ❮
+                    </button>
+
+                    {/* Carousel Content */}
                     <motion.div
                         key={currentSlide}
-                        custom={direction}
+                        custom={currentSlide}
                         variants={slideVariants}
                         initial="enter"
                         animate="center"
                         exit="exit"
                         transition={{ duration: 0.5 }}
-                        className="w-full"
+                        className="grid gap-y-4"
+                        style={{
+                            gridTemplateColumns: "repeat(4, 1fr)",
+                            justifyContent: "center",
+                        }}
                     >
-                        <img src={images[currentSlide]} alt={`Slide ${currentSlide + 1}`} className="w-full rounded-lg" />
+                        {/* Top Row: 4 Images */}
+                        <div className="col-span-4 flex justify-around">
+                            {groupedImages[currentSlide].slice(0, 4).map((img, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex justify-center items-center border rounded-full mx-4 md:mx-10 bg-gray-500 p-0.5 h-[70px] md:w-[200px] md:h-[200px]"
+                                >
+                                    <img
+                                        src={img}
+                                        alt={`Image ${idx + 1}`}
+                                        className="w-full h-full object-cover rounded-full"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Bottom Row: 3 Images */}
+                        <div className="col-span-4 flex justify-center gap-4 mt-4">
+                            {groupedImages[currentSlide].slice(4, 7).map((img, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex justify-center items-center border rounded-full bg-gray-500 p-0.5 mx-4 md:mx-14 w-[70px] h-[70px] md:w-[200px] md:h-[200px]"
+                                >
+                                    <img
+                                        src={img}
+                                        alt={`Image ${idx + 5}`}
+                                        className="w-full h-full object-cover rounded-full"
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </motion.div>
-                    <button
-                        onClick={handlePrevSlide}
-                        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-2 rounded-full"
-                    >
-                        ❮
-                    </button>
+
+                    {/* Next Button */}
                     <button
                         onClick={handleNextSlide}
-                        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-2 rounded-full"
+                        className="absolute right-0 bg-gray-200 hover:bg-gray-300 p-2 rounded-full z-10"
                     >
                         ❯
                     </button>
@@ -143,6 +211,7 @@ const Starting = () => {
                     Starting
                 </button>
             </div>
+
 
             {/* Important Hint Section */}
             <div className="w-full md:mb-2 mb-52 mx-auto mt-4 bg-white rounded-lg shadow-lg p-8">
@@ -177,26 +246,21 @@ const Starting = () => {
                         {/* Product Images and Details */}
                         <div className="flex items-start sm:space-x-6 mb-4">
                             {/* Product Images */}
-                            <div className="flex space-x-2 sm:space-x-4 overflow-x-auto w-auto sm:w-auto">
-                                <img
-                                    src="https://adsterra-ranks.site//assets/img/01-min.jpg"
-                                    alt="Product 1"
-                                    className="w-32 h-32 object-cover rounded-lg"
-                                />
-                                <img
-                                    src="https://adsterra-ranks.site//assets/img/02-min.jpg"
-                                    alt="Product 2"
-                                    className="w-32 h-32 object-cover rounded-lg"
-                                />
-                                <img
-                                    src="https://adsterra-ranks.site//assets/img/03-min.jpg"
-                                    alt="Product 3"
-                                    className="w-32 h-32 object-cover rounded-lg"
-                                />
+                            <div className="flex space-x-2 sm:space-x-4 overflow-x-auto w-full sm:w-auto">
+                                {images.slice(0, 3).map((img, idx) => (
+                                    <div key={idx} className="flex-shrink-0 w-[90px] md:w-[120px] h-auto">
+                                        <img
+                                            src={img}
+                                            alt={`Product ${idx + 1}`}
+                                            className="w-full h-auto object-cover rounded-lg"
+                                        />
+                                    </div>
+                                ))}
                             </div>
 
+
                             {/* Product Details */}
-                            <div className="text-right flex-grow md:w-1/2 w-auto">
+                            <div className="text-right flex-grow md:w-1/4 w-auto">
                                 <p className="text-sm sm:text-lg font-semibold">Product 647</p>
                                 <p className="text-sm sm:text-lg font-semibold">Product 897</p>
                                 <p className="text-sm sm:text-lg font-semibold">Product 807</p>
