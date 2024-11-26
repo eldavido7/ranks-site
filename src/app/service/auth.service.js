@@ -180,8 +180,12 @@ const authService = {
             console.error("Failed to refresh access token:", error.response?.data?.message || error.message);
 
             // Consolidate toast error for session expiration
-            if (error.response?.status === 401 || error.message === "No refresh token found.") {
+            if (error.response?.status === 401) {
                 toast.error("Session expired. Please log in again.");
+                authService.logout(false)
+            }
+
+            if (error.message === "No refresh token found.") {
                 authService.logout(false)
             }
 

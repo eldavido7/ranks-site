@@ -70,7 +70,9 @@ const Home = () => {
 
     useEffect(() => {
         const fetchProfile = async () => {
+
             if (!profile) {
+                
                 dispatch(fetchProfileStart());
                 try {
                     const response = await authService.fetchProfile();
