@@ -143,10 +143,10 @@ const Starting = () => {
     }, [currentSlide]);
 
     const toggleModal = () => {
-        if (!currentGame) {
-            toast.error("No new submission available for you. Check back later");
-            return;
-        }
+        // if (!currentGame) {
+        //     toast.error("No new submission available for you. Check back later");
+        //     return;
+        // }
         setIsModalOpen(!isModalOpen);
     };
 
@@ -387,10 +387,10 @@ const Starting = () => {
                         {/* Submit Button */}
                         <button
                             onClick={async () => {
-                                if (!currentGame || !currentGame.pending) {
-                                    toast.error("No new submission available for you. Check back later.");
-                                    return;
-                                }
+                                // if (!currentGame || !currentGame.pending) {
+                                //     toast.error("No new submission available for you. Check back later.");
+                                //     return;
+                                // }
 
                                 if (!selectedStar || selectedStar < 1 || selectedStar > 5) {
                                     toast.error("Please select a valid rating between 1 and 5.");
@@ -406,7 +406,7 @@ const Starting = () => {
                                         toast.success("Submission successful!");
                                         toggleModal();
                                     } else {
-                                        toast.error(`Submission failed: ${response?.message}`);
+                                        ErrorHandler(response.message);
                                     }
                                 } catch (error) {
                                     ErrorHandler(error);
