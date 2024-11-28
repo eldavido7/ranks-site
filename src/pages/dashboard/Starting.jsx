@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-import { BiUser } from "react-icons/bi";
+import { BiUserCircle } from "react-icons/bi";
 import { GiCrown } from "react-icons/gi";
 import { motion } from "framer-motion";
 import { slideIn } from "../../motion";
 import BottomNavMobile from "./components/BottomNavMobile";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../app/service/products.service";
+import { fetchCurrentGame, fetchProducts, submitCurrentGame } from "../../app/service/products.service";
+import { toast } from "sonner";
+import ErrorHandler from "../../app/ErrorHandler";
+import { fetchProfileFailure, fetchProfileStart, fetchProfileSuccess } from "../../app/slice/profile.slice";
+import authService from "../../app/service/auth.service";
+import Loader from "../dashboard/components/loader"
 
 const slideVariants = {
     enter: (direction) => ({
@@ -30,7 +35,11 @@ const Starting = () => {
     const [comments, setComments] = useState("");
 
     const profile = useSelector((state) => state.profile.user);
+    const isLoading = useSelector((state) => state.products.isLoading);
+    const products = useSelector((state) => state.products.products);
+    const currentGame = useSelector((state) => state.products.currentGame);
 
+    // eslint-disable-next-line no-unused-vars
     const images = [
         "https://picsum.photos/id/101/150/150", // Random image 1
         "https://picsum.photos/id/102/150/150", // Random image 2
@@ -54,30 +63,61 @@ const Starting = () => {
         "https://picsum.photos/id/120/150/150", // Random image 20
     ];
 
+    useEffect(() => {
+        const fetchProfile = async () => {
 
-    const products = useSelector((state) => state.products.products); // Access products from the Redux store
+            if (!profile) {
+
+                dispatch(fetchProfileStart());
+                try {
+                    const response = await authService.fetchProfile();
+                    if (response.success) {
+                        dispatch(fetchProfileSuccess(response.data));
+                    } else {
+                        dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
+                        toast.error(response.message || "Failed to load profile.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                    dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
+                    toast.error("An error occurred while fetching your profile.");
+                }
+            }
+        };
+
+        fetchProfile();
+    }, [dispatch, profile]);
+
+    useEffect(() => {
+        const fetchCurrentGameData = async () => {
+            if (!currentGame || Object.keys(currentGame).length === 0) {
+                dispatch(fetchCurrentGame());
+            }
+        };
+
+        fetchCurrentGameData();
+    }, [dispatch, currentGame]);
 
     useEffect(() => {
         const fetchProductsData = async () => {
-            if (!products || products.length === 0) { // Only fetch if products are not already in the state
-                await dispatch(fetchProducts()); // Use the fetchProducts function from the service
+            if (!products || products.length === 0) {
+                dispatch(fetchProducts());
             }
         };
 
         fetchProductsData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch]);
+    }, [dispatch, products]);
 
-    const groupImages = (images, groupSize) => {
+    const groupProducts = (products, groupSize) => {
         const grouped = [];
-        for (let i = 0; i < images.length; i += groupSize) {
-            grouped.push(images.slice(i, i + groupSize));
+        for (let i = 0; i < products.length; i += groupSize) {
+            grouped.push(products.slice(i, i + groupSize));
         }
         return grouped;
     };
 
-    const groupedImages = groupImages(images, 10); // Group images into sets of 5
-    const totalSlides = groupedImages.length;
+    const groupedProducts = products?.length > 0 ? groupProducts(products, 7) : [[]];
+    const totalSlides = groupedProducts.length;
 
     const handleNextSlide = () => {
         setCurrentSlide((prev) => (prev + 1) % totalSlides);
@@ -87,8 +127,11 @@ const Starting = () => {
         setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
     };
 
-
-    const toggleModal = () => setIsModalOpen(!isModalOpen);
+    useEffect(() => {
+        if (currentSlide >= totalSlides) {
+            setCurrentSlide(0);
+        }
+    }, [currentSlide, totalSlides]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -99,16 +142,39 @@ const Starting = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentSlide]);
 
+    const toggleModal = () => {
+        if (!currentGame) {
+            toast.error("No new submission available for you. Check back later");
+            return;
+        }
+        setIsModalOpen(!isModalOpen);
+    };
+
     return (
         <div className="flex flex-col items-center">
             {/* Greeting and Wallet Information Section */}
             <div className="w-full mx-auto mt-4 bg-white rounded-lg shadow-lg p-4">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center">
-                        <BiUser className="text-3xl text-red-500 mr-2" />
-                        <p className="font-bold text-lg">Hi, Tester 👋</p>
+                        {profile?.profile_picture ? (
+                            <img
+                                src={profile.profile_picture}
+                                alt="Profile"
+                                className="w-12 h-12 md:mr-6 mr-2 rounded-full object-cover"
+                            />
+                        ) : (
+                            <BiUserCircle className="md:text-6xl text-4xl md:mr-6 mr-2" />
+                        )}
+                        <p className="font-bold text-lg">Hi, {profile?.first_name} 👋</p>
                     </div>
-                    <GiCrown className="text-4xl text-yellow-500" />
+                    {profile?.wallet?.package?.icon ? (
+                        <img
+                            src={profile.wallet.package.icon}
+                            className="text-5xl ml-6 w-12 h-12 object-contain inline-block mr-4"
+                        />
+                    ) : (
+                        <GiCrown className="text-5xl ml-6" />
+                    )}
                 </div>
 
                 {/* Wallet Information Cards */}
@@ -136,7 +202,7 @@ const Starting = () => {
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold">Start Optimization</h2>
                     <p className="text-red-500 text-xl font-semibold">
-                        {currentSlide + 1} / {totalSlides}
+                        {currentGame?.current_number_count || 0} / {currentGame?.total_number_can_play || 0}
                     </p>
                 </div>
                 <div className="relative flex justify-center items-center">
@@ -149,52 +215,51 @@ const Starting = () => {
                     </button>
 
                     {/* Carousel Content */}
-                    <motion.div
-                        key={currentSlide}
-                        custom={currentSlide}
-                        variants={slideVariants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.5 }}
-                        className="grid gap-y-4"
-                        style={{
-                            gridTemplateColumns: "repeat(4, 1fr)",
-                            justifyContent: "center",
-                        }}
-                    >
-                        {/* Top Row: 4 Images */}
-                        <div className="col-span-4 flex justify-around">
-                            {groupedImages[currentSlide].slice(0, 4).map((img, idx) => (
-                                <div
-                                    key={idx}
-                                    className="flex justify-center items-center border rounded-full mx-4 md:mx-10 bg-gray-500 p-0.5 h-[70px] md:w-[200px] md:h-[200px]"
-                                >
-                                    <img
-                                        src={img}
-                                        alt={`Image ${idx + 1}`}
-                                        className="w-full h-full object-cover rounded-full"
-                                    />
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Bottom Row: 3 Images */}
-                        <div className="col-span-4 flex justify-center gap-4 mt-4">
-                            {groupedImages[currentSlide].slice(4, 7).map((img, idx) => (
-                                <div
-                                    key={idx}
-                                    className="flex justify-center items-center border rounded-full bg-gray-500 p-0.5 mx-4 md:mx-14 w-[70px] h-[70px] md:w-[200px] md:h-[200px]"
-                                >
-                                    <img
-                                        src={img}
-                                        alt={`Image ${idx + 5}`}
-                                        className="w-full h-full object-cover rounded-full"
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </motion.div>
+                    {isLoading ? (
+                        <p className="text-lg text-gray-500">Loading products...</p>
+                    ) : groupedProducts[0]?.length > 0 ? (
+                        <motion.div
+                            key={currentSlide}
+                            custom={currentSlide}
+                            variants={slideVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{ duration: 0.5 }}
+                            className="grid gap-y-4"
+                        >
+                            <div className="col-span-4 flex justify-around">
+                                {groupedProducts[currentSlide]?.slice(0, 4).map((product, idx) => (
+                                    <div
+                                        key={product.id || idx}
+                                        className="flex justify-center items-center border rounded-full mx-4 md:mx-10 bg-gray-500 p-0.5 h-[70px] md:w-[200px] md:h-[200px]"
+                                    >
+                                        <img
+                                            src={product.image || "https://via.placeholder.com/150"}
+                                            alt={product.name || `Product ${idx + 1}`}
+                                            className="w-full h-full object-cover rounded-full"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="col-span-4 flex justify-center gap-4 mt-4">
+                                {groupedProducts[currentSlide]?.slice(4, 7).map((product, idx) => (
+                                    <div
+                                        key={product.id || idx}
+                                        className="flex justify-center items-center border rounded-full bg-gray-500 p-0.5 mx-4 md:mx-14 w-[70px] h-[70px] md:w-[200px] md:h-[200px]"
+                                    >
+                                        <img
+                                            src={product.image || "https://via.placeholder.com/150"}
+                                            alt={product.name || `Product ${idx + 5}`}
+                                            className="w-full h-full object-cover rounded-full"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    ) : (
+                        <p className="text-lg text-gray-500">No products available</p>
+                    )}
 
                     {/* Next Button */}
                     <button
@@ -223,14 +288,14 @@ const Starting = () => {
             </div>
 
             {/* Modal */}
-            {isModalOpen && (
+            {isModalOpen && currentGame && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <motion.div
                         initial={{ opacity: 0, y: 300 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 300 }}
                         className="bg-white p-4 sm:p-8 rounded-3xl shadow-lg max-w-2xl w-full relative overflow-y-auto"
-                        style={{ maxHeight: '90vh' }}
+                        style={{ maxHeight: "90vh" }}
                     >
                         {/* Close Button */}
                         <button
@@ -247,47 +312,53 @@ const Starting = () => {
                         <div className="flex items-start sm:space-x-6 mb-4">
                             {/* Product Images */}
                             <div className="flex space-x-2 sm:space-x-4 overflow-x-auto w-full sm:w-auto">
-                                {images.slice(0, 3).map((img, idx) => (
-                                    <div key={idx} className="flex-shrink-0 w-[90px] md:w-[120px] h-auto">
+                                {currentGame?.products?.slice(0, 3).map((product) => (
+                                    <div key={product?.id} className="flex-shrink-0 w-[90px] md:w-[120px] h-auto">
                                         <img
-                                            src={img}
-                                            alt={`Product ${idx + 1}`}
+                                            src={product?.image}
+                                            alt={product?.name}
                                             className="w-full h-auto object-cover rounded-lg"
                                         />
                                     </div>
                                 ))}
                             </div>
 
-
                             {/* Product Details */}
                             <div className="text-right flex-grow md:w-1/4 w-auto">
-                                <p className="text-sm sm:text-lg font-semibold">Product 647</p>
-                                <p className="text-sm sm:text-lg font-semibold">Product 897</p>
-                                <p className="text-sm sm:text-lg font-semibold">Product 807</p>
-                                <p className="text-sm sm:text-lg text-red-500 font-bold mt-1 sm:mt-2">USD 4350</p>
-                                <p className="text-gray-500 text-xs sm:text-sm mt-1">Star Rating</p>
+                                {currentGame?.products?.slice(0, 3).map((product) => (
+                                    <p key={product?.id} className="text-sm sm:text-lg font-semibold">
+                                        {product?.name}
+                                    </p>
+                                ))}
+                                <p className="text-sm sm:text-lg text-red-500 font-bold mt-1 sm:mt-2">
+                                    USD {currentGame?.amount}
+                                </p>
+                                {!currentGame.pending && (
+                                    <>
+                                        <p className="text-gray-500 text-xs sm:text-sm mt-1">Star Rating</p>
+                                        {/* Stars Section */}
+                                        <div className="flex justify-end mt-1 text-gray-400 text-sm sm:text-xl space-x-1">
+                                            {Array.from({ length: 5 }).map((_, index) => (
+                                                <span
+                                                    key={index}
+                                                    onClick={() => setSelectedStar(index + 1)}
+                                                    className={`cursor-pointer ${index < selectedStar ? "text-yellow-400" : "text-gray-400"
+                                                        }`}
+                                                >
+                                                    ☆
+                                                </span>
+                                            ))}
+                                        </div>
 
-                                {/* Stars Section */}
-                                <div className="flex justify-end mt-1 text-gray-400 text-sm sm:text-xl space-x-1">
-                                    {Array.from({ length: 5 }).map((_, index) => (
-                                        <span
-                                            key={index}
-                                            onClick={() => setSelectedStar(index + 1)}
-                                            className={`cursor-pointer ${index < selectedStar ? "text-yellow-400" : "text-gray-400"
-                                                }`}
-                                        >
-                                            ☆
-                                        </span>
-                                    ))}
-                                </div>
-
-                                {/* Comments Section */}
-                                <textarea
-                                    placeholder="Leave your comments here..."
-                                    className="w-full mt-3 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
-                                    value={comments}
-                                    onChange={(e) => setComments(e.target.value)}
-                                ></textarea>
+                                        {/* Comments Section */}
+                                        <textarea
+                                            placeholder="Leave your comments here..."
+                                            className="w-full mt-3 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+                                            value={comments}
+                                            onChange={(e) => setComments(e.target.value)}
+                                        ></textarea>
+                                    </>
+                                )}
                             </div>
                         </div>
 
@@ -295,31 +366,58 @@ const Starting = () => {
                         <div className="flex justify-between border-t border-b py-2 sm:py-4 mb-4 text-center">
                             <div>
                                 <p className="text-sm sm:text-lg font-semibold text-gray-500">Total amount</p>
-                                <p className="text-red-500 font-bold text-sm sm:text-lg">USD 4350</p>
+                                <p className="text-red-500 font-bold text-sm sm:text-lg">USD {currentGame?.amount}</p>
                             </div>
                             <div>
                                 <p className="text-sm sm:text-lg font-semibold text-gray-500">Commission</p>
-                                <p className="text-red-500 font-bold text-sm sm:text-lg">USD 652.5</p>
+                                <p className="text-red-500 font-bold text-sm sm:text-lg">USD {currentGame?.commission}</p>
                             </div>
                         </div>
 
-                        {/* Creation Time and Rating No */}
+                        {/* Creation Time and Rating Number */}
                         <div className="flex justify-between text-sm sm:text-lg text-gray-600 mb-2 sm:mb-4">
                             <p>Creation time</p>
-                            <p>2024-11-13 05:01:47</p>
+                            <p>{new Date(currentGame?.created_at).toLocaleString()}</p>
                         </div>
                         <div className="flex justify-between text-sm sm:text-lg text-gray-600 mb-4 sm:mb-6">
                             <p>Rating No</p>
-                            <p className="text-red-500">1731502907</p>
+                            <p className="text-red-500">{currentGame?.rating_no}</p>
                         </div>
 
                         {/* Submit Button */}
                         <button
-                            onClick={toggleModal}
-                            className="w-full bg-red-500 text-white font-semibold py-2 sm:py-3 rounded-full"
+                            onClick={async () => {
+                                if (!currentGame || !currentGame.pending) {
+                                    toast.error("No new submission available for you. Check back later.");
+                                    return;
+                                }
+
+                                if (!selectedStar || selectedStar < 1 || selectedStar > 5) {
+                                    toast.error("Please select a valid rating between 1 and 5.");
+                                    return;
+                                }
+
+                                try {
+                                    const response = await dispatch(
+                                        submitCurrentGame(selectedStar, comments)
+                                    );
+
+                                    if (response?.success) {
+                                        toast.success("Submission successful!");
+                                        toggleModal();
+                                    } else {
+                                        toast.error(`Submission failed: ${response?.message}`);
+                                    }
+                                } catch (error) {
+                                    ErrorHandler(error);
+                                }
+                            }}
+                            className="w-full bg-red-500 text-white font-semibold py-2 sm:py-3 rounded-full flex justify-center items-center"
                         >
-                            Submit
+                            {isLoading ? <Loader /> : currentGame?.pending ? "Confirm Submission" : "Submit"}
                         </button>
+
+
                     </motion.div>
                 </div>
             )}

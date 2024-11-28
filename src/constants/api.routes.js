@@ -18,3 +18,5 @@ export const makeWithdrawals = `${BASEURL}/api/withdrawals/make_withdrawal/`;
 export const notificationsAPI = `${BASEURL}/api/notifications/`;
 export const markRead = `${BASEURL}/api/notifications/mark-read/`;
 export const markallRead = `${BASEURL}/api/notifications/mark-all-read/`;
+export const currentGame = `${BASEURL}/api/games/current-game/`;
+export const playGame = `${BASEURL}/api/games/play-game/`;
