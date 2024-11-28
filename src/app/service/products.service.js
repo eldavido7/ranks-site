@@ -42,8 +42,9 @@ export const fetchCurrentGame = () => async (dispatch) => {
         return { success: true, data: gameData };
     } catch (error) {
         const errorMessage =
-            error.response?.data?.message || "Failed to fetch current game.";
-        dispatch(fetchCurrentGameFailure(errorMessage));
+            error.response?.data?.data
+            errorMessage["message"] = error.response?.data?.message
+        dispatch(fetchCurrentGameSuccess(errorMessage));
         return { success: false, message: errorMessage };
     }
 };

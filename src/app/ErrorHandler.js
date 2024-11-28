@@ -9,9 +9,12 @@ import { toast } from "sonner";
 const ErrorHandler = (error) => {
     const errorMessage =
         error?.response?.data?.errors ||
+        error?.response?.data?.message ||
         error?.response?.data?.detail ||
         error?.message ||
         "An unexpected error occurred.";
+        console.log("fkjfjkfjkjgf",error.response.data.message)
+        console.log("errorMessage",errorMessage)
     // console.log("rnfjknfrnjkerf", errorMessage)
     if (typeof errorMessage === "string") {
         // If the error is a simple string

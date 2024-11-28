@@ -38,6 +38,9 @@ const Starting = () => {
     const isLoading = useSelector((state) => state.products.isLoading);
     const products = useSelector((state) => state.products.products);
     const currentGame = useSelector((state) => state.products.currentGame);
+    const error_msg = useSelector((state) => state.products.error_msg);
+
+    console.log("currentGame",currentGame)
 
     // eslint-disable-next-line no-unused-vars
     const images = [
@@ -88,6 +91,8 @@ const Starting = () => {
         fetchProfile();
     }, [dispatch, profile]);
 
+
+
     useEffect(() => {
         const fetchCurrentGameData = async () => {
             if (!currentGame || Object.keys(currentGame).length === 0) {
@@ -96,7 +101,7 @@ const Starting = () => {
         };
 
         fetchCurrentGameData();
-    }, [dispatch, currentGame]);
+    }, [dispatch]);
 
     useEffect(() => {
         const fetchProductsData = async () => {
@@ -143,10 +148,11 @@ const Starting = () => {
     }, [currentSlide]);
 
     const toggleModal = () => {
-        // if (!currentGame) {
-        //     toast.error("No new submission available for you. Check back later");
-        //     return;
-        // }
+        if (!currentGame.id) {
+            setIsModalOpen(false)
+            toast.error(error_msg);
+            return;
+        }
         setIsModalOpen(!isModalOpen);
     };
 
@@ -401,18 +407,22 @@ const Starting = () => {
                                     const response = await dispatch(
                                         submitCurrentGame(selectedStar, comments)
                                     );
-
+                                        console.log("response",response.message)
                                     if (response?.success) {
                                         toast.success("Submission successful!");
                                         toggleModal();
                                     } else {
                                         ErrorHandler(response.message);
+                                        toggleModal()
+                                        dispatch(fetchCurrentGame());
                                     }
                                 } catch (error) {
                                     ErrorHandler(error);
+                                    toggleModal()
+                                    dispatch(fetchCurrentGame());
                                 }
                             }}
-                            className="w-full bg-red-500 text-white font-semibold py-2 sm:py-3 rounded-full flex justify-center items-center"
+                            className="w-full bg-red-500 text-white font-semibold py-2 sm:py-3 rounded-full flex justify-center items-center "
                         >
                             {isLoading ? <Loader /> : currentGame?.pending ? "Confirm Submission" : "Submit"}
                         </button>

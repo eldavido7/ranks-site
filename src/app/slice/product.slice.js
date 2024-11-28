@@ -7,6 +7,7 @@ const productSlice = createSlice({
         currentGame: null, // Store the current game data
         isLoading: false,
         error: null,
+        error_msg:null,
     },
     reducers: {
         // Existing reducers
@@ -31,6 +32,7 @@ const productSlice = createSlice({
         fetchCurrentGameSuccess(state, action) {
             state.isLoading = false;
             state.currentGame = action.payload || null; // Store current game data
+            state.error_msg = action.payload.message
         },
         fetchCurrentGameFailure(state, action) {
             state.isLoading = false;
