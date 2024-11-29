@@ -20,3 +20,4 @@ export const markRead = `${BASEURL}/api/notifications/mark-read/`;
 export const markallRead = `${BASEURL}/api/notifications/mark-all-read/`;
 export const currentGame = `${BASEURL}/api/games/current-game/`;
 export const playGame = `${BASEURL}/api/games/play-game/`;
+export const gameRecord = `${BASEURL}/api/games/game-record/`;

@@ -40,7 +40,7 @@ const Starting = () => {
     const currentGame = useSelector((state) => state.products.currentGame);
     const error_msg = useSelector((state) => state.products.error_msg);
 
-    console.log("currentGame",currentGame)
+    console.log("currentGame", currentGame)
 
     // eslint-disable-next-line no-unused-vars
     const images = [
@@ -101,6 +101,7 @@ const Starting = () => {
         };
 
         fetchCurrentGameData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch]);
 
     useEffect(() => {
@@ -398,18 +399,36 @@ const Starting = () => {
                                 //     return;
                                 // }
 
-                                if (!selectedStar || selectedStar < 1 || selectedStar > 5) {
-                                    toast.error("Please select a valid rating between 1 and 5.");
-                                    return;
+                                if (!currentGame?.pending) {
+                                    if (!selectedStar || selectedStar < 1 || selectedStar > 5) {
+                                        toast.error("Please select a valid rating between 1 and 5.");
+                                        return;
+                                    }
                                 }
 
                                 try {
                                     const response = await dispatch(
                                         submitCurrentGame(selectedStar, comments)
                                     );
-                                        console.log("response",response.message)
+                                    console.log("response", response.message)
                                     if (response?.success) {
                                         toast.success("Submission successful!");
+                                        setSelectedStar(0);
+                                        setComments("");
+                                        dispatch(fetchProfileStart());
+                                        try {
+                                            const response = await authService.fetchProfile();
+                                            if (response.success) {
+                                                dispatch(fetchProfileSuccess(response.data));
+                                            } else {
+                                                dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
+                                                toast.error(response.message || "Failed to load profile.");
+                                            }
+                                        } catch (error) {
+                                            console.error("Error fetching profile:", error);
+                                            dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
+                                            toast.error("An error occurred while fetching your profile.");
+                                        }
                                         toggleModal();
                                     } else {
                                         ErrorHandler(response.message);

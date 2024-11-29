@@ -13,7 +13,7 @@ import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { motion } from "framer-motion";
 import videoSource from "../../assets/office-loop.mp4";
 import { CiCreditCard1 } from "react-icons/ci";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { about, certificate, deposit, events, faq, starting, terms, withdraw } from "../../constants/app.routes";
 import BottomNavMobile from "./components/BottomNavMobile";
 import { useSelector, useDispatch } from "react-redux";
@@ -72,7 +72,7 @@ const Home = () => {
         const fetchProfile = async () => {
 
             if (!profile) {
-                
+
                 dispatch(fetchProfileStart());
                 try {
                     const response = await authService.fetchProfile();
@@ -109,6 +109,16 @@ const Home = () => {
         setShowWelcome(!showWelcome);
     };
 
+    useEffect(() => {
+        if (showWelcome) {
+            const timer = setTimeout(() => {
+                setShowWelcome(false);
+            }, 5000); // 5000ms = 5 seconds
+
+            return () => clearTimeout(timer); // Cleanup the timer
+        }
+    }, [showWelcome]);
+
     return isLoading ? (
         <Loader />
     ) : (
@@ -142,18 +152,17 @@ const Home = () => {
                 style={{ width: "90%", maxWidth: "90%", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}
                 transition={{ duration: 0.5 }}
             >
-                <Link to={notifications}>
-                    <div className="relative flex items-center">
-                        <IoMdNotificationsOutline
-                            className={`text-lg mr-1 ${unreadNotifications > 0 ? "shake" : ""}`}
-                        />
-                        {unreadNotifications > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
-                                {unreadNotifications}
-                            </span>
-                        )}
-                    </div>
-                </Link>
+                <div className="relative flex items-center">
+                    <IoMdNotificationsOutline
+                        onClick={() => navigate("/home/notifications")}
+                        className={`text-lg cursor-pointer mr-1 ${unreadNotifications > 0 ? "shake" : ""}`}
+                    />
+                    {unreadNotifications > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
+                            {unreadNotifications}
+                        </span>
+                    )}
+                </div>
                 <marquee direction="">
                     Welcome to Adsterra! We collaborate with you to drive better exposure and
                     create proven value with Adsterra platform strategy and product solutions.

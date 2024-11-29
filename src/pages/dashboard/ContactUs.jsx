@@ -4,10 +4,10 @@ import { GoArrowLeft } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { useEffect } from "react";
-import { fetchProfileFailure, fetchProfileStart, fetchProfileSuccess } from "../../app/slice/profile.slice";
 import authService from "../../app/service/auth.service";
 import Loader from "./components/Load";
 import ErrorHandler from "../../app/ErrorHandler";
+import { fetchSettingsFailure, fetchSettingsStart, fetchSettingsSuccess } from "../../app/slice/auth.slice";
 
 const ContactUs = () => {
     const settings = useSelector((state) => state.auth.settings);
@@ -17,18 +17,18 @@ const ContactUs = () => {
     useEffect(() => {
         const fetchSettings = async () => {
             if (!settings) {
-                dispatch(fetchProfileStart());
+                dispatch(fetchSettingsStart());
                 try {
                     const response = await authService.fetchSettings();
                     if (response.success) {
-                        dispatch(fetchProfileSuccess(response.data));
+                        dispatch(fetchSettingsSuccess(response.data));
                     } else {
-                        dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
+                        dispatch(fetchSettingsFailure(response.message || "Failed to load profile."));
                         toast.error(response.message || "Failed to load profile.");
                     }
                 } catch (error) {
                     console.error("Error fetching profile:", error);
-                    dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
+                    dispatch(fetchSettingsFailure("An error occurred while fetching your profile."));
                     // toast.error("An error occurred while fetching your profile.");
                     ErrorHandler(error)
                 }

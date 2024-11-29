@@ -1,15 +1,18 @@
 import axiosInstance from "../axiosConfig";
-import { productsAPI, currentGame, playGame } from "../../constants/api.routes";
+import { productsAPI, currentGame, playGame, gameRecord } from "../../constants/api.routes";
 import {
     fetchProductsStart,
     fetchProductsSuccess,
     fetchProductsFailure,
     fetchCurrentGameStart,
     fetchCurrentGameSuccess,
-    fetchCurrentGameFailure,
+    // fetchCurrentGameFailure,
     playGameStart,
     playGameSuccess,
     playGameFailure,
+    fetchGameRecordsStart, // New actions for game records
+    fetchGameRecordsSuccess,
+    fetchGameRecordsFailure,
 } from "../slice/product.slice";
 
 // Fetch Products
@@ -43,7 +46,7 @@ export const fetchCurrentGame = () => async (dispatch) => {
     } catch (error) {
         const errorMessage =
             error.response?.data?.data
-            errorMessage["message"] = error.response?.data?.message
+        errorMessage["message"] = error.response?.data?.message
         dispatch(fetchCurrentGameSuccess(errorMessage));
         return { success: false, message: errorMessage };
     }
@@ -70,6 +73,25 @@ export const submitCurrentGame = (ratingScore, comment) => async (dispatch) => {
         const errorMessage =
             error.response?.data?.message || "Failed to submit the game.";
         dispatch(playGameFailure(errorMessage));
+        return { success: false, message: error };
+    }
+};
+
+// Fetch Game Records
+export const fetchGameRecords = () => async (dispatch) => {
+    dispatch(fetchGameRecordsStart());
+
+    try {
+        const response = await axiosInstance.get(gameRecord);
+        const records = response.data?.data || [];
+        dispatch(fetchGameRecordsSuccess(records));
+        console.log("Game Records Fetched:", records); // Debug log
+        return { success: true, data: records };
+    } catch (error) {
+        console.error("Error Fetching Game Records:", error); // Debug log
+        const errorMessage =
+            error.response?.data?.message || "Failed to fetch game records.";
+        dispatch(fetchGameRecordsFailure(errorMessage));
         return { success: false, message: error };
     }
 };

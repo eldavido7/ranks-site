@@ -60,7 +60,7 @@ const Notification = () => {
     };
 
     return (
-        <div className="p-2 md:mb-2 mb-52">
+        <div className="p-2 md:mb-24 mb-52">
             {/* Show Loader when loading */}
             {/* {isLoading && (
                 <div className="flex justify-center items-center min-h-[200px]">
@@ -129,7 +129,8 @@ const Notification = () => {
                     </motion.div>
 
                     {/* Pagination Controls */}
-                    <div className="flex justify-between items-center mt-4">
+                    <div className="absolute bottom-0 md:left-[310px] right-1 md:max-w-6xl 
+                    mx-auto w-full bg-white p-4 border-t flex justify-between items-center">
                         <button
                             onClick={handlePreviousPage}
                             disabled={currentPage === 1}

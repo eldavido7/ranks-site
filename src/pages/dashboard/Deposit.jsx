@@ -69,18 +69,18 @@ const Deposit = () => {
                 setIsDepositPage(false);
                 setAmount("");
                 setReceipt(null);
-            } else {
-                // Handle backend error messages
-                const backendErrors = result.message; // Adjust to access `message` object
-                if (typeof backendErrors === "object") {
-                    // Display all errors in a toast
-                    Object.entries(backendErrors).forEach(([field, errors]) => {
-                        errors.forEach((error) => toast.error(`${field}: ${error}`));
-                    });
-                } else {
-                    toast.error(result.message || "Failed to submit deposit.");
-                }
             }
+            //     // Handle backend error messages
+            //     const backendErrors = result.message; // Adjust to access `message` object
+            //     if (typeof backendErrors === "object") {
+            //         // Display all errors in a toast
+            //         Object.entries(backendErrors).forEach(([field, errors]) => {
+            //             errors.forEach((error) => toast.error(`${field}: ${error}`));
+            //         });
+            else {
+                ErrorHandler(result.message);
+            }
+
         } catch (error) {
             // const errorMessage =
             //     error.response?.data?.message || "An unexpected error occurred.";
@@ -115,7 +115,6 @@ const Deposit = () => {
             whileInView={fadeIn("right", 1 * 2).animate}
             className="mx-w-full mx-auto md:p-6 p-2 md:mb-2 mb-52 bg-white rounded-lg"
         >
-            {/* <Toaster position="top-right" /> */}
             {/* Back Button */}
             <div className="w-fit bg-gray-200 p-2 rounded-lg shadow-sm mb-6">
                 <button
@@ -244,7 +243,7 @@ const Deposit = () => {
                                     Deposit Amount
                                 </label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     id="amount"
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
@@ -258,7 +257,7 @@ const Deposit = () => {
                                 onClick={() => setIsDepositPage(true)}
                                 className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition duration-200"
                             >
-                                Submit
+                                Next
                             </button>
                         </motion.div>
                     )}

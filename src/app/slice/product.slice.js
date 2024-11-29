@@ -4,10 +4,11 @@ const productSlice = createSlice({
     name: "products",
     initialState: {
         products: [],
+        gameRecords: [], // New state for game records
         currentGame: null, // Store the current game data
         isLoading: false,
         error: null,
-        error_msg:null,
+        error_msg: null,
     },
     reducers: {
         // Existing reducers
@@ -52,6 +53,19 @@ const productSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload; // Store error
         },
+
+        fetchGameRecordsStart(state) {
+            state.isLoading = true;
+            state.error = null;
+        },
+        fetchGameRecordsSuccess(state, action) {
+            state.isLoading = false;
+            state.gameRecords = action.payload || []; // Store game records
+        },
+        fetchGameRecordsFailure(state, action) {
+            state.isLoading = false;
+            state.error = action.payload; // Store error
+        },
     },
 });
 
@@ -65,6 +79,9 @@ export const {
     playGameStart,
     playGameSuccess,
     playGameFailure,
+    fetchGameRecordsStart,
+    fetchGameRecordsSuccess,
+    fetchGameRecordsFailure,
 } = productSlice.actions;
 
 export default productSlice.reducer;
