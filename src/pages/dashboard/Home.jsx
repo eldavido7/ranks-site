@@ -21,7 +21,7 @@ import { fetchActivePacks } from "../../app/service/packs.service"; // Import th
 import { setPacks } from "../../app/slice/packs.slice";
 import Loader from "./components/Load";
 import { toast } from "sonner";
-import { fetchProfileFailure, fetchProfileStart, fetchProfileSuccess } from "../../app/slice/profile.slice";
+import { fetchProfileFailure, fetchProfileStart, fetchProfileSuccess, setWelcomeState, toggleWelcomeState } from "../../app/slice/profile.slice";
 import authService from "../../app/service/auth.service";
 import ErrorHandler from "../../app/ErrorHandler";
 import { fetchNotifications } from "../../app/service/notifications.service";
@@ -30,7 +30,7 @@ const Home = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [showWelcome, setShowWelcome] = useState(true);
+    const showWelcome = useSelector((state) => state.profile.showWelcome); // Use Redux state for showWelcome
     // eslint-disable-next-line no-unused-vars
     const [Notifications, setNotifications] = useState(3);
 
@@ -105,19 +105,20 @@ const Home = () => {
         return () => clearInterval(interval);
     }, [dispatch]);
 
-    const toggleWelcome = () => {
-        setShowWelcome(!showWelcome);
-    };
-
+    // Automatically hide the welcome message after 5 seconds
     useEffect(() => {
         if (showWelcome) {
             const timer = setTimeout(() => {
-                setShowWelcome(false);
+                dispatch(setWelcomeState(false)); // Hide welcome message using Redux
             }, 5000); // 5000ms = 5 seconds
 
-            return () => clearTimeout(timer); // Cleanup the timer
+            return () => clearTimeout(timer); // Cleanup timer
         }
-    }, [showWelcome]);
+    }, [showWelcome, dispatch]);
+
+    const toggleWelcome = () => {
+        dispatch(toggleWelcomeState()); // Use Redux action to toggle welcome message
+    };
 
     return isLoading ? (
         <Loader />
@@ -195,32 +196,34 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Sliding Welcome Banner */}
-            <motion.div
-                initial={{ x: 0 }}
-                animate={{ x: showWelcome ? 0 : -10 }}
-                transition={{ duration: 0.5 }}
-                className="fixed bottom-24 left-4 md:left-80 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center cursor-pointer z-10 md:bottom-4"
-                onClick={toggleWelcome}
-                style={{
-                    width: showWelcome ? "auto" : "10px",
-                    padding: showWelcome ? "12px" : "8px",
-                    height: showWelcome ? "auto" : "70px",
-                }}
-            >
-                {showWelcome ? (
-                    <>
-                        <FaUserCircle className="mr-2" />
-                        <div>
-                            <p className="text-lg font-bold">Hi, {profile?.first_name} 👋</p>
-                            <p>Welcome Back</p>
-                        </div>
-                        <MdChevronLeft className="ml-2 text-2xl" />
-                    </>
-                ) : (
-                    <MdChevronRight className="text-2xl" />
-                )}
-            </motion.div>
+            {showWelcome && (
+                <motion.div
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.5 }}
+                    className="fixed bottom-24 left-4 md:left-80 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center cursor-pointer z-10 md:bottom-4"
+                    onClick={toggleWelcome}
+                    style={{
+                        width: showWelcome ? "auto" : "10px",
+                        padding: showWelcome ? "12px" : "8px",
+                        height: showWelcome ? "auto" : "70px",
+                    }}
+                >
+                    {showWelcome ? (
+                        <>
+                            <FaUserCircle className="mr-2" />
+                            <div>
+                                <p className="text-lg font-bold">Hi, {profile?.first_name} 👋</p>
+                                <p>Welcome Back</p>
+                            </div>
+                            <MdChevronLeft className="ml-2 text-2xl" />
+                        </>
+                    ) : (
+                        <MdChevronRight className="text-2xl" />
+                    )}
+                </motion.div>
+            )}
 
             {/* Packs Section */}
             <div className="container mx-auto mt-8 px-2 md:mb-2 mb-52">

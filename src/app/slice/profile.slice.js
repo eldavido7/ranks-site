@@ -8,6 +8,7 @@ const initialState = {
     success: null,
     profilePicture: null,
     imagePreview: null,
+    showWelcome: true, // Add showWelcome to the state
 };
 
 const profileSlice = createSlice({
@@ -71,6 +72,15 @@ const profileSlice = createSlice({
             state.error = null;
             state.success = null;
         },
+        // Toggle Welcome State
+        toggleWelcomeState(state) {
+            state.showWelcome = !state.showWelcome;
+        },
+
+        // Set Welcome State
+        setWelcomeState(state, action) {
+            state.showWelcome = action.payload;
+        },
     },
 });
 
@@ -86,6 +96,8 @@ export const {
     changePasswordSuccess,
     changePasswordFailure,
     clearProfileState,
+    toggleWelcomeState,
+    setWelcomeState,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

@@ -170,9 +170,11 @@ const authService = {
             // Use the refreshAxiosInstance to send the refresh request
             const response = await refreshAxiosInstance.post(refreshTokenAPI, { refresh: refreshToken });
             const newAccessToken = response.data.data.access;
+            const newRefreshToken = response.data.data.refresh;
 
             // Save the new access token
             localStorage.setItem("accessToken", newAccessToken);
+            localStorage.setItem("refreshToken", newRefreshToken);
             store.dispatch(loginSuccess({ token: newAccessToken }));
 
             return { success: true, token: newAccessToken };

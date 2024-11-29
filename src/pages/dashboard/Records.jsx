@@ -55,7 +55,7 @@ const Records = () => {
     // Handle Submit Button for Pending Products
     const handleSubmit = async () => {
         try {
-            const response = await dispatch(submitCurrentGame());
+            const response = await dispatch(submitCurrentGame(1, ''));
             if (response.success) {
                 toast.success("Submission successful!");
                 dispatch(fetchGameRecords()); // Refresh the game records

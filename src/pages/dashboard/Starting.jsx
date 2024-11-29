@@ -432,11 +432,39 @@ const Starting = () => {
                                         toggleModal();
                                     } else {
                                         ErrorHandler(response.message);
+                                        dispatch(fetchProfileStart());
+                                        try {
+                                            const response = await authService.fetchProfile();
+                                            if (response.success) {
+                                                dispatch(fetchProfileSuccess(response.data));
+                                            } else {
+                                                dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
+                                                toast.error(response.message || "Failed to load profile.");
+                                            }
+                                        } catch (error) {
+                                            console.error("Error fetching profile:", error);
+                                            dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
+                                            toast.error("An error occurred while fetching your profile.");
+                                        }
                                         toggleModal()
                                         dispatch(fetchCurrentGame());
                                     }
                                 } catch (error) {
                                     ErrorHandler(error);
+                                    dispatch(fetchProfileStart());
+                                    try {
+                                        const response = await authService.fetchProfile();
+                                        if (response.success) {
+                                            dispatch(fetchProfileSuccess(response.data));
+                                        } else {
+                                            dispatch(fetchProfileFailure(response.message || "Failed to load profile."));
+                                            toast.error(response.message || "Failed to load profile.");
+                                        }
+                                    } catch (error) {
+                                        console.error("Error fetching profile:", error);
+                                        dispatch(fetchProfileFailure("An error occurred while fetching your profile."));
+                                        toast.error("An error occurred while fetching your profile.");
+                                    }
                                     toggleModal()
                                     dispatch(fetchCurrentGame());
                                 }
