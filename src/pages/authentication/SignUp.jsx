@@ -111,7 +111,7 @@ const SignUp = () => {
                 <img
                     src={logo}
                     alt="Logo"
-                    className="mx-auto mb-4 w-24"
+                    className="mx-auto mb-4 w-[12rem]"
                 />
                 <h2 className="text-2xl font-semibold text-center mb-1">Register Now</h2>
 

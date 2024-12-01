@@ -144,13 +144,13 @@ const Profile = () => {
                     <div className="text-center">
                         <p>Commission:</p>
                         <p className="font-bold text-lg">
-                            {profile?.wallet?.commission || "0.00"}
+                            ${profile?.wallet?.commission || "0.00"}
                         </p>
                     </div>
                     <div className="text-center">
                         <p>Credit Score:</p>
                         <p className="font-bold text-lg">
-                            ${profile?.wallet?.credit_score || "N/A"}
+                            %{profile?.wallet?.credit_score || "N/A"}
                         </p>
                     </div>
                     <div className="text-center">

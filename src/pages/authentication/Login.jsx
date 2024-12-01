@@ -4,6 +4,7 @@ import { fadeIn } from "../../motion";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 import { useDispatch } from "react-redux";
+import logo from "../../assets/logo-light.png";
 import { toast } from "sonner"; // Import sonner for toasts
 import authService from "../../app/service/auth.service";
 import AppInit from "../../app/state.helper";
@@ -90,6 +91,11 @@ const Login = () => {
                 className="relative z-10 bg-white rounded-lg shadow-lg p-8 w-full max-w-md"
             >
                 {/* Title */}
+                <img
+                    src={logo}
+                    alt="Logo"
+                    className="mx-auto mb-4 w-[12rem]"
+                />
                 <h1 className="text-2xl font-semibold text-center mb-4">Login</h1>
 
                 {/* Login Form */}

@@ -11,7 +11,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { motion } from "framer-motion";
-import videoSource from "../../assets/office-loop.mp4";
+import videoSource from "../../assets/home_video.mp4";
 import { CiCreditCard1 } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { about, certificate, deposit, events, faq, starting, terms, withdraw } from "../../constants/app.routes";
